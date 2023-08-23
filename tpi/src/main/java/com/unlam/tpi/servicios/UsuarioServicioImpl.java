@@ -5,12 +5,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.unlam.tpi.repositorios.UsuarioRepositorio;
-import com.unlam.tpi.repositorios.UsuarioRepositorioImpl;
 
 @Service
 public class UsuarioServicioImpl implements UsuarioServicio {
 	
-	private static final Logger logger = LogManager.getLogger(UsuarioRepositorioImpl.class);
+	private static final Logger logger = LogManager.getLogger(UsuarioServicioImpl.class);
 
 	@Autowired
 	UsuarioRepositorio usuarioRepositorio;
