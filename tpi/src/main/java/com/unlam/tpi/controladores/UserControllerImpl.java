@@ -12,7 +12,7 @@ import com.unlam.tpi.servicios.UsuarioServicio;
 public class UserControllerImpl implements UserController {
 
 	@Autowired
-	UsuarioServicio usuarioServicio;
+	private UsuarioServicio usuarioServicio;
 
 	@Override
 	@GetMapping("/index")
