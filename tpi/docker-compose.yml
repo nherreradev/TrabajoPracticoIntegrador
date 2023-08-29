@@ -1,0 +1,16 @@
+version: "3.5"
+
+services:
+  test-deploy-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: java-v1
+    
+    restart: always
+    networks:
+      - nginx_default
+
+networks:
+  nginx_default:
+    external: true

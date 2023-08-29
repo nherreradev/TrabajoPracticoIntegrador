@@ -17,7 +17,7 @@ public class UserControllerImpl implements UserController {
 	@Override
 	@GetMapping("/index")
 	public String bienvenido() {
-		return "¡Bienvenido al índice de la API!";
+		return "¡Bienvenido al índice de la API! ATTE machi";
 	}
 
 	@Override
