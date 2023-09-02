@@ -11,6 +11,6 @@ class TpiApplicationTests {
 	}
 
 	@Test
-	void pruebajenkins() {
+	void pruebajenkins2() {
 	}
 }
