@@ -10,4 +10,7 @@ class TpiApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void pruebajenkins() {
+	}
 }
