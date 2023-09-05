@@ -1,4 +1,5 @@
-FROM maven:3.6.3-jdk-11 as build
+#FROM maven:3.6.3-jdk-11 as build
+FROM maven:3.9.4-eclipse-temurin-11-alpine as build
 
 COPY src /home/app/src
 COPY pom.xml /home/app
