@@ -1,0 +1,31 @@
+version: "3.5"
+
+networks:
+  java-db:
+    driver: bridge
+
+services:
+  java-v1:
+    build: .
+    container_name: java-v1
+    environment:
+      - DATABASE_URL=jdbc:mysql://mysqldb:3306/grupo4?allowPublicKeyRetrieval=true
+      - DATABASE_USERNAME=root
+      - DATABASE_PASSWORD=123456
+    depends_on: 
+      - mysqldb
+    networks:
+      - java-db
+
+  mysqldb: 
+    image: mysql:8.0.28
+    restart: unless-stopped
+    
+    container_name: mysqldb
+    
+    environment:
+       MYSQL_DATABASE: grupo4
+       MYSQL_ROOT_PASSWORD: 1998
+      
+    networks:
+      - java-db
