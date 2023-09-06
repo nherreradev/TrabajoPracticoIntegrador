@@ -1,11 +1,8 @@
 version: "3.5"
 
-networks:
-  java-db:
-    driver: bridge
-
 services:
   java-v1:
+    restart: unless-stopped
     build: .
     container_name: java-v1
     environment:
@@ -29,3 +26,6 @@ services:
       
     networks:
       - java-db
+networks:
+  java-db:
+    driver: bridge
