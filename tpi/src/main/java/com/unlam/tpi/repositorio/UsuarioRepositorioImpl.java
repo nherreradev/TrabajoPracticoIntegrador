@@ -1,11 +1,11 @@
-package com.unlam.tpi.repositorios;
+package com.unlam.tpi.repositorio;
 
 import javax.persistence.EntityManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import com.unlam.tpi.modelos.Usuario;
+import com.unlam.tpi.model.Usuario;
 
 @Repository
 public class UsuarioRepositorioImpl implements UsuarioRepositorio {

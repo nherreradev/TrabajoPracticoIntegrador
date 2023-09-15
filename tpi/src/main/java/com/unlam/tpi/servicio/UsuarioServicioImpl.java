@@ -1,10 +1,10 @@
-package com.unlam.tpi.servicios;
+package com.unlam.tpi.servicio;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.unlam.tpi.repositorios.UsuarioRepositorio;
+import com.unlam.tpi.repositorio.UsuarioRepositorio;
 
 @Service
 public class UsuarioServicioImpl implements UsuarioServicio {
