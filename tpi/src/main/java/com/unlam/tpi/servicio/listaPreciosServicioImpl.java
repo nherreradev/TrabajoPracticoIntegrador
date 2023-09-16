@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PriceListServiceImpl implements PriceListService{
+public class listaPreciosServicioImpl implements listaPreciosServicio{
     List<String> p = new ArrayList<>();
 
     @Override
-    public List<String> GetPriceList() {
+    public List<String> getListaPrecios() {
         p.add("UNO");
         p.add("DOS");
         p.add("TRES");

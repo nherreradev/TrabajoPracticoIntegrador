@@ -16,7 +16,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		try {
 			getUsuarioRepositorio().guardarUsuario(nombreUsuario);
 		} catch (Exception e) {
-			
+			throw e;
 		}
 		
 	}

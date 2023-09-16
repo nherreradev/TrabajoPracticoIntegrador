@@ -1,6 +1,6 @@
 package com.unlam.tpi.controlador;
 
-public interface UserController {
+public interface UsuarioControlador {
 
 	public String bienvenido();
 

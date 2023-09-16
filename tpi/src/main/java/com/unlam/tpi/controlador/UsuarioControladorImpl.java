@@ -9,7 +9,7 @@ import com.unlam.tpi.servicio.UsuarioServicio;
 
 @RestController
 @RequestMapping("/api")
-public class UserControllerImpl implements UserController {
+public class UsuarioControladorImpl implements UsuarioControlador {
 
 	@Autowired
 	private UsuarioServicio usuarioServicio;
