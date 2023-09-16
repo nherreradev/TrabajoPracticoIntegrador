@@ -1,15 +1,12 @@
-package com.unlam.tpi.servicios;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package com.unlam.tpi.servicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.unlam.tpi.repositorios.UsuarioRepositorio;
+import com.unlam.tpi.repositorio.UsuarioRepositorio;
 
 @Service
 public class UsuarioServicioImpl implements UsuarioServicio {
 	
-	private static final Logger logger = LogManager.getLogger(UsuarioServicioImpl.class);
+	
 
 	@Autowired
 	UsuarioRepositorio usuarioRepositorio;
@@ -19,7 +16,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		try {
 			getUsuarioRepositorio().guardarUsuario(nombreUsuario);
 		} catch (Exception e) {
-			logger.error("Error en UsuarioServicioImpl " + e);
+			
 		}
 		
 	}

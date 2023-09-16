@@ -1,4 +1,4 @@
-package com.unlam.tpi.repositorios;
+package com.unlam.tpi.repositorio;
 
 public interface UsuarioRepositorio {
 

@@ -1,4 +1,4 @@
-package com.unlam.tpi.controladores;
+package com.unlam.tpi.controlador;
 
 public interface UserController {
 

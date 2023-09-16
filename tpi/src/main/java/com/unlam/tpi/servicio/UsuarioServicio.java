@@ -1,4 +1,4 @@
-package com.unlam.tpi.servicios;
+package com.unlam.tpi.servicio;
 
 import org.springframework.transaction.annotation.Transactional;
 
