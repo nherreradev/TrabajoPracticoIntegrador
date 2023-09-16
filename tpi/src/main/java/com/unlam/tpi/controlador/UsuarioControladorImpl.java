@@ -20,7 +20,7 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 		return "¡Bienvenido al índice de la API!";
 	}
 
-	@Override
+	@Override       
 	@GetMapping("/guardarUsuario")
 	public String guardarUsuario(String nombreUsuario) {
 		getUsuarioServicio().guardarUsuario(nombreUsuario);
