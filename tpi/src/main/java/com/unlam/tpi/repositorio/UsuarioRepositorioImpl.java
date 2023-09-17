@@ -19,8 +19,7 @@ public class UsuarioRepositorioImpl implements UsuarioRepositorio {
 			usuario.setNombreUsuario(nombreUsuario);
 			entityManager.persist(usuario);
 		} catch (Exception e) {
-		
+			throw e;
 		}
 	}
-
 }

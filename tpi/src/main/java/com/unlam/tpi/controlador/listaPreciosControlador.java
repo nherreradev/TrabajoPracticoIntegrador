@@ -1,5 +1,5 @@
 package com.unlam.tpi.controlador;
 
-public interface PriceListController {
+public interface listaPreciosControlador {
     public String MostrarPrecios();
 }
