@@ -40,17 +40,7 @@ public class PanelesServiceImpl implements PanelesService {
 
 		try {
 
-			List<Instrumento> listaInstrumentos = new ArrayList<>();
-			Gson gson = new Gson();
-			String json = responseEntity.getBody();
-			JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-			JsonArray titulos = jsonObject.getAsJsonArray(PanelesDePreciosConstantes.TITULOS);
-
-			for (int i = 0; i < titulos.size(); i++) {
-				JsonObject jsonInstrumento = titulos.get(i).getAsJsonObject();
-				Instrumento instrumento = gson.fromJson(jsonInstrumento, Instrumento.class);
-				listaInstrumentos.add(instrumento);
-			}
+			List<Instrumento> listaInstrumentos = obtenerListaDeInstrumentos(responseEntity);
 
 			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 
@@ -60,10 +50,51 @@ public class PanelesServiceImpl implements PanelesService {
 			throw e;
 		}
 	}
+	
+	@Override
+	public Map<String, Instrumento> getPanelDeBonos() {
+
+		ResponseEntity<String> responseEntity = postApiBonos();
+
+		try {
+
+			List<Instrumento> listaInstrumentos = obtenerListaDeInstrumentos(responseEntity);
+
+			panelPrecios.agregarInstrumentosAlPanelDeBonos(listaInstrumentos);
+
+			return PanelPreciosImpl.panelBonos;
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	private List<Instrumento> obtenerListaDeInstrumentos(ResponseEntity<String> responseEntity) {
+		List<Instrumento> listaInstrumentos = new ArrayList<>();
+		Gson gson = new Gson();
+		String json = responseEntity.getBody();
+		JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+		JsonArray titulos = jsonObject.getAsJsonArray(PanelesDePreciosConstantes.TITULOS);
+
+		for (int i = 0; i < titulos.size(); i++) {
+			JsonObject jsonInstrumento = titulos.get(i).getAsJsonObject();
+			Instrumento instrumento = gson.fromJson(jsonInstrumento, Instrumento.class);
+			listaInstrumentos.add(instrumento);
+		}
+		return listaInstrumentos;
+	}
 
 	private ResponseEntity<String> postApiAcciones() {
-		String url = "https://4160cd26-9e79-438e-8137-2eb00d9da222.mock.pstmn.io/instrumentos";
+		String url = "https://a78c76bd-8631-42ac-a6f7-867d886bdd8e.mock.pstmn.io/acciones";
+		return construccionYEjecucionDePost(url);
+	}
+	
+	private ResponseEntity<String> postApiBonos() {
+		String url = "https://a78c76bd-8631-42ac-a6f7-867d886bdd8e.mock.pstmn.io/bonos";
+		return construccionYEjecucionDePost(url);
+	}
 
+	private ResponseEntity<String> construccionYEjecucionDePost(String url) {
 		// Define el contenido del cuerpo de la solicitud POST (si es necesario)
 		String requestBody = "{\"key\": \"value\"}"; // Reemplazar con los datos a enviar en el cuerpo
 
@@ -72,10 +103,10 @@ public class PanelesServiceImpl implements PanelesService {
 		headers.setContentType(MediaType.APPLICATION_JSON); // Establece el tipo de contenido del cuerpo
 
 		// Crea una entidad HTTP con el cuerpo y las cabeceras
-		HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+		//HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
 		// Realiza la solicitud POST y obtiene la respuesta
-		ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestEntity, String.class);
+		ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 		return responseEntity;
 	}
 }
