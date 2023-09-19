@@ -1,9 +1,8 @@
 package com.unlam.tpi.controlador;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
-
 public interface PriceListController {
-    public List<String> MostrarPrecios(@PathVariable String titulo);
+    public ResponseEntity<String> MostrarPrecios(@PathVariable String titulo);
 }

@@ -1,7 +1,7 @@
 package com.unlam.tpi.servicio;
 
-import java.util.List;
+import org.springframework.http.ResponseEntity;
 
 public interface listaPreciosServicio {
-    List<String> GetPriceList(String titulo, String token);
+    ResponseEntity<String> GetPriceList(String titulo, String token);
 }
