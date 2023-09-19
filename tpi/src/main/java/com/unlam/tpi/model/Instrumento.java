@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.google.gson.annotations.SerializedName;
@@ -17,14 +18,16 @@ public class Instrumento {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "oid")
+	@Column(name = "OID_")
 	private Long oid;
 
 	@Column(name = "SIMBOLO")
 	@SerializedName("simbolo")
 	private String simbolo;
-	
 
+	@SerializedName("puntas")
+	@OneToOne(mappedBy = "instrumento")
+	private Puntas puntas;
 
 	@Column(name = "ULTIMO_PRECIO")
 	@SerializedName("ultimoPrecio")
@@ -98,6 +101,9 @@ public class Instrumento {
 	@SerializedName("lote")
 	private int lote;
 
+	private int flashCompra = 0;
+	private int flashVenta = 0;
+
 	public Long getOid() {
 		return oid;
 	}
@@ -113,8 +119,6 @@ public class Instrumento {
 	public void setSimbolo(String simbolo) {
 		this.simbolo = simbolo;
 	}
-
-
 
 	public BigDecimal getUltimoPrecio() {
 		return ultimoPrecio;
@@ -258,6 +262,30 @@ public class Instrumento {
 
 	public void setLote(int lote) {
 		this.lote = lote;
+	}
+
+	public Puntas getPuntas() {
+		return puntas;
+	}
+
+	public void setPuntas(Puntas puntas) {
+		this.puntas = puntas;
+	}
+
+	public int getFlashCompra() {
+		return flashCompra;
+	}
+
+	public void setFlashCompra(int flashCompra) {
+		this.flashCompra = flashCompra;
+	}
+
+	public int getFlashVenta() {
+		return flashVenta;
+	}
+
+	public void setFlashVenta(int flashVenta) {
+		this.flashVenta = flashVenta;
 	}
 
 }

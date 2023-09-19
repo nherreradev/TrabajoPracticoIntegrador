@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
 import com.unlam.tpi.model.Instrumento;
 import com.unlam.tpi.servicio.PanelesService;
 
@@ -20,16 +21,18 @@ public class PanelesControladorImpl implements PanelesControlador {
 
 	@Override
 	@GetMapping("/acciones")
-	public ResponseEntity<Map<String, Instrumento>> getPanelDeAcciones() {
+	public ResponseEntity<String> getPanelDeAcciones() {
 		Map<String, Instrumento> panelAcciones = panelesService.getPanelDeAcciones();
-		return ResponseEntity.ok(panelAcciones);
+		String json = new Gson().toJson(panelAcciones);
+		return ResponseEntity.ok(json);
 	}
 
 	@Override
 	@GetMapping("/bonos")
-	public ResponseEntity<Map<String, Instrumento>> getPanelDeBonos() {
+	public ResponseEntity<String> getPanelDeBonos() {
 		Map<String, Instrumento> panelBonos = panelesService.getPanelDeBonos();
-		return ResponseEntity.ok(panelBonos);
+		String json = new Gson().toJson(panelBonos);
+		return ResponseEntity.ok(json);
 	}
 
 }
