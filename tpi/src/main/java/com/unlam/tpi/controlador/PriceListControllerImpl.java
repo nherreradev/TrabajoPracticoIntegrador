@@ -1,6 +1,6 @@
 package com.unlam.tpi.controlador;
 
-import com.unlam.tpi.servicio.PriceListService;
+import com.unlam.tpi.servicio.listaPreciosServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,16 +11,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("list")
-public class PriceListControlerImpl implements PriceListController {
+public class PriceListControllerImpl implements PriceListController {
 
     @Autowired
-    private PriceListService priceListService;
+    private listaPreciosServicio priceListService;
 
     @Override
     @GetMapping("/precios/{titulo}")
     //El titulo puede ser accion o bono (
     public List<String>  MostrarPrecios(@PathVariable String titulo) {
-        List<String> res = priceListService.GetPriceList(titulo);
+        String token = "";
+        List<String> res = priceListService.GetPriceList(titulo, token);
         return res;
     }
 }
