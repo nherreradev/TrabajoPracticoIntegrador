@@ -19,7 +19,7 @@ public class PriceListControllerImpl implements PriceListController {
     @GetMapping("/precios/{titulo}")
     //El titulo puede ser accion o bono (
     public ResponseEntity<String> MostrarPrecios(@PathVariable String titulo) {
-        String token = "xgZFQogI8OlKPDb_35CtqTBXCCbWIcaJyUmWzmgkw7qzHrORAZP96eeexXQ95QXXPlngA3yEvzBcSrV8IomRIj2DrCbE-6ukR42KkzfFfTSWiPMgRWDq21eMawh7vx6POwskM4b2e3b5Xi1a0iNN5xABK8aKtLd6Ma5ksQ8Y0yyUqv6zFPboqW9mQ1Fq814UzxIO7NEJrsL3_b_MPEOIbH5xkaS0y9gd1SMxaAZaDSsJtUNrzYRVFHaWkJUFssYvYWR1ACOK7Vjtm9lvsvkezwjaRpna65UJCpViQbCX1xuBgFmRFd55BjgD4IfTJJLm0yGdTun1XXuKLeRXoy6mJxO0hv67m6WqXhqj_HNsI38KUdEvn8xappbWMExcCzUOX1EvDgq_6vtkmZSx7Vpr61Y268HDLZ-xIrCiIqGz5Hw";
+        String token = "PRW0SBME1R42f9sMBGwoRBlMGUWvbWXKpGSnVWdjddricWZ50HqlWb4jvFgsVIyAIdlokg30Bz2aNpNFRfNu_CKK_yLYMP3kBTKXY6DT3_539EKo5Nz5L-p4k98q8vMm9BwcA0EYWAaDhNebmbjueSm9mwnmDz8YC5kf7p02Vjuihxz63U2lIk0ESwqQ2Lyyb78DYJ_Z5nwT9gykge0xGfgS87tEEO8Ws2cGYWZ5xvon9esubII2JxFum5Xl7ubO-RR8BdNV4718t4fRMo-JTRjWk-a4qBlwWR_bv4UNsa12aSJI8pSbxnDNBaB8KzPLtXgQFiKyJcWU0A-Du9cYStFYlJJVwCPdZ1-Qe-ywI_b4mXsClI-9iNmN8UqQF9ymoASKG79fmtGQ_PsM-78sZH6c_IYqJausqu4yIjdBdCU";
         ResponseEntity<String> res = priceListService.GetPriceList(titulo, token);
         return res;
     }

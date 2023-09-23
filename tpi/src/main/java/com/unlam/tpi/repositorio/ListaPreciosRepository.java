@@ -1,5 +1,5 @@
 package com.unlam.tpi.repositorio;
 
 public interface ListaPreciosRepository {
-    Boolean GuardarResponseTransaccion(String json);
+    void GuardarResponseTransaccion(String json, String collection);
 }
