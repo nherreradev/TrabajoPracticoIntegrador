@@ -22,10 +22,15 @@ services:
     
     environment:
        MYSQL_DATABASE: grupo4
-       MYSQL_ROOT_PASSWORD: 1998
+       MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - mysqldata:/var/lib/mysql
       
     networks:
       - java-db
 networks:
   java-db:
     driver: bridge
+
+volumes:
+  mysqldata:    
