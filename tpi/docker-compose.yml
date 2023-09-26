@@ -27,8 +27,11 @@ services:
       - mysqldata:/var/lib/mysql
       
     networks:
+      - nginx_default
       - java-db
 networks:
+  nginx_default:
+    external: true
   java-db:
     driver: bridge
 
