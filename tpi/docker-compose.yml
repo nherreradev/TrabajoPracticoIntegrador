@@ -12,6 +12,7 @@ services:
     depends_on: 
       - mysqldb
     networks:
+      - nginx_default
       - java-db
 
   mysqldb: 
