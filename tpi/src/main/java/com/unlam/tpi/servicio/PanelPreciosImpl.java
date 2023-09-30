@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.unlam.tpi.model.Instrumento;
+import com.unlam.tpi.modelo.persistente.Instrumento;
 
 @Service
 public class PanelPreciosImpl implements PanelPrecios {
