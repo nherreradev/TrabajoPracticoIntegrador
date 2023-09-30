@@ -9,9 +9,9 @@ import com.unlam.tpi.modelo.persistente.Instrumento;
 
 public interface PanelesService {
 
-	public Map<String, Instrumento> getPanelDeAcciones();
+	public List<Instrumento> getPanelDeAcciones();
 	
-	public Map<String, Instrumento> getPanelDeBonos();
+	public List<Instrumento> getPanelDeBonos();
 	
 	public List<Instrumento> convertirListaDeJsonAListaDeIntrumentos(ResponseEntity<String> responseEntity);
 	

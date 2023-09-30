@@ -1,5 +1,6 @@
 package com.unlam.tpi.servicio;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +12,14 @@ import com.unlam.tpi.modelo.persistente.Instrumento;
 @Service
 public class PanelPreciosImpl implements PanelPrecios {
 
-	public static Map<String, Instrumento> panelAcciones = new HashMap<>();
-	public static Map<String, Instrumento> panelBonos = new HashMap<>();
+	public static List<Instrumento> panelAcciones = new ArrayList<Instrumento>();
+	public static List<Instrumento> panelBonos =  new ArrayList<Instrumento>();
 
 	@Override
 	public void agregarInstrumentosAlPanelDeAcciones(List<Instrumento> instrumentos) {
-
+		
 		for (Instrumento instrumento : instrumentos) {
-			panelAcciones.put(instrumento.getSimbolo(), instrumento);
+			panelAcciones.add(instrumento);
 		}
 	}
 	
@@ -26,7 +27,7 @@ public class PanelPreciosImpl implements PanelPrecios {
 	public void agregarInstrumentosAlPanelDeBonos(List<Instrumento> instrumentos) {
 
 		for (Instrumento instrumento : instrumentos) {
-			panelBonos.put(instrumento.getSimbolo(), instrumento);
+			panelBonos.add(instrumento);
 		}
 	}
 

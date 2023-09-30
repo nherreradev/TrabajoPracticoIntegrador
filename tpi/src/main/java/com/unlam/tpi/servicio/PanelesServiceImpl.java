@@ -44,7 +44,7 @@ public class PanelesServiceImpl implements PanelesService {
 	}
 
 	@Override
-	public Map<String, Instrumento> getPanelDeAcciones() {
+	public List<Instrumento> getPanelDeAcciones() {
 
 		ResponseEntity<String> respuestaJson = postApiAcciones();
 
@@ -57,7 +57,7 @@ public class PanelesServiceImpl implements PanelesService {
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
 
 			listaInstrumentosAux.addAll(listaInstrumentos);
-
+			
 			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 
 			return PanelPreciosImpl.panelAcciones;
@@ -68,7 +68,7 @@ public class PanelesServiceImpl implements PanelesService {
 	}
 
 	@Override
-	public Map<String, Instrumento> getPanelDeBonos() {
+	public List<Instrumento> getPanelDeBonos() {
 
 		ResponseEntity<String> respuestaJson = postApiBonos();
 

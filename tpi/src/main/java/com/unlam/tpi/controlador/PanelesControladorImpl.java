@@ -1,5 +1,6 @@
 package com.unlam.tpi.controlador;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import com.unlam.tpi.servicio.PanelesService;
 
 @RestController
 @RequestMapping("/panel")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 public class PanelesControladorImpl implements PanelesControlador {
 
 	@Autowired
@@ -24,7 +25,7 @@ public class PanelesControladorImpl implements PanelesControlador {
 	@Override
 	@GetMapping("/acciones")
 	public ResponseEntity<String> getPanelDeAcciones() {
-		Map<String, Instrumento> panelAcciones = panelesService.getPanelDeAcciones();
+		List<Instrumento> panelAcciones = panelesService.getPanelDeAcciones();
 		String json = new Gson().toJson(panelAcciones);
 		return ResponseEntity.ok(json);
 	}
@@ -32,7 +33,7 @@ public class PanelesControladorImpl implements PanelesControlador {
 	@Override
 	@GetMapping("/bonos")
 	public ResponseEntity<String> getPanelDeBonos() {
-		Map<String, Instrumento> panelBonos = panelesService.getPanelDeBonos();
+		List<Instrumento> panelBonos = panelesService.getPanelDeBonos();
 		String json = new Gson().toJson(panelBonos);
 		return ResponseEntity.ok(json);
 	}
