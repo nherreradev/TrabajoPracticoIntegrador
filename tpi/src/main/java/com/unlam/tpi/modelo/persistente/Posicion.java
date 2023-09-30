@@ -11,7 +11,7 @@ import com.unlam.tpi.arquitectura.ObjetoPersistente;
 
 @Entity
 @Table(name = "POSICION_")
-public class Posicion_ extends ObjetoPersistente {
+public class Posicion extends ObjetoPersistente {
 	/**
 	 * Usuario al cual pertenece la posición
 	 */
