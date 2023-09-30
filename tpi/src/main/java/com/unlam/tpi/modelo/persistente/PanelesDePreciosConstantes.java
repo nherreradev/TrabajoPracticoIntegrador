@@ -1,4 +1,4 @@
-package com.unlam.tpi.model;
+package com.unlam.tpi.modelo.persistente;
 
 public class PanelesDePreciosConstantes {
 

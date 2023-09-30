@@ -17,8 +17,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.unlam.tpi.model.Instrumento;
-import com.unlam.tpi.model.PanelesDePreciosConstantes;
+import com.unlam.tpi.modelo.persistente.Instrumento;
+import com.unlam.tpi.modelo.persistente.PanelesDePreciosConstantes;
 
 @Service
 public class PanelesServiceImpl implements PanelesService {
