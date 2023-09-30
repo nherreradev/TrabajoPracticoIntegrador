@@ -1,4 +1,4 @@
-package com.unlam.tpi.model;
+package com.unlam.tpi.modelo.persistente;
 
 import java.math.BigDecimal;
 
@@ -11,15 +11,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.google.gson.annotations.SerializedName;
+import com.unlam.tpi.arquitectura.ObjetoPersistente;
 
 @Entity
 @Table(name = "instrumento")
-public class Instrumento {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "OID_")
-	private Long oid;
+public class Instrumento extends ObjetoPersistente{
 
 	@Column(name = "SIMBOLO")
 	@SerializedName("simbolo")
@@ -103,14 +99,6 @@ public class Instrumento {
 
 	private int flashCompra = 0;
 	private int flashVenta = 0;
-
-	public Long getOid() {
-		return oid;
-	}
-
-	public void setOid(Long oid) {
-		this.oid = oid;
-	}
 
 	public String getSimbolo() {
 		return simbolo;
