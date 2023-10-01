@@ -1,5 +1,8 @@
 package com.unlam.tpi.repositorio;
 
-public class PosicionRepositorioImpl implements PosicionRepositorio {
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class PosicionRepositorioImpl {
 
 }
