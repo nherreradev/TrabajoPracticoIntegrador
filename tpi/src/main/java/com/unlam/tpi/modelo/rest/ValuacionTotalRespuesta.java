@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class ValuacionTotalRespuesta {
 
-	@JsonProperty("totalPortafolio")
-	private String totalPortafolio;
+	@JsonProperty("totalCartera")
+	private String totalCartera;
 
 	@JsonProperty("totalInstrumentos")
 	private String totalInstrumentos;
@@ -15,13 +15,14 @@ public class ValuacionTotalRespuesta {
 	@JsonProperty("totalMonedas")
 	private String totalMonedas;
 
-	@JsonProperty("totalPortafolio")
-	public String getTotalPortafolio() {
-		return totalPortafolio;
+	
+	@JsonProperty("totalCartera")
+	public String getTotalCartera() {
+		return totalCartera;
 	}
 
-	public void setTotalPortafolio(String totalPortafolio) {
-		this.totalPortafolio = totalPortafolio;
+	public void setTotalCartera(String totalCartera) {
+		this.totalCartera = totalCartera;
 	}
 
 	@JsonProperty("totalInstrumentos")
