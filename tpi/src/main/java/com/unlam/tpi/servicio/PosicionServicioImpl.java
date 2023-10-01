@@ -25,7 +25,26 @@ public class PosicionServicioImpl implements PosicionServicio {
 		BigDecimal totalMonedas = calcularPosicionMoneda(posicionTotal);
 		valuacionTotalRespuesta.setTotalMonedas(totalMonedas.toString());
 
+		BigDecimal totalInstrumentos = calcularPosicionEnInstrumentos(posicionTotal);
+		valuacionTotalRespuesta.setTotalInstrumentos(totalInstrumentos.toString());
+
+		BigDecimal totalCartera = calcularPosicionEnInstrumentos(posicionTotal);
+		totalCartera = totalMonedas.add(totalInstrumentos);
+		valuacionTotalRespuesta.setTotalCartera(totalCartera.toString());
+
 		return valuacionTotalRespuesta;
+	}
+
+	private BigDecimal calcularPosicionEnInstrumentos(List<Posicion> posicionTotal) {
+
+		BigDecimal totalInstrumentos = BigDecimal.ZERO;
+
+		for (Posicion posicion : posicionTotal) {
+			if (!posicion.getEsEfectivo()) {
+				totalInstrumentos = totalInstrumentos.add(posicion.getPrecio().multiply(posicion.getCantidad()));
+			}
+		}
+		return totalInstrumentos;
 	}
 
 	private BigDecimal calcularPosicionMoneda(Iterable<Posicion> posicionTotal) {
