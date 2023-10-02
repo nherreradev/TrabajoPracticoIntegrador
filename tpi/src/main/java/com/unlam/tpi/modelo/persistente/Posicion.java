@@ -67,6 +67,9 @@ public class Posicion extends ObjetoPersistente {
 	@Column(name = "DESCRIPCION")
 	private String descripcion;
 
+	@Column(name = "SIMBOLO_INSTRUMENTO")
+	private String simboloInstrumento;
+
 	public Long getUsuarioOid() {
 		return usuarioOid;
 	}
@@ -137,5 +140,13 @@ public class Posicion extends ObjetoPersistente {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public String getSimboloInstrumento() {
+		return simboloInstrumento;
+	}
+
+	public void setSimboloInstrumento(String simboloInstrumento) {
+		this.simboloInstrumento = simboloInstrumento;
 	}
 }
