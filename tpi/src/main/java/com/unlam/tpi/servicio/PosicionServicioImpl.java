@@ -1,7 +1,9 @@
 package com.unlam.tpi.servicio;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,17 +24,44 @@ public class PosicionServicioImpl implements PosicionServicio {
 		ValuacionTotalRespuesta valuacionTotalRespuesta = new ValuacionTotalRespuesta();
 		List<Posicion> posicionTotal = PosicionRepositorio.findAll();
 
+		BigDecimal totalCartera = BigDecimal.ZERO;
+
 		BigDecimal totalMonedas = calcularPosicionMoneda(posicionTotal);
 		valuacionTotalRespuesta.setTotalMonedas(totalMonedas.toString());
 
 		BigDecimal totalInstrumentos = calcularPosicionEnInstrumentos(posicionTotal);
 		valuacionTotalRespuesta.setTotalInstrumentos(totalInstrumentos.toString());
 
-		BigDecimal totalCartera = calcularPosicionEnInstrumentos(posicionTotal);
+		valuacionTotalRespuesta.setCantidadPorInstrumento(obtenerCantidadPorInstrumento(posicionTotal));
+
 		totalCartera = totalMonedas.add(totalInstrumentos);
 		valuacionTotalRespuesta.setTotalCartera(totalCartera.toString());
 
 		return valuacionTotalRespuesta;
+	}
+
+	private Map<String, BigDecimal> obtenerCantidadPorInstrumento(List<Posicion> posicionTotal) {
+
+		Map<String, BigDecimal> instrumentosPorCantidad = new HashMap<>();
+
+		for (Posicion posicion : posicionTotal) {
+
+			if (posicion.getSimboloInstrumento() != null && !posicion.getEsEfectivo()) {
+				String simbolo = posicion.getSimboloInstrumento();
+				BigDecimal cantidad = posicion.getCantidad();
+
+				if (instrumentosPorCantidad.containsKey(simbolo)) {
+					BigDecimal cantidadActual = instrumentosPorCantidad.get(simbolo);
+					BigDecimal cantidadAcumulada = cantidadActual.add(cantidad);
+					instrumentosPorCantidad.put(simbolo, cantidadAcumulada);
+				} else {
+
+					instrumentosPorCantidad.put(simbolo, cantidad);
+				}
+			}
+		}
+
+		return instrumentosPorCantidad;
 	}
 
 	private BigDecimal calcularPosicionEnInstrumentos(List<Posicion> posicionTotal) {
