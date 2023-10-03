@@ -2,6 +2,7 @@ package com.unlam.tpi.controlador;
 
 import com.unlam.tpi.servicio.listaPreciosServicio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +20,11 @@ public class PriceListControllerImpl implements PriceListController {
     @GetMapping("/precios/{titulo}")
     //El titulo puede ser accion o bono (
     public ResponseEntity<String> MostrarPrecios(@PathVariable String titulo) {
-        String token = "PRW0SBME1R42f9sMBGwoRBlMGUWvbWXKpGSnVWdjddricWZ50HqlWb4jvFgsVIyAIdlokg30Bz2aNpNFRfNu_CKK_yLYMP3kBTKXY6DT3_539EKo5Nz5L-p4k98q8vMm9BwcA0EYWAaDhNebmbjueSm9mwnmDz8YC5kf7p02Vjuihxz63U2lIk0ESwqQ2Lyyb78DYJ_Z5nwT9gykge0xGfgS87tEEO8Ws2cGYWZ5xvon9esubII2JxFum5Xl7ubO-RR8BdNV4718t4fRMo-JTRjWk-a4qBlwWR_bv4UNsa12aSJI8pSbxnDNBaB8KzPLtXgQFiKyJcWU0A-Du9cYStFYlJJVwCPdZ1-Qe-ywI_b4mXsClI-9iNmN8UqQF9ymoASKG79fmtGQ_PsM-78sZH6c_IYqJausqu4yIjdBdCU";
+        String token = "4kkefDDGgMGaRHydvvycRdr1BnDjpxr-AlDwzVhUn8czAtVpGW2i73PKVMORlw_gw3alWJBMbUusYNNAjzUL1QLrF4curuQiR3zL0xKfLBgYUkJAkVO2z9yl1kPu-vrn1icCuw3bJd1noiTVk6X57b26Z-u3n2swx2T-dkXT-UTi6L_g-y0fb6lxw4GBdq0tDLejsnFLsCfGPqxtwKi1U1cNM9W1dBXIwBQSEUq0l_DXYOBAqAmRQGWmZXTz3ail3ywMEdH0D8grzPnEZvx0n8fIK-5eW6PIK6MofIQcyZdtPMP8i4LuQnd0Lso_UsG5Glq-UlYaAaSjEaDj0AVLLwQgVzcr7eO9PaBA5r94bvCqNMMLmve8JvI-sZu35JJtyPFK1mIeky6mgcQSN4A01Uej7lJqP8AkHmdy_pQMaEo";
         ResponseEntity<String> res = priceListService.GetPriceList(titulo, token);
-        return res;
+        if (res == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("TOKEN TIME OUT");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Transacción guardada con éxito, se guardaron: " + titulo);
     }
 }

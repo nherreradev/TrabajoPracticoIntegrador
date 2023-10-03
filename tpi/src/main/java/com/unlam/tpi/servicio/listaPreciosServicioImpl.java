@@ -1,21 +1,25 @@
 package com.unlam.tpi.servicio;
+import com.google.protobuf.Timestamp;
 import com.unlam.tpi.repositorio.ListaPreciosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class listaPreciosServicioImpl implements listaPreciosServicio{
     private ListaPreciosRepository listaPreciosRepository;
+    private final RestTemplate restTemplate;
     String ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
     String BONOS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=titulosPublicos&cotizacionInstrumentoModel.pais=argentina";
-    List<String> p = new ArrayList<>();
-    private final RestTemplate restTemplate;
     @Autowired
     public listaPreciosServicioImpl(RestTemplate restTemplate, ListaPreciosRepository listaPreciosServicioImpl) {
         this.restTemplate = restTemplate;
@@ -24,55 +28,61 @@ public class listaPreciosServicioImpl implements listaPreciosServicio{
 
     @Override
     public ResponseEntity<String> GetPriceList(String titulo, String token) {
+        Map<String, Boolean> ResponseOK = new HashMap<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
         RequestEntity<?> requestEntity;
         ResponseEntity<String> responseEntity = null;
 
-        switch (titulo) {
-            case "bonos":
-                requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(BONOS));
-                responseEntity = restTemplate.exchange(requestEntity, String.class);
-                break;
-            case "acciones":
-                requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(ACCIONES));
-                responseEntity = restTemplate.exchange(requestEntity, String.class);
-                break;
-            default:
-                break;
+        try{
+            switch (titulo) {
+                case "bonos":
+                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(BONOS));
+                    responseEntity = restTemplate.exchange(requestEntity, String.class);
+                    ResponseOK = this.ValidateResponse(responseEntity, "bonos");
+                    break;
+                case "acciones":
+                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(ACCIONES));
+                    responseEntity = restTemplate.exchange(requestEntity, String.class);
+                    ResponseOK = this.ValidateResponse(responseEntity, "acciones");
+                    break;
+                default:
+                    break;
+            }
+        }catch (Exception e){
+            System.out.println("|HTTP ERROR| "+"Error en la llamada a la API, exception: "+ e);
+            e.printStackTrace();
         }
-
-        switch (responseEntity.getStatusCode()){
-            case OK:
-                System.out.println("AUTORIZADO");
-                int indexOfOpenBrace = responseEntity.toString().indexOf('{');
-
-                int indexOfCloseBrace = responseEntity.toString().lastIndexOf('}');
-
-                if (indexOfOpenBrace != -1 && indexOfCloseBrace != -1 && indexOfOpenBrace < indexOfCloseBrace) {
-                    String jsonToSave = responseEntity.toString().substring(indexOfOpenBrace, indexOfCloseBrace + 1);
-                    System.out.println("JSON OK");
-                    System.out.println(jsonToSave);
-                    this.listaPreciosRepository.GuardarResponseTransaccion(jsonToSave, "acciones");
-                } else {
-                    // Manejar el caso en el que no se encuentren '{' o '}' en la cadena, o están en el orden incorrecto
-                    // Puede ser un error o una respuesta inesperada
-                    System.out.println("No se encontró un JSON válido en la respuesta.");
-                }
-                break;
-            case BAD_REQUEST:
-                System.out.println("BAD REQUEST");
-                break;
-            case UNAUTHORIZED:
-                System.out.println("UNAUTHORIZED");
-                break;
-            default:
-                break;
-        }
-
+        SaveMongoTransaction(ResponseOK, responseEntity);
         return responseEntity;
     }
+
+    private void SaveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) {
+        int IndexLlaveAbertura = responseEntity.toString().indexOf('{');
+        int IndexLlaveCierre = responseEntity.toString().lastIndexOf('}');
+        if (IndexLlaveAbertura != -1 && IndexLlaveCierre != -1 && IndexLlaveAbertura < IndexLlaveCierre) {
+            String jsonToSave = responseEntity.toString().substring(IndexLlaveAbertura, IndexLlaveCierre + 1);
+            String collection = GetMapKey(responseOK);
+            this.listaPreciosRepository.GuardarResponseTransaccion(jsonToSave, collection);
+        }
+    }
+
+    private String GetMapKey(Map<String, Boolean> responseOK) {
+        if (responseOK.containsKey("acciones")){
+            return "acciones";
+        }
+        return "bonos";
+    }
+
+
+    @Override
+    public Map<String, Boolean> ValidateResponse(ResponseEntity<String> responseEntity, String instrumento) {
+        Map<String, Boolean> ResponseOk = new HashMap<>();
+        ResponseOk.put(instrumento, IsStatusCodeOk(responseEntity) ? true : false);
+        return ResponseOk;
+    }
+
+    private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
 
 }
