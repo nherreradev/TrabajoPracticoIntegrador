@@ -1,4 +1,4 @@
-package com.unlam.tpi.model;
+package com.unlam.tpi.modelo.persistente;
 
 import java.math.BigDecimal;
 
@@ -12,15 +12,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.google.gson.annotations.SerializedName;
+import com.unlam.tpi.arquitectura.ObjetoPersistente;
 
 @Entity
 @Table(name = "PUNTAS")
-public class Puntas {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "OID_")
-	private Long oid;
+public class Puntas extends ObjetoPersistente {
 
 	@OneToOne
 	@JoinColumn(name = "INSTRUMENTO_ID")
@@ -41,14 +37,6 @@ public class Puntas {
 	@Column(name = "PRECIO_VENTA")
 	@SerializedName("precioVenta")
 	private BigDecimal precioVenta;
-
-	public Long getOid() {
-		return oid;
-	}
-
-	public void setOid(Long oid) {
-		this.oid = oid;
-	}
 
 	public Instrumento getInstrumento() {
 		return instrumento;

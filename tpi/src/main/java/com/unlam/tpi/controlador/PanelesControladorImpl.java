@@ -1,19 +1,23 @@
 package com.unlam.tpi.controlador;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
-import com.unlam.tpi.model.Instrumento;
+import com.unlam.tpi.modelo.persistente.Instrumento;
 import com.unlam.tpi.servicio.PanelesService;
 
 @RestController
 @RequestMapping("/panel")
+@CrossOrigin
 public class PanelesControladorImpl implements PanelesControlador {
 
 	@Autowired
@@ -22,7 +26,8 @@ public class PanelesControladorImpl implements PanelesControlador {
 	@Override
 	@GetMapping("/acciones")
 	public ResponseEntity<String> getPanelDeAcciones() {
-		Map<String, Instrumento> panelAcciones = panelesService.getPanelDeAcciones();
+		List<Instrumento> panelAcciones = panelesService.getPanelDeAcciones().values().stream()
+				.collect(Collectors.toList());
 		String json = new Gson().toJson(panelAcciones);
 		return ResponseEntity.ok(json);
 	}
@@ -30,9 +35,13 @@ public class PanelesControladorImpl implements PanelesControlador {
 	@Override
 	@GetMapping("/bonos")
 	public ResponseEntity<String> getPanelDeBonos() {
-		Map<String, Instrumento> panelBonos = panelesService.getPanelDeBonos();
-		String json = new Gson().toJson(panelBonos);
-		return ResponseEntity.ok(json);
+		List<Instrumento> panelBonos = panelesService.getPanelDeBonos().values().stream()
+			    .collect(Collectors.toList());
+
+			String json = new Gson().toJson(panelBonos);
+
+			return ResponseEntity.ok(json);
+
 	}
 
 }
