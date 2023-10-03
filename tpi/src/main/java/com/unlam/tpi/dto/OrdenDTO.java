@@ -20,8 +20,7 @@ public class OrdenDTO {
 	private BigDecimal precio;
 
 	private String simboloInstrumento;
-
-	@Column(name = "SENTIDO")
+	
 	private String sentido;
 
 	public Boolean getEsEfectivo() {
