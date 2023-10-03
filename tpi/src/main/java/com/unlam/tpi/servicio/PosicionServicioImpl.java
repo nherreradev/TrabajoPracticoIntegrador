@@ -7,13 +7,19 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.unlam.tpi.constantes.OrdenConstantes;
+import com.unlam.tpi.helpers.CalculosHabituales;
 import com.unlam.tpi.modelo.persistente.Instrumento;
+import com.unlam.tpi.modelo.persistente.Orden;
 import com.unlam.tpi.modelo.persistente.Posicion;
+import com.unlam.tpi.modelo.pojo.PuedeOperarResultado;
 import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 import com.unlam.tpi.repositorio.PosicionRepositorio;
 
 @Service
+@Transactional
 public class PosicionServicioImpl implements PosicionServicio {
 
 	@Autowired
@@ -88,6 +94,25 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 		return totalMonedas;
 
+	}
+
+	@Override
+	public PuedeOperarResultado puedeOperar(Orden orden) {
+		PuedeOperarResultado puedeOperarResultado = new PuedeOperarResultado();
+		if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
+			List<Posicion> posicionEfectivo = PosicionRepositorio.getPosicionEnEfectivo();
+			BigDecimal totalDisponibleEnEfectivo = this.calcularPosicionMoneda(posicionEfectivo);
+			BigDecimal montoOrden = orden.getPrecio().multiply(orden.getCantidad());
+			if (CalculosHabituales.esMasGrandeQue(montoOrden, totalDisponibleEnEfectivo)) {
+				puedeOperarResultado.setPuedeOperar(false);
+				puedeOperarResultado.setMontoDisponible(totalDisponibleEnEfectivo);
+			}else {
+				puedeOperarResultado.setPuedeOperar(true);
+				//aca tengo que guardar el moviemiento en posicion
+			}
+		}
+
+		return puedeOperarResultado;
 	}
 
 }
