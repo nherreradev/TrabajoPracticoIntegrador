@@ -42,16 +42,4 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 		}
 	}
 
-	/*
-	 * private Criteria getCriteria(DetachedCriteria dc, Class<Posicion> class1) {
-	 * 
-	 * try { Criteria c = dc.getExecutableCriteria(obtenerSession()); return c; }
-	 * catch (Exception e) { throw e; }
-	 * 
-	 * }
-	 * 
-	 * private Session obtenerSession() { return sessionFactory.getCurrentSession();
-	 * }
-	 */
-
 }
