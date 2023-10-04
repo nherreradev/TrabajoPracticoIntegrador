@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public abstract class ObjetoPersistente implements Serializable{
+public abstract class ObjetoPersistente implements Serializable {
 
 	public static final int BIG_DEC_PRESISION = 30;
 	public static final int BIG_DEC_SCALE = 8;
@@ -20,22 +20,46 @@ public abstract class ObjetoPersistente implements Serializable{
 
 	@Transient
 	private String transientUUID;
-	
+
 	@Id
-	@GeneratedValue(strategy =GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "OID_", unique = true, nullable = false)
 	private Long oid;
-	
+
 	@Column(name = "VERSION_", nullable = false)
 	@Version
 	private Integer version;
-	
+
 	@Column(name = "DELETED_", nullable = false)
 	private Boolean deleted = false;
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(oid, transientUUID);
+	}
+
+	public Long getOid() {
+		return oid;
+	}
+
+	public void setOid(Long oid) {
+		this.oid = oid;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	@Override
@@ -50,8 +74,4 @@ public abstract class ObjetoPersistente implements Serializable{
 		return Objects.equals(oid, other.oid) && Objects.equals(transientUUID, other.transientUUID);
 	}
 
-	
-	
-	
-	
 }
