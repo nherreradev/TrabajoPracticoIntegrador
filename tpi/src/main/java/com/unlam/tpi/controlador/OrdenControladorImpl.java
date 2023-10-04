@@ -1,6 +1,8 @@
 package com.unlam.tpi.controlador;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +22,8 @@ public class OrdenControladorImpl implements OrdenControlador {
 
 	@Override
 	@PostMapping("/capturar")
-	public ResponseEntity<OrdenDTO> capturarOrden(@RequestBody OrdenDTO orden) {
-		OrdenDTO ordenDTO = ordenServicio.capturarOrden(orden);
-		return ResponseEntity.ok(ordenDTO);
+	public ResponseEntity<String> capturarOrden(@RequestBody OrdenDTO orden) {
+		ordenServicio.capturarOrden(orden);
+		return ResponseEntity.ok("Orden creada correctamente");
 	}
 }

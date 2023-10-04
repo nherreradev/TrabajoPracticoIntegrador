@@ -4,6 +4,6 @@ import com.unlam.tpi.dto.OrdenDTO;
 
 public interface OrdenServicio {
 
-	OrdenDTO capturarOrden(OrdenDTO orden);
+	void capturarOrden(OrdenDTO orden);
 
 }
