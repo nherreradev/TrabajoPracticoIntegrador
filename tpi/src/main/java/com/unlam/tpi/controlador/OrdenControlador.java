@@ -6,6 +6,6 @@ import com.unlam.tpi.dto.OrdenDTO;
 
 public interface OrdenControlador {
 
-	public ResponseEntity<OrdenDTO> capturarOrden(OrdenDTO orden);
+	public ResponseEntity<String> capturarOrden(OrdenDTO orden);
 
 }
