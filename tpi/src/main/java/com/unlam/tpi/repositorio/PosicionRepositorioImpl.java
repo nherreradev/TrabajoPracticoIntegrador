@@ -31,15 +31,35 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 			CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
 			Root<Posicion> root = criteriaQuery.from(Posicion.class);
 
-			Predicate deletedPredicate = criteriaBuilder.equal(root.get("deleted"), false);
-			Predicate esEfectivoPredicate = criteriaBuilder.equal(root.get("esEfectivo"), true);
+			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+			Predicate esEfectivoPredicado = criteriaBuilder.equal(root.get("esEfectivo"), true);
 
-			criteriaQuery.where(deletedPredicate, esEfectivoPredicate);
+			criteriaQuery.where(deletedPredicado, esEfectivoPredicado);
 
 			return entityManager.createQuery(criteriaQuery).getResultList();
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	@Override
+	public List<Posicion> getTitulosDisponiblesPorSimbolo(String simboloInstrumento) {
+
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
+			Root<Posicion> root = criteriaQuery.from(Posicion.class);
+
+			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+			Predicate simboloInstrumentoPredicado = criteriaBuilder.equal(root.get("simboloInstrumento"), simboloInstrumento);
+
+			criteriaQuery.where(deletedPredicado, simboloInstrumentoPredicado);
+
+			return entityManager.createQuery(criteriaQuery).getResultList();
+		} catch (Exception e) {
+			throw e;
+		}
+	
 	}
 
 }

@@ -8,6 +8,7 @@ import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 
 public interface PosicionServicio {
 
+	@Transactional
 	ValuacionTotalRespuesta getValuacionTotal();
 
 	@Transactional

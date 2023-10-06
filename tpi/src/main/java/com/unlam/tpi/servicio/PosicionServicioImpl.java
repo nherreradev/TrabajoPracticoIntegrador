@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.unlam.tpi.constantes.OrdenConstantes;
 import com.unlam.tpi.helpers.CalculosHabituales;
-import com.unlam.tpi.modelo.persistente.Instrumento;
 import com.unlam.tpi.modelo.persistente.Orden;
 import com.unlam.tpi.modelo.persistente.Posicion;
 import com.unlam.tpi.modelo.pojo.PuedeOperarResultado;
@@ -19,7 +18,6 @@ import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 import com.unlam.tpi.repositorio.PosicionRepositorio;
 
 @Service
-@Transactional
 public class PosicionServicioImpl implements PosicionServicio {
 
 	@Autowired
@@ -46,10 +44,43 @@ public class PosicionServicioImpl implements PosicionServicio {
 		return valuacionTotalRespuesta;
 	}
 
+	@Override
+	public PuedeOperarResultado puedeOperar(Orden orden) {
+		PuedeOperarResultado puedeOperarResultado = new PuedeOperarResultado();
+		if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
+			List<Posicion> posicionEfectivo = PosicionRepositorio.getPosicionEnEfectivo();
+			BigDecimal totalDisponibleEnEfectivo = this.calcularPosicionMoneda(posicionEfectivo);
+			BigDecimal montoOrden = orden.getPrecio().multiply(orden.getCantidad());
+			if (CalculosHabituales.esMasGrandeQue(montoOrden, totalDisponibleEnEfectivo)) {
+				puedeOperarResultado.setPuedeOperar(false);
+				puedeOperarResultado.setDisponible(totalDisponibleEnEfectivo);
+			} else {
+				puedeOperarResultado.setPuedeOperar(true);
+				/* Aca deberia afectar posicion */
+			}
+		} else {
+			List<Posicion> titulosEnPosicionLista = PosicionRepositorio
+					.getTitulosDisponiblesPorSimbolo(orden.getSimboloInstrumento());
+			Map<String, BigDecimal> instrumentosPorCantidad = obtenerCantidadPorInstrumento(titulosEnPosicionLista);
+
+			BigDecimal cantidadTitulosAVender = orden.getCantidad();
+			BigDecimal totalTitulosEnPosicion = instrumentosPorCantidad.get(orden.getSimboloInstrumento());
+
+			if (instrumentosPorCantidad.containsKey(orden.getSimboloInstrumento())) {
+				if (CalculosHabituales.esMasGrandeQue(cantidadTitulosAVender, totalTitulosEnPosicion)) {
+					puedeOperarResultado.setPuedeOperar(false);
+					puedeOperarResultado.setDisponible(totalTitulosEnPosicion);
+				} else {
+					puedeOperarResultado.setPuedeOperar(true);
+					/* Aca deberia afectar posicion */
+				}
+			}
+		}
+		return puedeOperarResultado;
+	}
+
 	private Map<String, BigDecimal> obtenerCantidadPorInstrumento(List<Posicion> posicionTotal) {
-
 		Map<String, BigDecimal> instrumentosPorCantidad = new HashMap<>();
-
 		for (Posicion posicion : posicionTotal) {
 
 			if (posicion.getSimboloInstrumento() != null && !posicion.getEsEfectivo()) {
@@ -66,14 +97,11 @@ public class PosicionServicioImpl implements PosicionServicio {
 				}
 			}
 		}
-
 		return instrumentosPorCantidad;
 	}
 
 	private BigDecimal calcularPosicionEnInstrumentos(List<Posicion> posicionTotal) {
-
 		BigDecimal totalInstrumentos = BigDecimal.ZERO;
-
 		for (Posicion posicion : posicionTotal) {
 			if (!posicion.getEsEfectivo()) {
 				totalInstrumentos = totalInstrumentos.add(posicion.getPrecio().multiply(posicion.getCantidad()));
@@ -83,36 +111,12 @@ public class PosicionServicioImpl implements PosicionServicio {
 	}
 
 	private BigDecimal calcularPosicionMoneda(Iterable<Posicion> posicionTotal) {
-
 		BigDecimal totalMonedas = BigDecimal.ZERO;
-
 		for (Posicion posicion : posicionTotal) {
 			if (posicion.getEsEfectivo()) {
 				totalMonedas = totalMonedas.add(posicion.getCantidad());
 			}
 		}
-
 		return totalMonedas;
-
 	}
-
-	@Override
-	public PuedeOperarResultado puedeOperar(Orden orden) {
-		PuedeOperarResultado puedeOperarResultado = new PuedeOperarResultado();
-		if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
-			List<Posicion> posicionEfectivo = PosicionRepositorio.getPosicionEnEfectivo();
-			BigDecimal totalDisponibleEnEfectivo = this.calcularPosicionMoneda(posicionEfectivo);
-			BigDecimal montoOrden = orden.getPrecio().multiply(orden.getCantidad());
-			if (CalculosHabituales.esMasGrandeQue(montoOrden, totalDisponibleEnEfectivo)) {
-				puedeOperarResultado.setPuedeOperar(false);
-				puedeOperarResultado.setMontoDisponible(totalDisponibleEnEfectivo);
-			}else {
-				puedeOperarResultado.setPuedeOperar(true);
-				//aca tengo que guardar el moviemiento en posicion
-			}
-		}
-
-		return puedeOperarResultado;
-	}
-
 }

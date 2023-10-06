@@ -6,7 +6,7 @@ public class PuedeOperarResultado {
 
 	Boolean puedeOperar = Boolean.FALSE;
 
-	BigDecimal montoDisponible = BigDecimal.ZERO;
+	BigDecimal disponible = BigDecimal.ZERO;
 
 	public Boolean getPuedeOperar() {
 		return puedeOperar;
@@ -16,12 +16,12 @@ public class PuedeOperarResultado {
 		this.puedeOperar = puedeOperar;
 	}
 
-	public BigDecimal getMontoDisponible() {
-		return montoDisponible;
+	public BigDecimal getDisponible() {
+		return disponible;
 	}
 
-	public void setMontoDisponible(BigDecimal montoDisponible) {
-		this.montoDisponible = montoDisponible;
+	public void setDisponible(BigDecimal disponible) {
+		this.disponible = disponible;
 	}
 
 }
