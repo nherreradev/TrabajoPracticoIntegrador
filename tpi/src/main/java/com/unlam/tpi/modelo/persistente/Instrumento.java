@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
 import com.unlam.tpi.arquitectura.ObjetoPersistente;
 
 @Entity
-@Table(name = "instrumento")
+@Table(name = "INSTRUMENTO")
 public class Instrumento extends ObjetoPersistente{
 
 	@Column(name = "SIMBOLO")

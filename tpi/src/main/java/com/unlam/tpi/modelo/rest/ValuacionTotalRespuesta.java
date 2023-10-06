@@ -1,13 +1,16 @@
 package com.unlam.tpi.modelo.rest;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class ValuacionTotalRespuesta {
 
-	@JsonProperty("totalPortafolio")
-	private String totalPortafolio;
+	@JsonProperty("totalCartera")
+	private String totalCartera;
 
 	@JsonProperty("totalInstrumentos")
 	private String totalInstrumentos;
@@ -15,13 +18,16 @@ public class ValuacionTotalRespuesta {
 	@JsonProperty("totalMonedas")
 	private String totalMonedas;
 
-	@JsonProperty("totalPortafolio")
-	public String getTotalPortafolio() {
-		return totalPortafolio;
+	@JsonProperty("cantidadPorInstrumento")
+	private Map<String, BigDecimal> cantidadPorInstrumento;
+
+	@JsonProperty("totalCartera")
+	public String getTotalCartera() {
+		return totalCartera;
 	}
 
-	public void setTotalPortafolio(String totalPortafolio) {
-		this.totalPortafolio = totalPortafolio;
+	public void setTotalCartera(String totalCartera) {
+		this.totalCartera = totalCartera;
 	}
 
 	@JsonProperty("totalInstrumentos")
@@ -41,4 +47,14 @@ public class ValuacionTotalRespuesta {
 	public void setTotalMonedas(String totalMonedas) {
 		this.totalMonedas = totalMonedas;
 	}
+
+	@JsonProperty("cantidadPorInstrumento")
+	public Map<String, BigDecimal> getCantidadPorInstrumento() {
+		return cantidadPorInstrumento;
+	}
+
+	public void setCantidadPorInstrumento(Map<String, BigDecimal> cantidadPorInstrumento) {
+		this.cantidadPorInstrumento = cantidadPorInstrumento;
+	}
+
 }

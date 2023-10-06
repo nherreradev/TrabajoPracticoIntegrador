@@ -10,8 +10,8 @@ import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 import com.unlam.tpi.servicio.PosicionServicio;
 
 @RestController
-@RequestMapping("/posicion")
-public class PosicionControladorImpl implements PosicionControlador {
+@RequestMapping("/cartera")
+public class CarteraControladorImpl implements CarteraControlador {
 
 	@Autowired
 	PosicionServicio posicionServicio;

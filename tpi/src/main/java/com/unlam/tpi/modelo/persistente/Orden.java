@@ -10,65 +10,35 @@ import javax.persistence.Table;
 import com.unlam.tpi.arquitectura.ObjetoPersistente;
 
 @Entity
-@Table(name = "POSICION_")
-public class Posicion extends ObjetoPersistente {
-	/**
-	 * Usuario al cual pertenece la posición
-	 */
+@Table(name = "ORDEN")
+public class Orden extends ObjetoPersistente {
 
 	@Column(name = "USUARIO_OID")
 	private Long usuarioOid;
 
-	/**
-	 * Si es true indica si es una posición de efectivo (cash) o de titulos (false).
-	 */
 	@Column(name = "ES_EFECTIVO")
 	private Boolean esEfectivo;
 
-	/**
-	 * Activo para el cual se refleja la posición, por ejemplo GGAL
-	 */
 	@Column(name = "INSTRUMENTO_OID")
 	private Long instrumentoOid;
 
-	/**
-	 * Moneda en el caso de que sea movimiento de cash.
-	 */
 	@Column(name = "MONEDA_OID")
 	private Long monedaOid;
 
-	/**
-	 * Fecha de creación de la posición
-	 */
-	@Column(name = "FECHA_POSICION")
-	private LocalDate fecha_posicion;
+	@Column(name = "FECHA_ORDEN")
+	private LocalDate fecha_orden;
 
-	/**
-	 * Cantidad de titulos en posición
-	 */
 	@Column(name = "CANTIDAD")
 	private BigDecimal cantidad;
 
-	/**
-	 * Precio de adquisición
-	 */
 	@Column(name = "PRECIO")
 	private BigDecimal precio;
 
-	/**
-	 * Referencia la OID de la orden
-	 */
-	@Column(name = "ORDEN_OID")
-	private Long ordenOID;
-
-	/**
-	 * Campo de texto libre, como texto de referencia.
-	 */
-	@Column(name = "DESCRIPCION")
-	private String descripcion;
-
 	@Column(name = "SIMBOLO_INSTRUMENTO")
 	private String simboloInstrumento;
+
+	@Column(name = "SENTIDO")
+	private String sentido;
 
 	public Long getUsuarioOid() {
 		return usuarioOid;
@@ -102,12 +72,12 @@ public class Posicion extends ObjetoPersistente {
 		this.monedaOid = monedaOid;
 	}
 
-	public LocalDate getFecha_posicion() {
-		return fecha_posicion;
+	public LocalDate getFecha_orden() {
+		return fecha_orden;
 	}
 
-	public void setFecha_posicion(LocalDate fecha_posicion) {
-		this.fecha_posicion = fecha_posicion;
+	public void setFecha_orden(LocalDate fecha_orden) {
+		this.fecha_orden = fecha_orden;
 	}
 
 	public BigDecimal getCantidad() {
@@ -126,22 +96,6 @@ public class Posicion extends ObjetoPersistente {
 		this.precio = precio;
 	}
 
-	public Long getOrdenOID() {
-		return ordenOID;
-	}
-
-	public void setOrdenOID(Long ordenOID) {
-		this.ordenOID = ordenOID;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
 	public String getSimboloInstrumento() {
 		return simboloInstrumento;
 	}
@@ -149,4 +103,13 @@ public class Posicion extends ObjetoPersistente {
 	public void setSimboloInstrumento(String simboloInstrumento) {
 		this.simboloInstrumento = simboloInstrumento;
 	}
+
+	public String getSentido() {
+		return sentido;
+	}
+
+	public void setSentido(String sentido) {
+		this.sentido = sentido;
+	}
+
 }
