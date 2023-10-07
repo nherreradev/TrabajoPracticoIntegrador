@@ -25,8 +25,7 @@ public class TpiApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("https://www.mercadojunior.com.ar", "http://www.mercadojunior.com.ar",
-								"http://localhost", "https://localhost", "http://127.0.0.1", "https://127.0.0.1")
+						.allowedOrigins("*")
 						.allowedMethods("*").allowedHeaders("*");
 			}
 		};

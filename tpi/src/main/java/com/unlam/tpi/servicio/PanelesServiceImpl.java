@@ -116,12 +116,12 @@ public class PanelesServiceImpl implements PanelesService {
 
 	@Override
 	public ResponseEntity<String> postApiAcciones() {
-		String url = "https://a78c76bd-8631-42ac-a6f7-867d886bdd8e.mock.pstmn.io/acciones";
+		String url = "https://api.mercadojunior.com.ar/list/precios/acciones";
 		return getInstrumentos(url);
 	}
 
 	private ResponseEntity<String> postApiBonos() {
-		String url = "https://a78c76bd-8631-42ac-a6f7-867d886bdd8e.mock.pstmn.io/bonos";
+		String url = "https://api.mercadojunior.com.ar/list/precios/bonos";
 		return getInstrumentos(url);
 	}
 
