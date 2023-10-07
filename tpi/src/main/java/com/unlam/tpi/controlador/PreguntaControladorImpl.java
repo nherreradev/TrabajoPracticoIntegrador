@@ -3,6 +3,7 @@ package com.unlam.tpi.controlador;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.dto.PreguntaDTO;
+import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 import com.unlam.tpi.servicio.PreguntaServicio;
 
 @RestController
@@ -39,8 +41,8 @@ public class PreguntaControladorImpl implements PreguntaControlador {
 
 	@Override
 	@GetMapping("/listar")
-	public List<PreguntaDTO> listar() {
-		return getPreguntaServicio().listar();
+	public ResponseEntity<List<PreguntaDTO>> listar() {
+		return ResponseEntity.ok(getPreguntaServicio().listar());
 	}
 
 	public PreguntaServicio getPreguntaServicio() {

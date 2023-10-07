@@ -1,15 +1,16 @@
 package com.unlam.tpi.dto;
 
-import org.json.JSONObject;
-
-public class CategoriaDTO  extends JSONObject{
+public class CategoriaDTO {
 
 	private Long oid;
+	
+	private Integer version;
+	
+	private Boolean deleted = false;
 	
 	private String nombre;
 	
 	private String descripcion;
-
 	
 	public Long getOid() {
 		return oid;
@@ -33,6 +34,22 @@ public class CategoriaDTO  extends JSONObject{
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }

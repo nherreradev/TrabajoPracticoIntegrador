@@ -2,9 +2,6 @@ package com.unlam.tpi.modelo.persistente;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.unlam.tpi.arquitectura.ObjetoPersistente;
@@ -13,9 +10,12 @@ import com.unlam.tpi.arquitectura.ObjetoPersistente;
 @Table(name = "usuario")
 public class Usuario extends ObjetoPersistente{
 
+	private static final long serialVersionUID = 1L;
+
 	@Column(name = "NOMBRE_USUARIO")
 	private String nombreUsuario;
 
+	
 	public String getNombreUsuario() {
 		return nombreUsuario;
 	}

@@ -17,7 +17,6 @@ import com.unlam.tpi.servicio.PanelesService;
 
 @RestController
 @RequestMapping("/panel")
-@CrossOrigin
 public class PanelesControladorImpl implements PanelesControlador {
 
 	@Autowired

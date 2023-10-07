@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.OrdenDTO;
 import com.unlam.tpi.servicio.OrdenServicio;
 
@@ -25,8 +26,12 @@ public class OrdenControladorImpl implements OrdenControlador {
 	@Override
 	@PostMapping("/capturar")
 	public ResponseEntity<String> capturarOrden(@RequestBody OrdenDTO orden) {
-		ordenServicio.capturarOrden(orden);
-		
-		return ResponseEntity.ok("Orden creada correctamente");
+		 try {
+	            ordenServicio.capturarOrden(orden);
+	            return ResponseEntity.ok("Orden creada correctamente");
+	        } catch (ServiceException se) {
+	            String errorMessage = "Error al crear la orden: " + se.getMessage();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+	        }
 	}
 }
