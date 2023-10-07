@@ -13,72 +13,29 @@ import com.unlam.tpi.arquitectura.ObjetoPersistente;
 @Table(name = "ORDEN")
 public class Orden extends ObjetoPersistente {
 
-	@Column(name = "USUARIO_OID")
-	private Long usuarioOid;
-
-	@Column(name = "ES_EFECTIVO")
-	private Boolean esEfectivo;
-
-	@Column(name = "INSTRUMENTO_OID")
-	private Long instrumentoOid;
-
-	@Column(name = "MONEDA_OID")
-	private Long monedaOid;
-
-	@Column(name = "FECHA_ORDEN")
-	private LocalDate fecha_orden;
-
 	@Column(name = "CANTIDAD")
 	private BigDecimal cantidad;
 
 	@Column(name = "PRECIO")
 	private BigDecimal precio;
 
-	@Column(name = "SIMBOLO_INSTRUMENTO")
-	private String simboloInstrumento;
+	@Column(name = "FECHA_ORDEN")
+	private LocalDate fecha_orden;
+
+	@Column(name = "MONEDA_OID")
+	private Long monedaOid;
 
 	@Column(name = "SENTIDO")
 	private String sentido;
 
-	public Long getUsuarioOid() {
-		return usuarioOid;
-	}
+	@Column(name = "SIMBOLO_INSTRUMENTO")
+	private String simboloInstrumento;
 
-	public void setUsuarioOid(Long usuarioOid) {
-		this.usuarioOid = usuarioOid;
-	}
+	@Column(name = "USUARIO_OID")
+	private Long usuarioOid;
 
-	public Boolean getEsEfectivo() {
-		return esEfectivo;
-	}
-
-	public void setEsEfectivo(Boolean esEfectivo) {
-		this.esEfectivo = esEfectivo;
-	}
-
-	public Long getInstrumentoOid() {
-		return instrumentoOid;
-	}
-
-	public void setInstrumentoOid(Long instrumentoOid) {
-		this.instrumentoOid = instrumentoOid;
-	}
-
-	public Long getMonedaOid() {
-		return monedaOid;
-	}
-
-	public void setMonedaOid(Long monedaOid) {
-		this.monedaOid = monedaOid;
-	}
-
-	public LocalDate getFecha_orden() {
-		return fecha_orden;
-	}
-
-	public void setFecha_orden(LocalDate fecha_orden) {
-		this.fecha_orden = fecha_orden;
-	}
+	@Column(name = "CATEGORIA_INSTRUMENTO")
+	private String categoriaInstrumento;
 
 	public BigDecimal getCantidad() {
 		return cantidad;
@@ -96,12 +53,20 @@ public class Orden extends ObjetoPersistente {
 		this.precio = precio;
 	}
 
-	public String getSimboloInstrumento() {
-		return simboloInstrumento;
+	public LocalDate getFecha_orden() {
+		return fecha_orden;
 	}
 
-	public void setSimboloInstrumento(String simboloInstrumento) {
-		this.simboloInstrumento = simboloInstrumento;
+	public void setFecha_orden(LocalDate fecha_orden) {
+		this.fecha_orden = fecha_orden;
+	}
+
+	public Long getMonedaOid() {
+		return monedaOid;
+	}
+
+	public void setMonedaOid(Long monedaOid) {
+		this.monedaOid = monedaOid;
 	}
 
 	public String getSentido() {
@@ -110,6 +75,30 @@ public class Orden extends ObjetoPersistente {
 
 	public void setSentido(String sentido) {
 		this.sentido = sentido;
+	}
+
+	public String getSimboloInstrumento() {
+		return simboloInstrumento;
+	}
+
+	public void setSimboloInstrumento(String simboloInstrumento) {
+		this.simboloInstrumento = simboloInstrumento;
+	}
+
+	public Long getUsuarioOid() {
+		return usuarioOid;
+	}
+
+	public void setUsuarioOid(Long usuarioOid) {
+		this.usuarioOid = usuarioOid;
+	}
+
+	public String getCategoriaInstrumento() {
+		return categoriaInstrumento;
+	}
+
+	public void setCategoriaInstrumento(String categoriaInstrumento) {
+		this.categoriaInstrumento = categoriaInstrumento;
 	}
 
 }

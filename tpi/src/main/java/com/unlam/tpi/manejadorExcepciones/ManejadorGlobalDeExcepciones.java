@@ -22,7 +22,6 @@ public class ManejadorGlobalDeExcepciones extends ResponseEntityExceptionHandler
 		body.put("timestamp", LocalDateTime.now());
 		body.put("message", se.getMessage());
 		HttpHeaders headers = new HttpHeaders();
-		return new ResponseEntity<>(body, headers, HttpStatus.CONFLICT);
+		return new ResponseEntity<>(body, headers, HttpStatus.CONFLICT); 
 	}
-
 }

@@ -21,7 +21,7 @@ public class PanelPreciosImpl implements PanelPrecios {
 			panelAcciones.put(instrumento.getSimbolo(), instrumento);
 		}
 	}
-	
+
 	@Override
 	public void agregarInstrumentosAlPanelDeBonos(List<Instrumento> instrumentos) {
 
