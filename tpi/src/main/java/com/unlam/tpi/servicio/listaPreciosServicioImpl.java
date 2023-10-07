@@ -1,5 +1,7 @@
 package com.unlam.tpi.servicio;
+import com.google.protobuf.ServiceException;
 import com.google.protobuf.Timestamp;
+import com.unlam.tpi.manejadorExcepciones.ManejadorGlobalDeExcepciones;
 import com.unlam.tpi.repositorio.ListaPreciosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -8,6 +10,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.sql.rowset.serial.SerialException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,13 +24,13 @@ public class listaPreciosServicioImpl implements listaPreciosServicio{
     String ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
     String BONOS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=titulosPublicos&cotizacionInstrumentoModel.pais=argentina";
     @Autowired
-    public listaPreciosServicioImpl(RestTemplate restTemplate, ListaPreciosRepository listaPreciosServicioImpl) {
+    public listaPreciosServicioImpl(RestTemplate restTemplate, ListaPreciosRepository listaPreciosRepository) {
         this.restTemplate = restTemplate;
-        this.listaPreciosRepository = listaPreciosServicioImpl;
+        this.listaPreciosRepository = listaPreciosRepository;
     }
 
     @Override
-    public ResponseEntity<String> GetPriceList(String titulo, String token) {
+    public ResponseEntity<String> SavePriceList(String titulo, String token) {
         Map<String, Boolean> ResponseOK = new HashMap<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -53,6 +56,7 @@ public class listaPreciosServicioImpl implements listaPreciosServicio{
         }catch (Exception e){
             System.out.println("|HTTP ERROR| "+"Error en la llamada a la API, exception: "+ e);
             e.printStackTrace();
+            return null;
         }
         SaveMongoTransaction(ResponseOK, responseEntity);
         return responseEntity;
@@ -84,5 +88,27 @@ public class listaPreciosServicioImpl implements listaPreciosServicio{
     }
 
     private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
+
+    @Override
+    public List <String> GetPriceListMongo(String instrumento) {
+        List <String> res = null;
+        try{
+            res = this.listaPreciosRepository.GetPriceList(instrumento);
+        }catch (Exception e){
+            System.out.println("Error al obtener información de mongo"+ e);
+            e.printStackTrace();
+            return null;
+        }
+        return res;
+    }
+        /*try{
+            String res = this.listaPreciosRepository.GetPriceList(instrumento);
+        }catch (Exception e){
+            System.out.println("Error al obtener información de mongo"+ e);
+            e.printStackTrace();
+            return null;
+        }
+        return res;
+    }*/
 
 }
