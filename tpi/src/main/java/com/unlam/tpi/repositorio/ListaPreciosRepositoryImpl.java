@@ -1,9 +1,17 @@
 package com.unlam.tpi.repositorio;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.stereotype.Repository;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,17 +29,15 @@ public class ListaPreciosRepositoryImpl implements ListaPreciosRepository{
     }
 
     @Override
-    public List<String> GetPriceList(String instrumento) {
+    public List<String> GetPriceList(String instrumento) throws IOException {
         List<Document> documents = mongoTemplate.findAll(Document.class, instrumento);
+        for (Document doc : documents) {
+            doc.remove("_id");
+        }
 
-        // Convierte los documentos a cadenas JSON
         List<String> jsonStrings = documents.stream()
                 .map(Document::toJson)
                 .collect(Collectors.toList());
-
         return jsonStrings;
-
-        /*List<Document> documents = mongoTemplate.findAll(Document.class, instrumento);
-        return null;*/
     }
 }
