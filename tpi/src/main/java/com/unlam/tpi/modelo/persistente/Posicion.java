@@ -69,6 +69,9 @@ public class Posicion extends ObjetoPersistente {
 
 	@Column(name = "SIMBOLO_INSTRUMENTO")
 	private String simboloInstrumento;
+	
+	@Column(name = "CONCEPTO")
+	private String concepto;
 
 	public Long getUsuarioOid() {
 		return usuarioOid;
@@ -149,4 +152,14 @@ public class Posicion extends ObjetoPersistente {
 	public void setSimboloInstrumento(String simboloInstrumento) {
 		this.simboloInstrumento = simboloInstrumento;
 	}
+
+	public String getConcepto() {
+		return concepto;
+	}
+
+	public void setConcepto(String concepto) {
+		this.concepto = concepto;
+	}
+	
+	
 }

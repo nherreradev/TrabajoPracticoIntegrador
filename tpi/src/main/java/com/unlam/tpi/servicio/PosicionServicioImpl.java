@@ -61,11 +61,11 @@ public class PosicionServicioImpl implements PosicionServicio {
 			} else {
 				puedeOperarResultado.setPuedeOperar(true);
 				Posicion posicionTitulos = new Posicion();
-				completarObjetoPosicion(orden, posicionTitulos);
+				completarPosicionDeTitulos(orden, posicionTitulos);
 				PosicionRepositorio.save(posicionTitulos);
 
 				Posicion posicionDinero = new Posicion();
-				completarPosicionComplementaria(orden, posicionDinero);
+				completarPosicionDeDinero(orden, posicionDinero);
 				PosicionRepositorio.save(posicionDinero);
 
 			}
@@ -84,11 +84,11 @@ public class PosicionServicioImpl implements PosicionServicio {
 					puedeOperarResultado.setPuedeOperar(true);
 
 					Posicion posicionDinero = new Posicion();
-					completarObjetoPosicion(orden, posicionDinero);
+					completarPosicionDeTitulos(orden, posicionDinero);
 					PosicionRepositorio.save(posicionDinero);
-					
+
 					Posicion posiciontitulos = new Posicion();
-					completarPosicionComplementaria(orden, posiciontitulos);
+					completarPosicionDeDinero(orden, posiciontitulos);
 					PosicionRepositorio.save(posiciontitulos);
 
 				}
@@ -97,35 +97,45 @@ public class PosicionServicioImpl implements PosicionServicio {
 		return puedeOperarResultado;
 	}
 
-	private void completarPosicionComplementaria(Orden orden, Posicion posicionDinero) {
+	private void completarPosicionDeDinero(Orden orden, Posicion posicionDinero) {
 
 		boolean esCompra = orden.getSentido().equals(OrdenConstantes.COMPRA) ? true : false;
 
 		if (esCompra) {
 			posicionDinero.setCantidad(orden.getCantidad().multiply(orden.getPrecio()).multiply(new BigDecimal(-1)));
+			posicionDinero.setEsEfectivo(true);
+			posicionDinero.setFecha_posicion(LocalDate.now());
+			posicionDinero.setMonedaOid(orden.getMonedaOid());
+			posicionDinero.setPrecio(null);
+			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+			posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
+			posicionDinero.setConcepto("DINERO-COMPLE");
 		} else {
 			posicionDinero.setCantidad(orden.getCantidad().multiply(orden.getPrecio()));
+			posicionDinero.setEsEfectivo(true);
+			posicionDinero.setFecha_posicion(LocalDate.now());
+			posicionDinero.setMonedaOid(orden.getMonedaOid());
+			posicionDinero.setPrecio(null);
+			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+			posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
+			posicionDinero.setConcepto("DINERO-COMPLE");
 		}
 
-		posicionDinero.setEsEfectivo(esCompra);
-		posicionDinero.setFecha_posicion(LocalDate.now());
-		posicionDinero.setMonedaOid(orden.getMonedaOid());
-		posicionDinero.setPrecio(esCompra ? orden.getPrecio() : null);
-		posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
-		posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
 	}
 
-	private void completarObjetoPosicion(Orden orden, Posicion posicion) {
+	private void completarPosicionDeTitulos(Orden orden, Posicion posicion) {
 
 		boolean esCompra = orden.getSentido().equals(OrdenConstantes.COMPRA) ? true : false;
 
 		if (!esCompra) {
 			posicion.setCantidad(orden.getCantidad().multiply(new BigDecimal(-1)));
+			posicion.setConcepto("TITULOS-ORIG");
 		} else {
 			posicion.setCantidad(orden.getCantidad());
+			posicion.setConcepto("TITULOS-ORIG");
 		}
 
-		posicion.setEsEfectivo(!esCompra);
+		posicion.setEsEfectivo(false);
 		posicion.setFecha_posicion(LocalDate.now());
 		posicion.setMonedaOid(orden.getMonedaOid());
 		posicion.setPrecio(orden.getPrecio());
