@@ -4,10 +4,9 @@ import com.unlam.tpi.servicio.listaPreciosServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("list")
@@ -17,14 +16,21 @@ public class PriceListControllerImpl implements PriceListController {
     private listaPreciosServicio priceListService;
 
     @Override
-    @GetMapping("/precios/{titulo}")
+    @PostMapping("/save/precios/{titulo}")
     //El titulo puede ser accion o bono (
-    public ResponseEntity<String> MostrarPrecios(@PathVariable String titulo) {
-        String token = "4kkefDDGgMGaRHydvvycRdr1BnDjpxr-AlDwzVhUn8czAtVpGW2i73PKVMORlw_gw3alWJBMbUusYNNAjzUL1QLrF4curuQiR3zL0xKfLBgYUkJAkVO2z9yl1kPu-vrn1icCuw3bJd1noiTVk6X57b26Z-u3n2swx2T-dkXT-UTi6L_g-y0fb6lxw4GBdq0tDLejsnFLsCfGPqxtwKi1U1cNM9W1dBXIwBQSEUq0l_DXYOBAqAmRQGWmZXTz3ail3ywMEdH0D8grzPnEZvx0n8fIK-5eW6PIK6MofIQcyZdtPMP8i4LuQnd0Lso_UsG5Glq-UlYaAaSjEaDj0AVLLwQgVzcr7eO9PaBA5r94bvCqNMMLmve8JvI-sZu35JJtyPFK1mIeky6mgcQSN4A01Uej7lJqP8AkHmdy_pQMaEo";
-        ResponseEntity<String> res = priceListService.GetPriceList(titulo, token);
+    public ResponseEntity<String> GuardarPrecios(@PathVariable String titulo) {
+        String token = "wLuSMjekHltq4Ui00WJchp8dsM137cWYb7UIRV5Pyb2a6XJyyH-ac8qeFv8U0W2jksW0Rg7SOqKBNoGNGxvWX63PGcX-msal5IvMRFPW0l0QVzPKrXHQyAupH42KP92QE8qjzWNFahmUOr69CLlyVvA0yGOarrMd-owWXEgoR9dqTMn4V-5amaOgNJO08Z7s9cdxV4YqQnkSQvlqLV1RUVvX6tV0P7gE4d_A62TQLI8rn1p0-xoYfrsmEtcBn1OWyBvxwRwITUpXPH4Mcad5B1iwkxtrYIlG8MoIEs9zeQl8o8rxAGhCWtDedE3EGU1Rk_S03Ve9B2uT-ldaGagZoWCNa18csfWW5b_XEztvwHUxZ6_IcoHpXEDv4LbI-neajyXTdGP2Ed6nC8hjF_hDtc5S4TscbVDZrO_wCLccdN4";
+        ResponseEntity<String> res = priceListService.SavePriceList(titulo, token);
         if (res == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("TOKEN TIME OUT");
         }
         return ResponseEntity.status(HttpStatus.OK).body("Transacción guardada con éxito, se guardaron: " + titulo);
+    }
+
+    @Override
+    @GetMapping("/precios/{titulo}")
+    public ResponseEntity<String> ObtenerPrecios(@PathVariable String titulo) {
+        List<String> response = priceListService.GetPriceListMongo(titulo);
+        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
     }
 }
