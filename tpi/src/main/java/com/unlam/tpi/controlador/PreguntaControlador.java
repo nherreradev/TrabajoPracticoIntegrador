@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import com.unlam.tpi.dto.PreguntaDTO;
 
 public interface PreguntaControlador {
+	
 	public void guardar(PreguntaDTO pregunta);
 
 	public PreguntaDTO obtener(Long id);
