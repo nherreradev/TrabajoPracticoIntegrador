@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -13,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.unlam.tpi.arquitectura.ObjetoPersistente;
+import com.unlam.tpi.enums.TipoComponente;
 
 @Entity
 @Table(name = "PREGUNTA")
@@ -28,6 +31,10 @@ public class Pregunta extends ObjetoPersistente{
 	
 	@Column(name = "ORDEN")
 	private Integer orden;
+	
+	@Column(name = "TIPO_COMPONENTE")
+	@Enumerated(EnumType.STRING)
+	private TipoComponente tipoComponente;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "CATEGORIA_OID")
@@ -79,6 +86,22 @@ public class Pregunta extends ObjetoPersistente{
 
 	public void setSeccion(Seccion seccion) {
 		this.seccion = seccion;
+	}
+
+	public Integer getOrden() {
+		return orden;
+	}
+
+	public void setOrden(Integer orden) {
+		this.orden = orden;
+	}
+
+	public TipoComponente getTipoComponente() {
+		return tipoComponente;
+	}
+
+	public void setTipoComponente(TipoComponente tipoComponente) {
+		this.tipoComponente = tipoComponente;
 	}
 
 }

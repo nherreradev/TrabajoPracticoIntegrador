@@ -2,6 +2,7 @@ package com.unlam.tpi.controlador;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import com.unlam.tpi.servicio.RespuestaServicio;
 @RequestMapping("/api/respuesta")
 public class RespuestaControladorImpl implements RespuestaControlador{
 
+	@Autowired
 	private RespuestaServicio respuestaServicio;
 	
 	@Override

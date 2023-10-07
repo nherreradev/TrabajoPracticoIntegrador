@@ -1,11 +1,12 @@
 package com.unlam.tpi.dto;
 
-
-import org.json.JSONObject;
-
-public class RespuestaDTO extends JSONObject{
+public class RespuestaDTO {
 
 	private Long oid;
+	
+	private Integer version;
+	
+	private Boolean deleted = false;
 	
 	private String nombre;
 	
@@ -43,6 +44,22 @@ public class RespuestaDTO extends JSONObject{
 
 	public void setOrden(Integer orden) {
 		this.orden = orden;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }
