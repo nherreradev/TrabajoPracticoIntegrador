@@ -1,6 +1,7 @@
 package com.unlam.tpi.servicio;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.constantes.OrdenConstantes;
+import com.unlam.tpi.constantes.PanelesDePreciosConstantes;
 import com.unlam.tpi.helpers.CalculosHabituales;
 import com.unlam.tpi.modelo.persistente.Orden;
 import com.unlam.tpi.modelo.persistente.Posicion;
@@ -50,33 +53,121 @@ public class PosicionServicioImpl implements PosicionServicio {
 		if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
 			List<Posicion> posicionEfectivo = PosicionRepositorio.getPosicionEnEfectivo();
 			BigDecimal totalDisponibleEnEfectivo = this.calcularPosicionMoneda(posicionEfectivo);
+			completarPrecioDeLaOrden(orden);
 			BigDecimal montoOrden = orden.getPrecio().multiply(orden.getCantidad());
 			if (CalculosHabituales.esMasGrandeQue(montoOrden, totalDisponibleEnEfectivo)) {
 				puedeOperarResultado.setPuedeOperar(false);
 				puedeOperarResultado.setDisponible(totalDisponibleEnEfectivo);
 			} else {
 				puedeOperarResultado.setPuedeOperar(true);
-				/* Aca deberia afectar posicion */
+				Posicion posicionTitulos = new Posicion();
+				completarObjetoPosicion(orden, posicionTitulos);
+				PosicionRepositorio.save(posicionTitulos);
+
+				Posicion posicionDinero = new Posicion();
+				completarPosicionComplementaria(orden, posicionDinero);
+				PosicionRepositorio.save(posicionDinero);
+
 			}
 		} else {
 			List<Posicion> titulosEnPosicionLista = PosicionRepositorio
 					.getTitulosDisponiblesPorSimbolo(orden.getSimboloInstrumento());
+			completarPrecioDeLaOrden(orden);
 			Map<String, BigDecimal> instrumentosPorCantidad = obtenerCantidadPorInstrumento(titulosEnPosicionLista);
-
 			BigDecimal cantidadTitulosAVender = orden.getCantidad();
 			BigDecimal totalTitulosEnPosicion = instrumentosPorCantidad.get(orden.getSimboloInstrumento());
-
 			if (instrumentosPorCantidad.containsKey(orden.getSimboloInstrumento())) {
 				if (CalculosHabituales.esMasGrandeQue(cantidadTitulosAVender, totalTitulosEnPosicion)) {
 					puedeOperarResultado.setPuedeOperar(false);
 					puedeOperarResultado.setDisponible(totalTitulosEnPosicion);
 				} else {
 					puedeOperarResultado.setPuedeOperar(true);
-					/* Aca deberia afectar posicion */
+
+					Posicion posicionDinero = new Posicion();
+					completarObjetoPosicion(orden, posicionDinero);
+					PosicionRepositorio.save(posicionDinero);
+					
+					Posicion posiciontitulos = new Posicion();
+					completarPosicionComplementaria(orden, posiciontitulos);
+					PosicionRepositorio.save(posiciontitulos);
+
 				}
 			}
 		}
 		return puedeOperarResultado;
+	}
+
+	private void completarPosicionComplementaria(Orden orden, Posicion posicionDinero) {
+
+		boolean esCompra = orden.getSentido().equals(OrdenConstantes.COMPRA) ? true : false;
+
+		if (esCompra) {
+			posicionDinero.setCantidad(orden.getCantidad().multiply(orden.getPrecio()).multiply(new BigDecimal(-1)));
+		} else {
+			posicionDinero.setCantidad(orden.getCantidad().multiply(orden.getPrecio()));
+		}
+
+		posicionDinero.setEsEfectivo(esCompra);
+		posicionDinero.setFecha_posicion(LocalDate.now());
+		posicionDinero.setMonedaOid(orden.getMonedaOid());
+		posicionDinero.setPrecio(esCompra ? orden.getPrecio() : null);
+		posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+		posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
+	}
+
+	private void completarObjetoPosicion(Orden orden, Posicion posicion) {
+
+		boolean esCompra = orden.getSentido().equals(OrdenConstantes.COMPRA) ? true : false;
+
+		if (!esCompra) {
+			posicion.setCantidad(orden.getCantidad().multiply(new BigDecimal(-1)));
+		} else {
+			posicion.setCantidad(orden.getCantidad());
+		}
+
+		posicion.setEsEfectivo(!esCompra);
+		posicion.setFecha_posicion(LocalDate.now());
+		posicion.setMonedaOid(orden.getMonedaOid());
+		posicion.setPrecio(orden.getPrecio());
+		posicion.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+		posicion.setSimboloInstrumento(orden.getSimboloInstrumento());
+	}
+
+	private void completarPrecioDeLaOrden(Orden orden) {
+		switch (orden.getCategoriaInstrumento()) {
+		case PanelesDePreciosConstantes.ACCIONES:
+			if (PanelPreciosImpl.panelAcciones.containsKey(orden.getSimboloInstrumento())) {
+				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
+					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
+							.getPrecioCompra());
+				} else {
+					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
+							.getPrecioVenta());
+				}
+			} else {
+				throw new ServiceException("La orden que quiere capturar no se encuentra disponible en el panel");
+			}
+
+			break;
+
+		case PanelesDePreciosConstantes.BONOS:
+			if (PanelPreciosImpl.panelBonos.containsKey(orden.getSimboloInstrumento())) {
+				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
+					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
+							.getPrecioCompra());
+				} else {
+					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
+							.getPrecioVenta());
+				}
+			} else {
+				throw new ServiceException("La orden que quiere capturar no se encuentra disponible en el panel");
+			}
+
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	private Map<String, BigDecimal> obtenerCantidadPorInstrumento(List<Posicion> posicionTotal) {

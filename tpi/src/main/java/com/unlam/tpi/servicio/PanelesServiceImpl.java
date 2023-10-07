@@ -54,6 +54,10 @@ public class PanelesServiceImpl implements PanelesService {
 
 			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
 
+			for (Instrumento instrumento : listaInstrumentos) {
+				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
+			}
+			
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
 
 			listaInstrumentosAux.addAll(listaInstrumentos);
@@ -78,6 +82,10 @@ public class PanelesServiceImpl implements PanelesService {
 
 			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
 
+			for (Instrumento instrumento : listaInstrumentos) {
+				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.BONOS);
+			}
+			
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
 
 			panelPrecios.agregarInstrumentosAlPanelDeBonos(listaInstrumentos);
@@ -100,6 +108,7 @@ public class PanelesServiceImpl implements PanelesService {
 		for (int i = 0; i < titulos.size(); i++) {
 			JsonObject jsonInstrumento = titulos.get(i).getAsJsonObject();
 			Instrumento instrumento = gson.fromJson(jsonInstrumento, Instrumento.class);
+			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
 			listaInstrumentos.add(instrumento);
 		}
 		return listaInstrumentos;

@@ -3,56 +3,32 @@ package com.unlam.tpi.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-
 public class OrdenDTO {
 
-	private Boolean esEfectivo;
-
-	private Long instrumentoOid;
-
-	private Long monedaOid;
-
-	private LocalDate fecha_orden;
+	private Long oid;
 
 	private BigDecimal cantidad;
 
 	private BigDecimal precio;
 
-	private String simboloInstrumento;
-	
+	private LocalDate fecha_orden;
+
+	private Long monedaOid;
+
 	private String sentido;
 
-	public Boolean getEsEfectivo() {
-		return esEfectivo;
+	private String simboloInstrumento;
+
+	private Long usuarioOid;
+
+	private String categoriaInstrumento;
+
+	public Long getOid() {
+		return oid;
 	}
 
-	public void setEsEfectivo(Boolean esEfectivo) {
-		this.esEfectivo = esEfectivo;
-	}
-
-	public Long getInstrumentoOid() {
-		return instrumentoOid;
-	}
-
-	public void setInstrumentoOid(Long instrumentoOid) {
-		this.instrumentoOid = instrumentoOid;
-	}
-
-	public Long getMonedaOid() {
-		return monedaOid;
-	}
-
-	public void setMonedaOid(Long monedaOid) {
-		this.monedaOid = monedaOid;
-	}
-
-	public LocalDate getFecha_orden() {
-		return fecha_orden;
-	}
-
-	public void setFecha_orden(LocalDate fecha_orden) {
-		this.fecha_orden = fecha_orden;
+	public void setOid(Long oid) {
+		this.oid = oid;
 	}
 
 	public BigDecimal getCantidad() {
@@ -71,12 +47,20 @@ public class OrdenDTO {
 		this.precio = precio;
 	}
 
-	public String getSimboloInstrumento() {
-		return simboloInstrumento;
+	public LocalDate getFecha_orden() {
+		return fecha_orden;
 	}
 
-	public void setSimboloInstrumento(String simboloInstrumento) {
-		this.simboloInstrumento = simboloInstrumento;
+	public void setFecha_orden(LocalDate fecha_orden) {
+		this.fecha_orden = fecha_orden;
+	}
+
+	public Long getMonedaOid() {
+		return monedaOid;
+	}
+
+	public void setMonedaOid(Long monedaOid) {
+		this.monedaOid = monedaOid;
 	}
 
 	public String getSentido() {
@@ -85,6 +69,30 @@ public class OrdenDTO {
 
 	public void setSentido(String sentido) {
 		this.sentido = sentido;
+	}
+
+	public String getSimboloInstrumento() {
+		return simboloInstrumento;
+	}
+
+	public void setSimboloInstrumento(String simboloInstrumento) {
+		this.simboloInstrumento = simboloInstrumento;
+	}
+
+	public Long getUsuarioOid() {
+		return usuarioOid;
+	}
+
+	public void setUsuarioOid(Long usuarioOid) {
+		this.usuarioOid = usuarioOid;
+	}
+
+	public String getCategoriaInstrumento() {
+		return categoriaInstrumento;
+	}
+
+	public void setCategoriaInstrumento(String categoriaInstrumento) {
+		this.categoriaInstrumento = categoriaInstrumento;
 	}
 
 }

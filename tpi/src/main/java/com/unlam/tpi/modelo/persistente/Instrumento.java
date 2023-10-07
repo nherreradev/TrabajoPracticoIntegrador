@@ -20,6 +20,10 @@ public class Instrumento extends ObjetoPersistente{
 	@Column(name = "SIMBOLO")
 	@SerializedName("simbolo")
 	private String simbolo;
+	
+	@Column(name = "CATEGORIA_INSTRUMENTO")
+	@SerializedName("categoriaInstrumento")
+	private String categoriaInstrumento;
 
 	@SerializedName("puntas")
 	@OneToOne(mappedBy = "instrumento")
@@ -106,6 +110,14 @@ public class Instrumento extends ObjetoPersistente{
 
 	public void setSimbolo(String simbolo) {
 		this.simbolo = simbolo;
+	}
+
+	public String getCategoriaInstrumento() {
+		return categoriaInstrumento;
+	}
+
+	public void setCategoriaInstrumento(String categoriaInstrumento) {
+		this.categoriaInstrumento = categoriaInstrumento;
 	}
 
 	public BigDecimal getUltimoPrecio() {
