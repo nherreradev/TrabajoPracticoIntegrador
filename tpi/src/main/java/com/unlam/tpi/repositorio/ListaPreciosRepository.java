@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ListaPreciosRepository {
     void GuardarResponseTransaccion(String json, String collection);
-    List<String> GetPriceList(String collection) throws IOException;
+    List<String> GetPriceList(String collection);
 }

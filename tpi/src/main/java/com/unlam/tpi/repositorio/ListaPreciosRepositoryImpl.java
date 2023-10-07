@@ -29,7 +29,7 @@ public class ListaPreciosRepositoryImpl implements ListaPreciosRepository{
     }
 
     @Override
-    public List<String> GetPriceList(String instrumento) throws IOException {
+    public List<String> GetPriceList(String instrumento) {
         List<Document> documents = mongoTemplate.findAll(Document.class, instrumento);
         for (Document doc : documents) {
             doc.remove("_id");
