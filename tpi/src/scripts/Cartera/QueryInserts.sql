@@ -25,7 +25,14 @@ VALUES ('1', false, 0, 'Nicolas');
 select * from instrumento;
 INSERT INTO `tpintegradordb`.`instrumento` (`oid_`, `deleted_`, `version_`, `apertura`, `cantidad_operaciones`, `descripcion`, `fecha`, `flash_compra`, `flash_venta`, `lamina_minima`, `lote`, `maximo`, `mercado`, `minimo`, `moneda`, `plazo`, `precio_ejercicio`, `simbolo`, `tipo_opcion`, `ultimo_cierre`, `ultimo_precio`, `volumen`) 
 VALUES ('2', false, 0, 231, 652, 'BYMA', '2023-09-15T17:00:05.423', 0, 0, 1, 1, 234.75, 1, 220.25, 1, 1, null, 'BYMA', null, 224.75, 224.75, 0);
+INSERT INTO `tpintegradordb`.`instrumento` (`oid_`, `deleted_`, `version_`, `apertura`, `cantidad_operaciones`, `descripcion`, `fecha`, `flash_compra`, `flash_venta`, `lamina_minima`, `lote`, `maximo`, `mercado`, `minimo`, `moneda`, `plazo`, `precio_ejercicio`, `simbolo`, `tipo_opcion`, `ultimo_cierre`, `ultimo_precio`, `volumen`) 
+VALUES ('3', false, 0, 900, 794, 'Telecom Argentina', '2023-09-15T17:00:05.423', 0, 0, 1, 1, 905, 1, 870.1, 1, 1, null, 'TECO2', null, 894.05, 894.05, 0);
 
+
+/*update campos simbolos en posicion*/
+UPDATE `tpintegradordb`.`posicion_` AS p
+JOIN `tpintegradordb`.`instrumento` AS i ON p.instrumento_oid = i.oid_
+SET p.simbolo_instrumento = i.simbolo;
 
 /*Insert en tabla puntas*/
 select * from puntas;
