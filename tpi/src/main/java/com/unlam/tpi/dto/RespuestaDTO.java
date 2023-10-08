@@ -8,6 +8,8 @@ public class RespuestaDTO {
 	
 	private Boolean deleted = false;
 	
+	private String instrumento;
+	
 	private String nombre;
 	
 	private Integer valor;
@@ -60,6 +62,14 @@ public class RespuestaDTO {
 
 	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	public String getInstrumento() {
+		return instrumento;
+	}
+
+	public void setInstrumento(String instrumento) {
+		this.instrumento = instrumento;
 	}
 
 }
