@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 import com.unlam.tpi.arquitectura.ServiceException;
 
 public class TraductorGenerico {
-
 	private static final ModelMapper modelMapper = new ModelMapper();
 
 	private TraductorGenerico() {

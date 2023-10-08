@@ -13,7 +13,6 @@ import com.unlam.tpi.repositorio.SeccionRepositorio;
 
 @Service
 public class SeccionServicioImpl implements SeccionServicio {
-
 	@Autowired
 	SeccionRepositorio seccionRepositorio;
 
