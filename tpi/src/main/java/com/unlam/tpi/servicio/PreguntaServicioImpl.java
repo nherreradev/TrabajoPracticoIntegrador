@@ -57,7 +57,6 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	public PreguntaRepositorio getPreguntaRepositorio() {
 		return preguntaRepositorio;
 	}
-
 	public void setPreguntaRepositorio(PreguntaRepositorio preguntaRepositorio) {
 		this.preguntaRepositorio = preguntaRepositorio;
 	}

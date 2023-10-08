@@ -19,13 +19,20 @@ public class PanelesServiceTest {
 	private PanelesServiceImpl panelesServiceImpl = new PanelesServiceImpl();
 
 	@Test
-	public void testObtenerInstrumentosDeAPI() {
-		String url = "https://a78c76bd-8631-42ac-a6f7-867d886bdd8e.mock.pstmn.io/bonos";
+	public void testObtenerAccionesDeAPI() {
+		String url = "https://api.mercadojunior.com.ar/list/precios/acciones";
 		// Llamar al método y verificar la respuesta
 		ResponseEntity<String> responseEntity = panelesServiceImpl.getInstrumentos(url);
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 	}
-	
+	@Test
+	public void testObtenerBonosDeAPI() {
+		String url = "https://api.mercadojunior.com.ar/list/precios/bonos";
+		// Llamar al método y verificar la respuesta
+		ResponseEntity<String> responseEntity = panelesServiceImpl.getInstrumentos(url);
+		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+	}
+
 	@Test
 	public void testSePudeConvertirJsonAObjeto() {
 		String json = "{\r\n"
@@ -57,7 +64,6 @@ public class PanelesServiceTest {
 				+ "";
 		
 		ResponseEntity<String> responseEntityExitoso = new ResponseEntity<>(json, HttpStatus.OK);
-		
 		// Llamar al método y verificar la respuesta
 		List<Instrumento> listaInstrumento = panelesServiceImpl.convertirListaDeJsonAListaDeIntrumentos(responseEntityExitoso);
 		assertNotNull(listaInstrumento);

@@ -1,32 +1,26 @@
 package com.unlam.tpi.servicio;
-import com.google.protobuf.ServiceException;
-import com.google.protobuf.Timestamp;
-import com.unlam.tpi.manejadorExcepciones.ManejadorGlobalDeExcepciones;
 import com.unlam.tpi.repositorio.ListaPreciosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.sql.rowset.serial.SerialException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
-public class listaPreciosServicioImpl implements listaPreciosServicio{
+public class ListaPreciosServicioImpl implements ListaPreciosServicio {
+    @Autowired
     private ListaPreciosRepository listaPreciosRepository;
     private final RestTemplate restTemplate;
     String ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
     String BONOS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=titulosPublicos&cotizacionInstrumentoModel.pais=argentina";
+
     @Autowired
-    public listaPreciosServicioImpl(RestTemplate restTemplate, ListaPreciosRepository listaPreciosRepository) {
+    public ListaPreciosServicioImpl(RestTemplate restTemplate){
         this.restTemplate = restTemplate;
-        this.listaPreciosRepository = listaPreciosRepository;
     }
 
     @Override

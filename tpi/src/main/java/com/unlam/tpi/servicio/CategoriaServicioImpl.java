@@ -13,11 +13,9 @@ import com.unlam.tpi.repositorio.CategoriaRepositorio;
 
 @Service
 public class CategoriaServicioImpl implements CategoriaServicio {
-
 	@Autowired
 	CategoriaRepositorio categoriaRepositorio;
 
-	
 	@Override
 	public void guardar(CategoriaDTO categoria) {
 		try {

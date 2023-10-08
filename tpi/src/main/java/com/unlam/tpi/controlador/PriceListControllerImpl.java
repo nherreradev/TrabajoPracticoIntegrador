@@ -1,6 +1,6 @@
 package com.unlam.tpi.controlador;
 
-import com.unlam.tpi.servicio.listaPreciosServicio;
+import com.unlam.tpi.servicio.ListaPreciosServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import java.util.List;
 public class PriceListControllerImpl implements PriceListController {
 
     @Autowired
-    private listaPreciosServicio priceListService;
+    private ListaPreciosServicio priceListService;
 
     @Override
     @PostMapping("/save/precios/{titulo}")
