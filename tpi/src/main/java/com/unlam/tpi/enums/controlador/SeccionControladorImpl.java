@@ -1,4 +1,4 @@
-package com.unlam.tpi.controlador;
+package com.unlam.tpi.enums.controlador;
 
 import java.util.List;
 
@@ -9,25 +9,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unlam.tpi.dto.CategoriaDTO;
-import com.unlam.tpi.servicio.CategoriaServicio;
+import com.unlam.tpi.dto.SeccionDTO;
+import com.unlam.tpi.servicio.SeccionServicio;
 
 @RestController
-@RequestMapping("/api/categoria")
-public class CategoriaControladorImpl implements CategoriaControlador {
+@RequestMapping("/api/seccion")
+public class SeccionControladorImpl implements SeccionControlador {
 
 	@Autowired
-	private CategoriaServicio categoriaServicio;
+	private SeccionServicio categoriaServicio;
 	
 	@Override
 	@PostMapping("/guardar")
-	public void guardar(@RequestBody CategoriaDTO categoria) {
+	public void guardar(@RequestBody SeccionDTO categoria) {
 		getCategoriaServicio().guardar(categoria);
 	}
 
 	@Override
 	@GetMapping("/obtener")
-	public CategoriaDTO obtener(Long id) {
+	public SeccionDTO obtener(Long id) {
 		return getCategoriaServicio().obtener(id);
 	}
 
@@ -39,15 +39,15 @@ public class CategoriaControladorImpl implements CategoriaControlador {
 
 	@Override
 	@GetMapping("/listar")
-	public List<CategoriaDTO> listar() {
+	public List<SeccionDTO> listar() {
 		return getCategoriaServicio().listar();
 	}
 
-	public CategoriaServicio getCategoriaServicio() {
+	public SeccionServicio getCategoriaServicio() {
 		return categoriaServicio;
 	}
 
-	public void setCategoriaServicio(CategoriaServicio categoriaServicio) {
+	public void setCategoriaServicio(SeccionServicio categoriaServicio) {
 		this.categoriaServicio = categoriaServicio;
 	}
 

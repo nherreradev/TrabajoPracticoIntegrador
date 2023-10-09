@@ -1,4 +1,4 @@
-package com.unlam.tpi.controlador;
+package com.unlam.tpi.enums.controlador;
 
 import java.util.List;
 

@@ -9,6 +9,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 public class ListaPreciosServicioImpl implements ListaPreciosServicio {
@@ -66,14 +67,6 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         }
     }
 
-    private String GetMapKey(Map<String, Boolean> responseOK) {
-        if (responseOK.containsKey("acciones")){
-            return "acciones";
-        }
-        return "bonos";
-    }
-
-
     @Override
     public Map<String, Boolean> ValidateResponse(ResponseEntity<String> responseEntity, String instrumento) {
         Map<String, Boolean> ResponseOk = new HashMap<>();
@@ -81,28 +74,24 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         return ResponseOk;
     }
 
-    private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
-
     @Override
-    public List <String> GetPriceListMongo(String instrumento) {
+    public String GetPriceListMongo(String instrumento) {
+        String resultadoFinalJSON = null;
         List <String> res = null;
+        Integer index = null;
         try{
             res = this.listaPreciosRepository.GetPriceList(instrumento);
+            index = DeterminarIndexRandomDelArray(res);
+            resultadoFinalJSON = res.get(index);
         }catch (Exception e){
             System.out.println("Error al obtener información de mongo"+ e);
             e.printStackTrace();
             return null;
         }
-        return res;
+        return resultadoFinalJSON;
     }
-        /*try{
-            String res = this.listaPreciosRepository.GetPriceList(instrumento);
-        }catch (Exception e){
-            System.out.println("Error al obtener información de mongo"+ e);
-            e.printStackTrace();
-            return null;
-        }
-        return res;
-    }*/
+    private String GetMapKey(Map<String, Boolean> responseOK) { return responseOK.containsKey("acciones") ? "acciones" : "bonos"; }
+    private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
+    private Integer DeterminarIndexRandomDelArray(List<String> res) { return new Random().nextInt(res.size()); }
 
 }

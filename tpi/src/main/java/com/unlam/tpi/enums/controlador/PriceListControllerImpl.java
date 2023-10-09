@@ -1,12 +1,10 @@
-package com.unlam.tpi.controlador;
+package com.unlam.tpi.enums.controlador;
 
 import com.unlam.tpi.servicio.ListaPreciosServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("list")
@@ -30,7 +28,7 @@ public class PriceListControllerImpl implements PriceListController {
     @Override
     @GetMapping("/precios/{titulo}")
     public ResponseEntity<String> ObtenerPrecios(@PathVariable String titulo) {
-        List<String> response = priceListService.GetPriceListMongo(titulo);
-        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+        String response = priceListService.GetPriceListMongo(titulo);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

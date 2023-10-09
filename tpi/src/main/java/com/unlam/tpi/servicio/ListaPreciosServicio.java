@@ -8,5 +8,5 @@ import java.util.Map;
 public interface ListaPreciosServicio {
     ResponseEntity<String> SavePriceList(String titulo, String token);
     Map<String,Boolean> ValidateResponse(ResponseEntity<String> responseEntity, String instrumento);
-    List<String> GetPriceListMongo(String instrumento);
+    String GetPriceListMongo(String instrumento);
 }
