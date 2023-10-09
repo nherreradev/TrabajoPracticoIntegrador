@@ -80,7 +80,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public PerfilInversorDTO resultadoPerfilInversor(PerfilInversorDTO perfilInversorDTO) {
 		try {
-			TipoPerfilInversor tipoPerfilInversor = evaluarPerfilInversor(perfilInversorDTO.getToleranciaRiesgo(),
+			TipoPerfilInversor tipoPerfilInversor = evaluarPerfilInversor(perfilInversorDTO.getHorizonteTemporal(),
 					perfilInversorDTO.getResultadoPerfilado());
 			perfilInversorDTO.setPerfilInversor(tipoPerfilInversor);
 			guardar(perfilInversorDTO);
