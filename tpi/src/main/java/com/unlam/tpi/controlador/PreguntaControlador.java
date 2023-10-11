@@ -15,4 +15,6 @@ public interface PreguntaControlador {
 	public void borrar(Long id);
 
 	public ResponseEntity<List<PreguntaDTO>> listar();
+
+	public ResponseEntity<List<PreguntaDTO>> listarPorCategoria(String categoria);
 }
