@@ -95,7 +95,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public void guardar(PerfilInversorDTO perfilInversorDTO) {
 		try {
-			PerfilInversor persistente = TraductorGenerico.traductorDeDTOaDAO(perfilInversorDTO, PerfilInversor.class);
+			PerfilInversor persistente = TraductorGenerico.traductorDeDTOaEntidad(perfilInversorDTO, PerfilInversor.class);
 			getPerfilInversorRepositorio().save(persistente);
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar el perfil inversor", e);
@@ -105,7 +105,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public PerfilInversorDTO obtener(Long id) {
 		try {
-			return TraductorGenerico.traductorDeDAOaDTO(getPerfilInversorRepositorio().getReferenceById(id),
+			return TraductorGenerico.traductorDeEntidadaDTO(getPerfilInversorRepositorio().getReferenceById(id),
 					PerfilInversorDTO.class);
 		} catch (Exception e) {
 			throw new ServiceException("Error al obtener el perfil inversor", e);
@@ -124,7 +124,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public List<PerfilInversorDTO> listar() {
 		try {
-			return TraductorGenerico.traductorDeListaDAOaDTO(getPerfilInversorRepositorio().findAll(),
+			return TraductorGenerico.traductorDeListaEntidadaDTO(getPerfilInversorRepositorio().findAll(),
 					PerfilInversorDTO.class);
 		} catch (Exception e) {
 			throw new ServiceException("Error al listar las preguntas", e);

@@ -20,7 +20,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	@Override
 	public void guardar(PreguntaDTO pregunta) {
 		try {
-			Pregunta persistente = TraductorGenerico.traductorDeDTOaDAO(pregunta, Pregunta.class);
+			Pregunta persistente = TraductorGenerico.traductorDeDTOaEntidad(pregunta, Pregunta.class);
 			getPreguntaRepositorio().save(persistente);
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la pregunta", e);
@@ -30,7 +30,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	@Override
 	public PreguntaDTO obtener(Long id) {
 		try {
-			return TraductorGenerico.traductorDeDAOaDTO(getPreguntaRepositorio().getReferenceById(id), PreguntaDTO.class);
+			return TraductorGenerico.traductorDeEntidadaDTO(getPreguntaRepositorio().getReferenceById(id), PreguntaDTO.class);
 		} catch (Exception e) {
 			throw new ServiceException("Error al obtener la pregunta", e);
 		}
@@ -48,7 +48,16 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	@Override
 	public List<PreguntaDTO> listar() {
 		try {
-			return TraductorGenerico.traductorDeListaDAOaDTO(getPreguntaRepositorio().findAll(), PreguntaDTO.class);
+			return TraductorGenerico.traductorDeListaEntidadaDTO(getPreguntaRepositorio().findAll(), PreguntaDTO.class);
+		} catch (Exception e) {
+			throw new ServiceException("Error al listar las preguntas", e);
+		}
+	}
+	
+	@Override
+	public List<PreguntaDTO> listarPorCategoria(String categoria) {
+		try {
+			return TraductorGenerico.traductorDeListaEntidadaDTO(getPreguntaRepositorio().findByCategoria_Nombre(categoria), PreguntaDTO.class);
 		} catch (Exception e) {
 			throw new ServiceException("Error al listar las preguntas", e);
 		}

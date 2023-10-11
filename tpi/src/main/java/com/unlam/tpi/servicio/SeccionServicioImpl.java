@@ -20,7 +20,7 @@ public class SeccionServicioImpl implements SeccionServicio {
 	@Override
 	public void guardar(SeccionDTO seccion) {
 		try {
-			Seccion persistente = TraductorGenerico.traductorDeDTOaDAO(seccion, Seccion.class);
+			Seccion persistente = TraductorGenerico.traductorDeDTOaEntidad(seccion, Seccion.class);
 			getSeccionRepositorio().save(persistente);
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la pregunta", e);
@@ -30,7 +30,7 @@ public class SeccionServicioImpl implements SeccionServicio {
 	@Override
 	public SeccionDTO obtener(Long id) {
 		try {
-			return TraductorGenerico.traductorDeDAOaDTO(getSeccionRepositorio().getReferenceById(id), SeccionDTO.class);
+			return TraductorGenerico.traductorDeEntidadaDTO(getSeccionRepositorio().getReferenceById(id), SeccionDTO.class);
 		} catch (Exception e) {
 			throw new ServiceException("Error al obtener la pregunta", e);
 		}
@@ -47,7 +47,7 @@ public class SeccionServicioImpl implements SeccionServicio {
 
 	@Override
 	public List<SeccionDTO> listar() {
-		return TraductorGenerico.traductorDeListaDAOaDTO(getSeccionRepositorio().findAll(), SeccionDTO.class);
+		return TraductorGenerico.traductorDeListaEntidadaDTO(getSeccionRepositorio().findAll(), SeccionDTO.class);
 	}
 
 	public SeccionRepositorio getSeccionRepositorio() {
