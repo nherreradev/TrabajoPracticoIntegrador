@@ -21,7 +21,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	@Override
 	public void guardar(RespuestaDTO respuesta) {
 		try {
-			Respuesta persistente = TraductorGenerico.traductorDeDTOaDAO(respuesta, Respuesta.class);
+			Respuesta persistente = TraductorGenerico.traductorDeDTOaEntidad(respuesta, Respuesta.class);
 			getRespuestaRepositorio().save(persistente);
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la respuesta", e);
@@ -31,7 +31,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	@Override
 	public RespuestaDTO obtener(Long id) {
 		try {
-			return TraductorGenerico.traductorDeDAOaDTO(getRespuestaRepositorio().getReferenceById(id), RespuestaDTO.class);
+			return TraductorGenerico.traductorDeEntidadaDTO(getRespuestaRepositorio().getReferenceById(id), RespuestaDTO.class);
 		} catch (Exception e) {
 			throw new ServiceException("Error al obtener la respuesta", e);
 		}
@@ -49,7 +49,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	@Override
 	public List<RespuestaDTO> listar() {
 		try {
-			return TraductorGenerico.traductorDeListaDAOaDTO(getRespuestaRepositorio().findAll(), RespuestaDTO.class);
+			return TraductorGenerico.traductorDeListaEntidadaDTO(getRespuestaRepositorio().findAll(), RespuestaDTO.class);
 		} catch (ServiceException e) {
 			throw new ServiceException("Error al listar las respuestas", e);
 		}

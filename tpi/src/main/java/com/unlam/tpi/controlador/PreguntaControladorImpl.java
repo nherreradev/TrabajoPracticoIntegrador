@@ -45,6 +45,12 @@ public class PreguntaControladorImpl implements PreguntaControlador {
 		return ResponseEntity.ok(getPreguntaServicio().listar());
 	}
 
+	@Override
+	@GetMapping("/listar-por-categoria")
+	public ResponseEntity<List<PreguntaDTO>> listarPorCategoria(String categoria) {
+		return ResponseEntity.ok(getPreguntaServicio().listarPorCategoria(categoria));
+	}
+
 	public PreguntaServicio getPreguntaServicio() {
 		return preguntaServicio;
 	}

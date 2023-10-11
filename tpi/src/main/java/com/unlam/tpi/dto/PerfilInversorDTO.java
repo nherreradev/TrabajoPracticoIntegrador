@@ -75,7 +75,7 @@ public class PerfilInversorDTO {
 
 	public Integer getResultadoPerfilado() {
 		if (toleranciaRiesgo != null && nivelConocimiento != null) {
-			return toleranciaRiesgo + nivelConocimiento / 3;
+			return (toleranciaRiesgo + nivelConocimiento) / 2;
 		}
 		return 0;
 	}

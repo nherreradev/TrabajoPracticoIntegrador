@@ -21,7 +21,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 	@Override
 	public void guardar(CategoriaDTO categoria) {
 		try {
-			Categoria persistente = TraductorGenerico.traductorDeDTOaDAO(categoria, Categoria.class);
+			Categoria persistente = TraductorGenerico.traductorDeDTOaEntidad(categoria, Categoria.class);
 			getCategoriaRepositorio().save(persistente);
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la categoria", e);
@@ -31,7 +31,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 	@Override
 	public CategoriaDTO obtener(Long id) {
 		try {
-			return TraductorGenerico.traductorDeDAOaDTO(getCategoriaRepositorio().getReferenceById(id), CategoriaDTO.class);
+			return TraductorGenerico.traductorDeEntidadaDTO(getCategoriaRepositorio().getReferenceById(id), CategoriaDTO.class);
 		} catch (Exception e) {
 			throw new ServiceException("Error al obtener la categoria", e);
 		}
@@ -48,7 +48,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 
 	@Override
 	public List<CategoriaDTO> listar() {
-		return TraductorGenerico.traductorDeListaDAOaDTO(getCategoriaRepositorio().findAll(),CategoriaDTO.class);
+		return TraductorGenerico.traductorDeListaEntidadaDTO(getCategoriaRepositorio().findAll(),CategoriaDTO.class);
 	}
 	
 	public CategoriaRepositorio getCategoriaRepositorio() {

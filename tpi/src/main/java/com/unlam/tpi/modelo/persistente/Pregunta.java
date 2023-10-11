@@ -36,15 +36,15 @@ public class Pregunta extends ObjetoPersistente{
 	@Enumerated(EnumType.STRING)
 	private TipoComponente tipoComponente;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "CATEGORIA_OID")
 	private Categoria categoria;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "SECCION_OID")
 	private Seccion seccion;
 	
-	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
 	@JoinColumn(name = "PREGUNTA_OID", foreignKey = @ForeignKey(name = "FK_PREGUNTA__RESPUESTA"))
 	private List<Respuesta> respuestas;
 
