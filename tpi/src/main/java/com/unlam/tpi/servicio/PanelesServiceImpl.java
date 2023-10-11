@@ -27,6 +27,8 @@ public class PanelesServiceImpl implements PanelesService {
 	@Autowired
 	PanelPrecios panelPrecios;
 	
+	@Autowired
+    private ListaPreciosServicio listaPreciosServicio;
 	
 
 	List<Instrumento> listaInstrumentosAux = new ArrayList<>();
@@ -49,7 +51,7 @@ public class PanelesServiceImpl implements PanelesService {
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
 		ResponseEntity<String> respuestaJson = postApiAcciones();
-
+		
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
 			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
@@ -90,8 +92,8 @@ public class PanelesServiceImpl implements PanelesService {
 	public List<Instrumento> convertirListaDeJsonAListaDeIntrumentos(ResponseEntity<String> responseEntity) {
 		List<Instrumento> listaInstrumentos = new ArrayList<>();
 		Gson gson = new Gson();
-		//String json = responseEntity.getBody();
-		String json = Mock.jsonMock;
+		String json = responseEntity.getBody();
+		//String json = Mock.jsonMock;
 		JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
 		JsonArray titulos = jsonObject.getAsJsonArray(PanelesDePreciosConstantes.TITULOS);
 
