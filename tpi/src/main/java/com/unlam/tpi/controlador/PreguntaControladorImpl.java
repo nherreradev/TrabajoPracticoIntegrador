@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.dto.PreguntaDTO;
-import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 import com.unlam.tpi.servicio.PreguntaServicio;
 
 @RestController
