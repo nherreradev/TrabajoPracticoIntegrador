@@ -9,7 +9,7 @@ import com.unlam.tpi.servicio.UsuarioServicio;
 
 @RestController
 @RequestMapping("/api")
-public class UserControllerImpl implements UserController {
+public class UsuarioControladorImpl implements UsuarioControlador {
 
 	@Autowired
 	private UsuarioServicio usuarioServicio;
@@ -20,7 +20,7 @@ public class UserControllerImpl implements UserController {
 		return "¡Bienvenido al índice de la API!";
 	}
 
-	@Override
+	@Override       
 	@GetMapping("/guardarUsuario")
 	public String guardarUsuario(String nombreUsuario) {
 		getUsuarioServicio().guardarUsuario(nombreUsuario);

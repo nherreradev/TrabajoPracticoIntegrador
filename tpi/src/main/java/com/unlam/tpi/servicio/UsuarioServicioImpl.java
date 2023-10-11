@@ -5,8 +5,6 @@ import com.unlam.tpi.repositorio.UsuarioRepositorio;
 
 @Service
 public class UsuarioServicioImpl implements UsuarioServicio {
-	
-	
 
 	@Autowired
 	UsuarioRepositorio usuarioRepositorio;
@@ -16,7 +14,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		try {
 			getUsuarioRepositorio().guardarUsuario(nombreUsuario);
 		} catch (Exception e) {
-			
+			throw e;
 		}
 		
 	}
