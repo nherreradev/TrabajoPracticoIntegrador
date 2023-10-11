@@ -1,4 +1,4 @@
-package com.unlam.tpi.enums.controlador;
+package com.unlam.tpi.controlador;
 
 import com.unlam.tpi.servicio.ListaPreciosServicio;
 import org.springframework.beans.factory.annotation.Autowired;

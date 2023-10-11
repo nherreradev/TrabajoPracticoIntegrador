@@ -1,4 +1,4 @@
-package com.unlam.tpi.enums.controlador;
+package com.unlam.tpi.controlador;
 
 import org.springframework.http.ResponseEntity;
 
