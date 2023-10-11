@@ -1,57 +1,26 @@
 package com.unlam.tpi.servicio;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
-import org.hibernate.service.spi.ServiceException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.PreguntaDTO;
+import com.unlam.tpi.helpers.TraductorGenerico;
 import com.unlam.tpi.modelo.persistente.Pregunta;
 import com.unlam.tpi.repositorio.PreguntaRepositorio;
 
 @Service
-@Transactional
 public class PreguntaServicioImpl implements PreguntaServicio {
-	
-	private ModelMapper mapper = new ModelMapper();
 	
 	@Autowired
 	PreguntaRepositorio preguntaRepositorio;
 	
-	private Pregunta traductorDeDTOaDAO(PreguntaDTO pregunta) {
-		try {
-			return mapper.map(pregunta, Pregunta.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir un objeto DTO a DAO", e);
-		}
-	}
-
-	private PreguntaDTO traductorDeDAOaDTO(Pregunta pregunta) {
-		try {
-			return mapper.map(pregunta, PreguntaDTO.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir un objeto DAO a DTO", e);
-		}
-	}
-	
-	private List<PreguntaDTO> traductorDeDAOaDTOLista(List<Pregunta> preguntas) {
-		try {
-			return preguntas.stream().map(pregunta -> mapper.map(pregunta, PreguntaDTO.class))
-					.collect(Collectors.toList());
-		}catch (Exception e) {
-			throw new ServiceException("Error en convertir una lista DAO a DTO", e);
-		}
-	}
-
 	@Override
 	public void guardar(PreguntaDTO pregunta) {
 		try {
-			Pregunta persistente = traductorDeDTOaDAO(pregunta);
+			Pregunta persistente = TraductorGenerico.traductorDeDTOaEntidad(pregunta, Pregunta.class);
 			getPreguntaRepositorio().save(persistente);
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la pregunta", e);
@@ -61,7 +30,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	@Override
 	public PreguntaDTO obtener(Long id) {
 		try {
-			return traductorDeDAOaDTO(getPreguntaRepositorio().getReferenceById(id));
+			return TraductorGenerico.traductorDeEntidadaDTO(getPreguntaRepositorio().getReferenceById(id), PreguntaDTO.class);
 		} catch (Exception e) {
 			throw new ServiceException("Error al obtener la pregunta", e);
 		}
@@ -78,13 +47,25 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 
 	@Override
 	public List<PreguntaDTO> listar() {
-		return traductorDeDAOaDTOLista(getPreguntaRepositorio().findAll());
+		try {
+			return TraductorGenerico.traductorDeListaEntidadaDTO(getPreguntaRepositorio().findAll(), PreguntaDTO.class);
+		} catch (Exception e) {
+			throw new ServiceException("Error al listar las preguntas", e);
+		}
+	}
+	
+	@Override
+	public List<PreguntaDTO> listarPorCategoria(String categoria) {
+		try {
+			return TraductorGenerico.traductorDeListaEntidadaDTO(getPreguntaRepositorio().findByCategoria_Nombre(categoria), PreguntaDTO.class);
+		} catch (Exception e) {
+			throw new ServiceException("Error al listar las preguntas", e);
+		}
 	}
 
 	public PreguntaRepositorio getPreguntaRepositorio() {
 		return preguntaRepositorio;
 	}
-
 	public void setPreguntaRepositorio(PreguntaRepositorio preguntaRepositorio) {
 		this.preguntaRepositorio = preguntaRepositorio;
 	}

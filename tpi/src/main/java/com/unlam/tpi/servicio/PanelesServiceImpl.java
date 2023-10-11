@@ -18,6 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unlam.tpi.constantes.PanelesDePreciosConstantes;
+import com.unlam.tpi.mocks.Mock;
 import com.unlam.tpi.modelo.persistente.Instrumento;
 
 @Service
@@ -25,6 +26,10 @@ public class PanelesServiceImpl implements PanelesService {
 
 	@Autowired
 	PanelPrecios panelPrecios;
+	
+	@Autowired
+    private ListaPreciosServicio listaPreciosServicio;
+	
 
 	List<Instrumento> listaInstrumentosAux = new ArrayList<>();
 
@@ -45,25 +50,18 @@ public class PanelesServiceImpl implements PanelesService {
 
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
-
 		ResponseEntity<String> respuestaJson = postApiAcciones();
-
+		
 		try {
-
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-
 			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
-
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
 			}
 			
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
-
 			listaInstrumentosAux.addAll(listaInstrumentos);
-
 			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
-
 			return PanelPreciosImpl.panelAcciones;
 
 		} catch (Exception e) {
@@ -73,13 +71,9 @@ public class PanelesServiceImpl implements PanelesService {
 
 	@Override
 	public Map<String, Instrumento> getPanelDeBonos() {
-
 		ResponseEntity<String> respuestaJson = postApiBonos();
-
 		try {
-
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-
 			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
 
 			for (Instrumento instrumento : listaInstrumentos) {
@@ -87,11 +81,8 @@ public class PanelesServiceImpl implements PanelesService {
 			}
 			
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
-
 			panelPrecios.agregarInstrumentosAlPanelDeBonos(listaInstrumentos);
-
 			return PanelPreciosImpl.panelBonos;
-
 		} catch (Exception e) {
 			throw e;
 		}
@@ -102,6 +93,7 @@ public class PanelesServiceImpl implements PanelesService {
 		List<Instrumento> listaInstrumentos = new ArrayList<>();
 		Gson gson = new Gson();
 		String json = responseEntity.getBody();
+		//String json = Mock.jsonMock;
 		JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
 		JsonArray titulos = jsonObject.getAsJsonArray(PanelesDePreciosConstantes.TITULOS);
 
@@ -116,18 +108,16 @@ public class PanelesServiceImpl implements PanelesService {
 
 	@Override
 	public ResponseEntity<String> postApiAcciones() {
-		String url = "https://a78c76bd-8631-42ac-a6f7-867d886bdd8e.mock.pstmn.io/acciones";
+		String url = "https://api.mercadojunior.com.ar/list/precios/acciones";
 		return getInstrumentos(url);
 	}
 
 	private ResponseEntity<String> postApiBonos() {
-		String url = "https://a78c76bd-8631-42ac-a6f7-867d886bdd8e.mock.pstmn.io/bonos";
+		String url = "https://api.mercadojunior.com.ar/list/precios/bonos";
 		return getInstrumentos(url);
 	}
 
 	public ResponseEntity<String> getInstrumentos(String url) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
 		ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 		return responseEntity;
 	}

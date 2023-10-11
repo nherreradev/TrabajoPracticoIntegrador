@@ -1,12 +1,10 @@
 package com.unlam.tpi.controlador;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +15,6 @@ import com.unlam.tpi.servicio.PanelesService;
 
 @RestController
 @RequestMapping("/panel")
-@CrossOrigin
 public class PanelesControladorImpl implements PanelesControlador {
 
 	@Autowired

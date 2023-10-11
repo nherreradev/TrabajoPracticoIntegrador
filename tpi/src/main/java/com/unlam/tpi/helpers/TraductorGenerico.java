@@ -1,54 +1,52 @@
 package com.unlam.tpi.helpers;
 
-import java.lang.reflect.Type;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 
-import com.google.protobuf.ServiceException;
+import com.unlam.tpi.arquitectura.ServiceException;
 
 public class TraductorGenerico {
-
 	private static final ModelMapper modelMapper = new ModelMapper();
 
 	private TraductorGenerico() {
 	}
 
-	public static <S, T> T traductorDeDAOaDTO(S source, Class<T> targetClass) throws ServiceException {
+	public static <S, T> T traductorDeEntidadaDTO(S entidad, Class<T> dtoClass) throws ServiceException {
 		try {
-			return modelMapper.map(source, targetClass);
+			return modelMapper.map(entidad, dtoClass);
 		} catch (Exception e) {
 			throw new ServiceException("Error en convertir un objeto DAO a DTO", e);
 		}
 	}
 
-	public static <S, T> List<T> traductorDeListaDAOaDTO(List<S> sourceList, Class<T> targetClass)
+	public static <S, T> List<T> traductorDeListaEntidadaDTO(List<S> objetList, Class<T> dtoClass)
 			throws ServiceException {
 		try {
-			Type listType = new TypeToken<List<T>>() {
-			}.getType();
-			return modelMapper.map(sourceList, listType);
+			return objetList.stream()
+	                .map(dto -> modelMapper.map(dto, dtoClass))
+	                .collect(Collectors.toList());
 		} catch (Exception e) {
 			throw new ServiceException("Error en convertir una lista DAO a DTO", e);
 		}
 
 	}
 
-	public static <S, T> S traductorDeDTOaDAO(T source, Class<S> targetClass) throws ServiceException {
+	public static <S, T> S traductorDeDTOaEntidad(T entidad, Class<S> dtoClass) throws ServiceException {
 		try {
-			return modelMapper.map(source, targetClass);
+			return modelMapper.map(entidad, dtoClass);
 		} catch (Exception e) {
 			throw new ServiceException("Error en convertir una lista DTO a DAO", e);
 		}
 	}
 
-	public static <S, T> List<S> traductorDeListaDTOaDAO(List<T> sourceList, Class<S> targetClass)
+	public static <S, T> List<S> traductorDeListaDTOaEntidad(List<T> objetList, Class<S> entidad)
 			throws ServiceException {
 		try {
-			Type listType = new TypeToken<List<S>>() {
-			}.getType();
-			return modelMapper.map(sourceList, listType);
+			return objetList.stream()
+	                .map(entity -> modelMapper.map(entity, entidad))
+	                .collect(Collectors.toList());
 
 		} catch (Exception e) {
 			throw new ServiceException("Error en convertir una lista DTO a DAO", e);

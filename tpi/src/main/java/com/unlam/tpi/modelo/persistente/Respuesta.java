@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.unlam.tpi.arquitectura.ObjetoPersistente;
 
 @Entity
@@ -16,6 +17,9 @@ public class Respuesta extends ObjetoPersistente{
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "Instrumento")
+	private String instrumento;
+	
 	@Column(name = "NOMBRE")
 	private String nombre;
 	
@@ -61,4 +65,12 @@ public class Respuesta extends ObjetoPersistente{
 		this.orden = orden;
 	}
 	
+	public String getInstrumento() {
+		return instrumento;
+	}
+
+	public void setInstrumento(String instrumento) {
+		this.instrumento = instrumento;
+	}
+
 }

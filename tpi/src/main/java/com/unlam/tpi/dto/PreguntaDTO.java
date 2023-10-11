@@ -2,11 +2,15 @@ package com.unlam.tpi.dto;
 
 import java.util.List;
 
-import org.json.JSONObject;
+import com.unlam.tpi.enums.TipoComponente;
 
-public class PreguntaDTO extends JSONObject{
+public class PreguntaDTO {
 
 	private Long oid;
+	
+	private Integer version;
+	
+	private Boolean deleted = false;
 	
 	private String enunciado;
 	
@@ -17,6 +21,8 @@ public class PreguntaDTO extends JSONObject{
 	private SeccionDTO seccion;
 	
 	private Integer orden;
+	
+	private TipoComponente tipoComponente;
 	
 	private List<RespuestaDTO> respuestas;
 
@@ -74,6 +80,30 @@ public class PreguntaDTO extends JSONObject{
 
 	public void setOrden(Integer orden) {
 		this.orden = orden;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public TipoComponente getTipoComponente() {
+		return tipoComponente;
+	}
+
+	public void setTipoComponente(TipoComponente tipoComponente) {
+		this.tipoComponente = tipoComponente;
 	}
 
 }

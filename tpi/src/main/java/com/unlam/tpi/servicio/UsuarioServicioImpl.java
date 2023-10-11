@@ -5,8 +5,6 @@ import com.unlam.tpi.repositorio.UsuarioRepositorio;
 
 @Service
 public class UsuarioServicioImpl implements UsuarioServicio {
-	
-	
 
 	@Autowired
 	UsuarioRepositorio usuarioRepositorio;
