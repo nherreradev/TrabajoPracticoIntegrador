@@ -3,6 +3,7 @@ package com.unlam.tpi.enums;
 public enum TipoComponente {
    
 	RADIO("Radio"),
+	CHECKBOX("Checkbox"),
     BOTON("Boton"),
     IMAGEN("Imagen"),
     TEXTO("Texto");

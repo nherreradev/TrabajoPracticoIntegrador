@@ -27,6 +27,8 @@ public class PanelesServiceImpl implements PanelesService {
 	@Autowired
 	PanelPrecios panelPrecios;
 	
+	@Autowired
+    private ListaPreciosServicio listaPreciosServicio;
 	
 
 	List<Instrumento> listaInstrumentosAux = new ArrayList<>();
@@ -48,27 +50,18 @@ public class PanelesServiceImpl implements PanelesService {
 
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
-
-		//ResponseEntity<String> respuestaJson = postApiAcciones();
+		ResponseEntity<String> respuestaJson = postApiAcciones();
 		
-		ResponseEntity<String> respuestaJson = null;
-
 		try {
-
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-
 			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
-
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
 			}
 			
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
-
 			listaInstrumentosAux.addAll(listaInstrumentos);
-
 			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
-
 			return PanelPreciosImpl.panelAcciones;
 
 		} catch (Exception e) {
@@ -78,13 +71,9 @@ public class PanelesServiceImpl implements PanelesService {
 
 	@Override
 	public Map<String, Instrumento> getPanelDeBonos() {
-
 		ResponseEntity<String> respuestaJson = postApiBonos();
-
 		try {
-
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-
 			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
 
 			for (Instrumento instrumento : listaInstrumentos) {
@@ -92,11 +81,8 @@ public class PanelesServiceImpl implements PanelesService {
 			}
 			
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
-
 			panelPrecios.agregarInstrumentosAlPanelDeBonos(listaInstrumentos);
-
 			return PanelPreciosImpl.panelBonos;
-
 		} catch (Exception e) {
 			throw e;
 		}
@@ -106,8 +92,8 @@ public class PanelesServiceImpl implements PanelesService {
 	public List<Instrumento> convertirListaDeJsonAListaDeIntrumentos(ResponseEntity<String> responseEntity) {
 		List<Instrumento> listaInstrumentos = new ArrayList<>();
 		Gson gson = new Gson();
-		//String json = responseEntity.getBody();
-		String json = Mock.jsonMock;
+		String json = responseEntity.getBody();
+		//String json = Mock.jsonMock;
 		JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
 		JsonArray titulos = jsonObject.getAsJsonArray(PanelesDePreciosConstantes.TITULOS);
 
@@ -132,8 +118,6 @@ public class PanelesServiceImpl implements PanelesService {
 	}
 
 	public ResponseEntity<String> getInstrumentos(String url) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
 		ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 		return responseEntity;
 	}
