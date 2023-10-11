@@ -34,6 +34,12 @@ public class PreguntaServicioTest {
 	public void testQuePuedaListarPreguntas() {
 		assertTrue(getPreguntaServicio().listar().size()>0);
 	}
+	
+
+	@Test
+	public void testQuePuedaListarPreguntasQueCorrespondeAUnaCategoria() {
+		assertTrue(getPreguntaServicio().listarPorCategoria("CategoriaPrueba").size()>0);
+	}
 
 	private CategoriaDTO crearCategoria() {
 		CategoriaDTO categoria = new CategoriaDTO();

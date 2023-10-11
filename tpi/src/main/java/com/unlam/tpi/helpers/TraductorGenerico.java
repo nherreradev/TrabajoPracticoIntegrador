@@ -13,15 +13,15 @@ public class TraductorGenerico {
 	private TraductorGenerico() {
 	}
 
-	public static <S, T> T traductorDeDAOaDTO(S objetDAO, Class<T> dtoClass) throws ServiceException {
+	public static <S, T> T traductorDeEntidadaDTO(S entidad, Class<T> dtoClass) throws ServiceException {
 		try {
-			return modelMapper.map(objetDAO, dtoClass);
+			return modelMapper.map(entidad, dtoClass);
 		} catch (Exception e) {
 			throw new ServiceException("Error en convertir un objeto DAO a DTO", e);
 		}
 	}
 
-	public static <S, T> List<T> traductorDeListaDAOaDTO(List<S> objetList, Class<T> dtoClass)
+	public static <S, T> List<T> traductorDeListaEntidadaDTO(List<S> objetList, Class<T> dtoClass)
 			throws ServiceException {
 		try {
 			return objetList.stream()
@@ -33,19 +33,19 @@ public class TraductorGenerico {
 
 	}
 
-	public static <S, T> S traductorDeDTOaDAO(T objetDAO, Class<S> dtoClass) throws ServiceException {
+	public static <S, T> S traductorDeDTOaEntidad(T entidad, Class<S> dtoClass) throws ServiceException {
 		try {
-			return modelMapper.map(objetDAO, dtoClass);
+			return modelMapper.map(entidad, dtoClass);
 		} catch (Exception e) {
 			throw new ServiceException("Error en convertir una lista DTO a DAO", e);
 		}
 	}
 
-	public static <S, T> List<S> traductorDeListaDTOaDAO(List<T> objetList, Class<S> daoClass)
+	public static <S, T> List<S> traductorDeListaDTOaEntidad(List<T> objetList, Class<S> entidad)
 			throws ServiceException {
 		try {
 			return objetList.stream()
-	                .map(dao -> modelMapper.map(dao, daoClass))
+	                .map(entity -> modelMapper.map(entity, entidad))
 	                .collect(Collectors.toList());
 
 		} catch (Exception e) {

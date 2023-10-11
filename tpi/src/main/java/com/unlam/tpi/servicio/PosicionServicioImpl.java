@@ -16,6 +16,7 @@ import com.unlam.tpi.constantes.PanelesDePreciosConstantes;
 import com.unlam.tpi.helpers.CalculosHabituales;
 import com.unlam.tpi.modelo.persistente.Orden;
 import com.unlam.tpi.modelo.persistente.Posicion;
+import com.unlam.tpi.modelo.persistente.Puntas;
 import com.unlam.tpi.modelo.pojo.PuedeOperarResultado;
 import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 import com.unlam.tpi.repositorio.PosicionRepositorio;
@@ -148,14 +149,19 @@ public class PosicionServicioImpl implements PosicionServicio {
 		case PanelesDePreciosConstantes.ACCIONES:
 			if (PanelPreciosImpl.panelAcciones.containsKey(orden.getSimboloInstrumento())) {
 				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
-					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
-							.getPrecioCompra());
+					Puntas puntas = PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioCompra = puntas != null && puntas.getPrecioCompra() != null
+							? puntas.getPrecioCompra()
+							: null;
+					orden.setPrecio(precioCompra);
 				} else {
-					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
-							.getPrecioVenta());
+					Puntas puntas = PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioVenta = puntas != null && puntas.getPrecioVenta() != null ? puntas.getPrecioVenta()
+							: null;
+					orden.setPrecio(precioVenta);
 				}
 			} else {
-				throw new ServiceException("La orden que quiere capturar no se encuentra disponible en el panel");
+				throw new ServiceException("La orden que quiere capturar no se encuentra disponible en el panel o no tiene precio");
 			}
 
 			break;
