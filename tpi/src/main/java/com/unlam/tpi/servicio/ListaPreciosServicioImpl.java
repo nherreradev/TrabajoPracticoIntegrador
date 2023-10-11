@@ -1,32 +1,27 @@
 package com.unlam.tpi.servicio;
-import com.google.protobuf.ServiceException;
-import com.google.protobuf.Timestamp;
-import com.unlam.tpi.manejadorExcepciones.ManejadorGlobalDeExcepciones;
 import com.unlam.tpi.repositorio.ListaPreciosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.sql.rowset.serial.SerialException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Service
-public class listaPreciosServicioImpl implements listaPreciosServicio{
+public class ListaPreciosServicioImpl implements ListaPreciosServicio {
+    @Autowired
     private ListaPreciosRepository listaPreciosRepository;
     private final RestTemplate restTemplate;
     String ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
     String BONOS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=titulosPublicos&cotizacionInstrumentoModel.pais=argentina";
+
     @Autowired
-    public listaPreciosServicioImpl(RestTemplate restTemplate, ListaPreciosRepository listaPreciosRepository) {
+    public ListaPreciosServicioImpl(RestTemplate restTemplate){
         this.restTemplate = restTemplate;
-        this.listaPreciosRepository = listaPreciosRepository;
     }
 
     @Override
@@ -72,14 +67,6 @@ public class listaPreciosServicioImpl implements listaPreciosServicio{
         }
     }
 
-    private String GetMapKey(Map<String, Boolean> responseOK) {
-        if (responseOK.containsKey("acciones")){
-            return "acciones";
-        }
-        return "bonos";
-    }
-
-
     @Override
     public Map<String, Boolean> ValidateResponse(ResponseEntity<String> responseEntity, String instrumento) {
         Map<String, Boolean> ResponseOk = new HashMap<>();
@@ -87,28 +74,24 @@ public class listaPreciosServicioImpl implements listaPreciosServicio{
         return ResponseOk;
     }
 
-    private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
-
     @Override
-    public List <String> GetPriceListMongo(String instrumento) {
+    public String GetPriceListMongo(String instrumento) {
+        String resultadoFinalJSON = null;
         List <String> res = null;
+        Integer index = null;
         try{
             res = this.listaPreciosRepository.GetPriceList(instrumento);
+            index = DeterminarIndexRandomDelArray(res);
+            resultadoFinalJSON = res.get(index);
         }catch (Exception e){
             System.out.println("Error al obtener información de mongo"+ e);
             e.printStackTrace();
             return null;
         }
-        return res;
+        return resultadoFinalJSON;
     }
-        /*try{
-            String res = this.listaPreciosRepository.GetPriceList(instrumento);
-        }catch (Exception e){
-            System.out.println("Error al obtener información de mongo"+ e);
-            e.printStackTrace();
-            return null;
-        }
-        return res;
-    }*/
+    private String GetMapKey(Map<String, Boolean> responseOK) { return responseOK.containsKey("acciones") ? "acciones" : "bonos"; }
+    private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
+    private Integer DeterminarIndexRandomDelArray(List<String> res) { return new Random().nextInt(res.size()); }
 
 }
