@@ -97,6 +97,12 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 		return puedeOperarResultado;
 	}
+	
+	@Override
+	public void acreditarDinero() {
+		
+		
+	}
 
 	private void completarPosicionDeDinero(Orden orden, Posicion posicionDinero) {
 
@@ -226,4 +232,5 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 		return totalMonedas;
 	}
+	
 }

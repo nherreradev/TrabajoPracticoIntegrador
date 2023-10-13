@@ -22,5 +22,12 @@ public class CarteraControladorImpl implements CarteraControlador {
 		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal();
 		return ResponseEntity.ok(valuacionTotalRespuesta);
 	}
+	
+	@Override
+	@GetMapping("/acreditar/dinero")
+	public ResponseEntity<String> acreditarDinero() {
+		posicionServicio.acreditarDinero();
+		return ResponseEntity.ok("Dinero acreditado correctamente");
+	}
 
 }
