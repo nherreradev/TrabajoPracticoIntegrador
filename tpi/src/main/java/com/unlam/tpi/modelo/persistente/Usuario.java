@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unlam.tpi.arquitectura.ObjetoPersistente;
 
 @Entity
@@ -13,14 +14,19 @@ public class Usuario extends ObjetoPersistente{
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "NOMBRE_USUARIO")
+	@JsonProperty("username")
 	private String nombreUsuario;
 	@Column(name = "NOMBRE")
+	@JsonProperty("nombre")
 	private String nombre;
 	@Column(name = "APELLIDO")
+	@JsonProperty("apellido")
 	private String apellido;
 	@Column(name = "EMAIL")
+	@JsonProperty("email")
 	private String email;
 	@Column(name = "PASSWORD")
+	@JsonProperty("pass")
 	private String pass;
 	@Column(name = "CUENTA_CONFIRMADA")
 	private Boolean cuentaConfirmada;

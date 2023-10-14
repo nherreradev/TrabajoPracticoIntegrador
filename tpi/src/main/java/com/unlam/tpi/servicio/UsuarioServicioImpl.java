@@ -46,6 +46,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			if (buscado != null){
 				buscado.setNombre(usuario.getNombre());
 				buscado.setApellido(usuario.getApellido());
+				this.usuarioRepositorio.save(buscado);
 				return responseAPI.MensajeDeExito();
 			}else
 				return responseAPI.MensajeDeErrorRecursoNoEncontrado();

@@ -5,10 +5,7 @@ import com.unlam.tpi.modelo.rest.ResponseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.unlam.tpi.servicio.UsuarioServicio;
 
@@ -27,7 +24,7 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 
 	@Override
 	@PostMapping("/guardar-usuario")
-	public ResponseEntity<ResponseAPI> RegistrarUsuario(Usuario usuario) throws Exception {
+	public ResponseEntity<ResponseAPI> RegistrarUsuario(@RequestBody Usuario usuario) throws Exception {
 		if(this.usuarioServicio.ExisteUsuario(usuario))
 			return new ResponseEntity<>(response.RecursoYaExistente(), response.RecursoYaExistente().getStatus());
 			else
@@ -36,24 +33,23 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	}
 
 	@Override
-	@GetMapping("/obtener-usuario/{id}")
-	public ResponseEntity<Usuario> ObtenerDatosUsuarioPorEmail(String email) {
+	@GetMapping("/obtener-usuario/{email}")
+	public ResponseEntity<Usuario> ObtenerDatosUsuarioPorEmail(@PathVariable String email) {
 		Usuario usuario = this.usuarioServicio.ObtenerUsuarioPorEmail(email);
 		return (usuario == null) ? new ResponseEntity<>(HttpStatus.BAD_REQUEST) : new ResponseEntity<>(usuario, HttpStatus.OK);
 	}
 
 	@Override
 	@PostMapping("/modificar-usuario")
-	public ResponseEntity<ResponseAPI> ModificarUsuario(Usuario usuario) {
+	public ResponseEntity<ResponseAPI> ModificarUsuario(@RequestBody Usuario usuario) {
 		ResponseAPI response = this.usuarioServicio.ModificarUsuario(usuario);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
 	@Override
 	@PostMapping("/eliminar-usuario")
-	public ResponseEntity<ResponseAPI> DarUsuarioDeBaja(Usuario usuario) {
-
-		ResponseAPI response = this.usuarioServicio.ModificarUsuario(usuario);
+	public ResponseEntity<ResponseAPI> DarUsuarioDeBaja(@RequestBody Usuario usuario) {
+		ResponseAPI response = this.usuarioServicio.DarDeBajaUsuario(usuario);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
