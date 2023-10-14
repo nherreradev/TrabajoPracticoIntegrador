@@ -15,6 +15,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	public void GuardarUsuario(Usuario usuario) throws Exception {
 		if(ExisteUsuario(usuario)) throw new Exception("Usuario ya existente");
 		try {
+			usuario.setActivo(Boolean.TRUE);
 			this.usuarioRepositorio.save(usuario);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -27,7 +28,11 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	@Override
 	public Usuario ObtenerUsuarioPorEmail(String email) {
 		try{
-			return this.usuarioRepositorio.getUsuarioByEmail(email);
+			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(email);
+			if (buscado == null) {
+				return null;
+			}else
+				return buscado;
 		}catch (Exception e){
 			e.printStackTrace();
 			throw e;
@@ -49,6 +54,30 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			System.out.println("ERROR AL MODIFICAR USUARIO: " + e);
 			return responseAPI.MensajeDeErrorRecursoNoEncontrado();
 		}
+	}
+
+	@Override
+	public ResponseAPI DarDeBajaUsuario(Usuario usuario)  {
+		if(!ExisteUsuario(usuario)) return responseAPI.MensajeDeErrorRecursoNoEncontrado();
+		try{
+			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
+			if (buscado != null){
+				buscado.setActivo(Boolean.FALSE);
+				buscado.setCuentaConfirmada(Boolean.FALSE);
+				this.usuarioRepositorio.save(buscado);
+				return responseAPI.MensajeDeExito();
+			}else
+				return responseAPI.MensajeDeErrorEnRequest();
+		}catch (Exception e ){
+			e.printStackTrace();
+			System.out.println("ERROR AL DAR DE BAJA USUARIO: " + e);
+		}
+		return responseAPI.MensajeDeErrorInterno();
+	}
+	@Override
+	public void ConfirmarCuenta(Usuario usuario) {
+		usuario.setCuentaConfirmada(Boolean.TRUE);
+		this.usuarioRepositorio.save(usuario);
 	}
 
 }
