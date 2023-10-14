@@ -46,7 +46,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		valuacionTotalRespuesta.setTotalCartera(totalCartera.toString());
 
 		return valuacionTotalRespuesta;
-	}
+	} 
 
 	@Override
 	public PuedeOperarResultado puedeOperar(Orden orden) {

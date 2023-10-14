@@ -11,12 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.unlam.tpi.modelo.persistente.Instrumento;
-import com.unlam.tpi.servicio.PanelesServiceImpl;
+import com.unlam.tpi.servicio.PanelesServicioImpl;
 
 @SpringBootTest
 public class PanelesServiceTest {
 
-	private PanelesServiceImpl panelesServiceImpl = new PanelesServiceImpl();
+	private PanelesServicioImpl panelesServiceImpl = new PanelesServicioImpl();
 
 	@Test
 	public void testObtenerAccionesDeAPI() {

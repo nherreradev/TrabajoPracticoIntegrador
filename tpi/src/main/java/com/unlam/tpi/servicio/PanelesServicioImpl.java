@@ -17,12 +17,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.constantes.PanelesDePreciosConstantes;
 import com.unlam.tpi.mocks.Mock;
 import com.unlam.tpi.modelo.persistente.Instrumento;
 
 @Service
-public class PanelesServiceImpl implements PanelesService {
+public class PanelesServicioImpl implements PanelesServicio {
 
 	@Autowired
 	PanelPrecios panelPrecios;
@@ -35,21 +36,22 @@ public class PanelesServiceImpl implements PanelesService {
 
 	private final RestTemplate restTemplate;
 
-	public PanelesServiceImpl() {
+	public PanelesServicioImpl() {
 		this.restTemplate = new RestTemplate();
 	}
 
-	public PanelesServiceImpl(RestTemplate restTemplate) {
+	public PanelesServicioImpl(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
 
-	public PanelesServiceImpl(RestTemplate restTemplate, PanelPrecios panelPrecios) {
+	public PanelesServicioImpl(RestTemplate restTemplate, PanelPrecios panelPrecios) {
 		this.restTemplate = restTemplate;
 		this.panelPrecios = panelPrecios;
 	}
 
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
+		
 		ResponseEntity<String> respuestaJson = postApiAcciones();
 		
 		try {
@@ -64,8 +66,10 @@ public class PanelesServiceImpl implements PanelesService {
 			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 			return PanelPreciosImpl.panelAcciones;
 
+		} catch (ServiceException se) {
+			throw se;
 		} catch (Exception e) {
-			throw e;
+			throw new ServiceException("Error al obtener panel de acciones");
 		}
 	}
 
@@ -83,8 +87,10 @@ public class PanelesServiceImpl implements PanelesService {
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
 			panelPrecios.agregarInstrumentosAlPanelDeBonos(listaInstrumentos);
 			return PanelPreciosImpl.panelBonos;
+		} catch (ServiceException se) {
+			throw se;
 		} catch (Exception e) {
-			throw e;
+			throw new ServiceException("Error al obtener panel de bonos");
 		}
 	}
 
