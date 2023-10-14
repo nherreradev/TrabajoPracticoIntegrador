@@ -45,7 +45,7 @@ public class OrdenServicioImpl implements OrdenServicio {
 		puedeOperar(orden);
 	}
 
-	private void puedeOperar(Orden orden) throws ServiceException {
+	public void puedeOperar(Orden orden) throws ServiceException {
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);
 		if (!puedeOperarResultado.getPuedeOperar()) {
 			throw new ServiceException("Puede operar hasta: " + puedeOperarResultado.getDisponible());

@@ -1,4 +1,4 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
 import com.unlam.tpi.servicio.ListaPreciosServicioImpl;
 import com.unlam.tpi.servicio.PanelesServiceImpl;
