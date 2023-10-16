@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.interfaces.PosicionServicio;
+import com.unlam.tpi.modelo.pojo.RequestCargaDeDinero;
 import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 
 @CrossOrigin
