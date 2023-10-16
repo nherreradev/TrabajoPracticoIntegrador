@@ -10,5 +10,5 @@ public interface PosicionRepositorioCustomizada {
 
 	List<Posicion> getTitulosDisponiblesPorSimbolo(String simboloInstrumento);
 	
-	void acreditarDinero(String simboloInstrumento);
+	Posicion obtenerPosicionPorConcepto(String concepto);
 }
