@@ -3,6 +3,9 @@ package com.unlam.tpi.servicioTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -16,12 +19,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.unlam.tpi.arquitectura.ServiceException;
+import com.unlam.tpi.constantes.CargaCreditoConstantes;
 import com.unlam.tpi.constantes.OrdenConstantes;
 import com.unlam.tpi.modelo.persistente.Instrumento;
 import com.unlam.tpi.modelo.persistente.Orden;
 import com.unlam.tpi.modelo.persistente.Posicion;
 import com.unlam.tpi.modelo.persistente.Puntas;
 import com.unlam.tpi.modelo.pojo.PuedeOperarResultado;
+import com.unlam.tpi.modelo.pojo.RequestCargaDeDinero;
 import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 import com.unlam.tpi.repositorio.PosicionRepositorio;
 import com.unlam.tpi.servicio.PanelPreciosImpl;
@@ -218,6 +223,48 @@ class PosicionServicioTest {
 		assertEquals(totalMonedas, valuacionTotalRespuesta.getTotalMonedas());
 		assertEquals(totalInstrumentos, valuacionTotalRespuesta.getTotalInstrumentos());
 		assertEquals(totalCartera, valuacionTotalRespuesta.getTotalCartera());
+
+	}
+	
+	@Test
+	void testSiNuncaHiceElPerfilObjetivoSeMeAcreditaElPremio() {
+
+		RequestCargaDeDinero requestCargaDeDinero = new RequestCargaDeDinero();
+		requestCargaDeDinero.setCantidadPorAcreditar(new BigDecimal(5000));
+		requestCargaDeDinero.setConcepto(CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS);
+		
+		Posicion posicionDinero = new Posicion();
+		posicionDinero.setCantidad(new BigDecimal(4500));
+		posicionDinero.setEsEfectivo(true);
+		posicionDinero.setMonedaOid(1L);
+		posicionDinero.setConcepto("carga manual");
+		
+		when(posicionRepositorio.obtenerPosicionPorConcepto(requestCargaDeDinero.getConcepto())).thenReturn(posicionDinero);
+		
+		posicionServicio.acreditarDinero(requestCargaDeDinero);
+		
+		verify(posicionRepositorio).save(any(Posicion.class));
+
+	}
+	
+	@Test
+	void testSiYaHiceElPerfilObjetivoYLoVuelvoAHacerNoSeDeberiaAcreditarElPremio() {
+
+		RequestCargaDeDinero requestCargaDeDinero = new RequestCargaDeDinero();
+		requestCargaDeDinero.setCantidadPorAcreditar(new BigDecimal(5000));
+		requestCargaDeDinero.setConcepto(CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS);
+		
+		Posicion posicionDinero = new Posicion();
+		posicionDinero.setCantidad(new BigDecimal(4500));
+		posicionDinero.setEsEfectivo(true);
+		posicionDinero.setMonedaOid(1L);
+		posicionDinero.setConcepto(CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS);
+		
+		when(posicionRepositorio.obtenerPosicionPorConcepto(requestCargaDeDinero.getConcepto())).thenReturn(posicionDinero);
+		
+		posicionServicio.acreditarDinero(requestCargaDeDinero);
+		
+		verify(posicionRepositorio, never()).save(any(Posicion.class));
 
 	}
 
