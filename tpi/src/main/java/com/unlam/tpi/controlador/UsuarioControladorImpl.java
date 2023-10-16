@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unlam.tpi.servicio.UsuarioServicio;
+import com.unlam.tpi.interfaces.UsuarioServicio;
 
 @RestController
 @RequestMapping("/api")

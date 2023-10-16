@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.dto.PreguntaDTO;
-import com.unlam.tpi.servicio.PreguntaServicio;
+import com.unlam.tpi.interfaces.PreguntaServicio;
 
 @RestController
 @RequestMapping("/api/pregunta")

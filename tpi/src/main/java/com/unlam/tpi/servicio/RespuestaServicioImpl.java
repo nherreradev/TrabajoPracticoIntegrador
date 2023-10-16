@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.RespuestaDTO;
 import com.unlam.tpi.modelo.persistente.Pregunta;
+import com.unlam.tpi.interfaces.PreguntaServicio;
+import com.unlam.tpi.interfaces.RespuestaServicio;
 import com.unlam.tpi.modelo.persistente.Respuesta;
 import com.unlam.tpi.repositorio.RespuestaRepositorio;
 

@@ -1,6 +1,7 @@
-package com.unlam.tpi.servicio;
+package com.unlam.tpi.interfaces;
 
 import java.util.List;
+import java.util.Map;
 
 import com.unlam.tpi.modelo.persistente.Instrumento;
 

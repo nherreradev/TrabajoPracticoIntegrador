@@ -9,6 +9,7 @@ import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.PerfilInversorDTO;
 import com.unlam.tpi.dto.TipoNivelConocimiento;
 import com.unlam.tpi.dto.TipoPerfilInversor;
+import com.unlam.tpi.interfaces.PerfilInversorServicio;
 import com.unlam.tpi.modelo.persistente.PerfilInversor;
 import com.unlam.tpi.repositorio.PerfilInversorRepositorio;
 

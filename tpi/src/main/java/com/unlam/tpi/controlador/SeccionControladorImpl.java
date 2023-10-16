@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.dto.SeccionDTO;
-import com.unlam.tpi.servicio.SeccionServicio;
+import com.unlam.tpi.interfaces.SeccionServicio;
 
 @RestController
 @RequestMapping("/api/seccion")

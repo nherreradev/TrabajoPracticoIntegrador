@@ -7,4 +7,6 @@ import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 public interface CarteraControlador {
 	
 	public ResponseEntity<ValuacionTotalRespuesta> getValuacionTotal();
+	
+	public ResponseEntity<String> acreditarDinero(RequestCargaDeDinero request);
 }

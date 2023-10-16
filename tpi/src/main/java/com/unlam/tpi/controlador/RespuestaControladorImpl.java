@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.dto.RespuestaDTO;
-import com.unlam.tpi.servicio.RespuestaServicio;
+import com.unlam.tpi.interfaces.RespuestaServicio;
 
 @RestController
 @RequestMapping("/api/respuesta")

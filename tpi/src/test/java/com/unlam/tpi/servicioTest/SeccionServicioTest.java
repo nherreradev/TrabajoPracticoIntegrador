@@ -1,6 +1,6 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -17,7 +17,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.SeccionDTO;
-import com.unlam.tpi.servicio.SeccionServicio;
+import com.unlam.tpi.interfaces.SeccionServicio;
 
 @SpringBootTest
 @Transactional

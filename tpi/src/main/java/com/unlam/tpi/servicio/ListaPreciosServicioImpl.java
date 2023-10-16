@@ -1,4 +1,5 @@
 package com.unlam.tpi.servicio;
+import com.unlam.tpi.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.repositorio.ListaPreciosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;

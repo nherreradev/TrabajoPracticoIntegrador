@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.unlam.tpi.servicio.CategoriaServicio;
+import com.unlam.tpi.interfaces.CategoriaServicio;
 
 @SpringBootTest
 @AutoConfigureMockMvc

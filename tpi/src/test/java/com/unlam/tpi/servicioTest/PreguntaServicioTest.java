@@ -1,6 +1,6 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,9 +22,9 @@ import com.unlam.tpi.dto.PreguntaDTO;
 import com.unlam.tpi.dto.RespuestaDTO;
 import com.unlam.tpi.dto.SeccionDTO;
 import com.unlam.tpi.dto.TipoComponente;
-import com.unlam.tpi.servicio.CategoriaServicio;
-import com.unlam.tpi.servicio.PreguntaServicio;
-import com.unlam.tpi.servicio.SeccionServicio;
+import com.unlam.tpi.interfaces.CategoriaServicio;
+import com.unlam.tpi.interfaces.PreguntaServicio;
+import com.unlam.tpi.interfaces.SeccionServicio;
 
 @SpringBootTest
 @Transactional

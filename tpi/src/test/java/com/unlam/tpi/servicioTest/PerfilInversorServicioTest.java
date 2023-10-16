@@ -1,4 +1,4 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.unlam.tpi.dto.PerfilInversorDTO;
 import com.unlam.tpi.dto.TipoNivelConocimiento;
 import com.unlam.tpi.dto.TipoPerfilInversor;
-import com.unlam.tpi.servicio.PerfilInversorServicio;
+import com.unlam.tpi.interfaces.PerfilInversorServicio;
 
 @SpringBootTest
 @Transactional

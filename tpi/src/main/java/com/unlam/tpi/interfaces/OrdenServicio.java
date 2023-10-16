@@ -1,4 +1,4 @@
-package com.unlam.tpi.servicio;
+package com.unlam.tpi.interfaces;
 
 import com.unlam.tpi.dto.OrdenDTO;
 

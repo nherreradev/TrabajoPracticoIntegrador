@@ -1,6 +1,6 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,11 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.Rollback;
 
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.CategoriaDTO;
-import com.unlam.tpi.servicio.CategoriaServicio;
+import com.unlam.tpi.interfaces.CategoriaServicio;
 
 @SpringBootTest
 @Transactional
