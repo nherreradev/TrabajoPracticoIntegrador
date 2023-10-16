@@ -13,6 +13,7 @@ import com.unlam.tpi.repositorio.OrdenRepositorio;
 
 @Service
 public class OrdenServicioImpl implements OrdenServicio {
+
 	@Autowired
 	OrdenRepositorio ordenRepositorio;
 
@@ -30,11 +31,12 @@ public class OrdenServicioImpl implements OrdenServicio {
 		}
 	}
 
-	private void crearOrden(OrdenDTO ordenDTO) {
+	public Orden crearOrden(OrdenDTO ordenDTO) {
 		ModelMapper modelMapper = new ModelMapper();
 		Orden orden = modelMapper.map(ordenDTO, Orden.class);
 		preCreacion(orden);
-		ordenRepositorio.save(orden);
+		
+		return ordenRepositorio.save(orden);
 	}
 
 	private void preCreacion(Orden orden) {

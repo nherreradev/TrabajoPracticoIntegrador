@@ -30,9 +30,8 @@ public class PanelesServicioImpl implements PanelesServicio {
 	
 	@Autowired
     private ListaPreciosServicio listaPreciosServicio;
-	
 
-	List<Instrumento> listaInstrumentosAux = new ArrayList<>();
+	public static List<Instrumento> listaInstrumentosAux = new ArrayList<>();
 
 	private final RestTemplate restTemplate;
 
@@ -128,7 +127,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 		return responseEntity;
 	}
 
-	private void determinarFlashDeCompraVenta(Map<String, Instrumento> mapaInstrumentosAux,
+	public void determinarFlashDeCompraVenta(Map<String, Instrumento> mapaInstrumentosAux,
 			List<Instrumento> listaInstrumentos) {
 		if (listaInstrumentosAux != null && !listaInstrumentosAux.isEmpty()) {
 			for (Instrumento instrumento : listaInstrumentosAux) {
