@@ -62,4 +62,10 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 	
 	}
 
+	@Override
+	public void acreditarDinero(String simboloInstrumento) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

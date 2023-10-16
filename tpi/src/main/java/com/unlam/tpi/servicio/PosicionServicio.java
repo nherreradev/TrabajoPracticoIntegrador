@@ -14,4 +14,7 @@ public interface PosicionServicio {
 	@Transactional
 	PuedeOperarResultado puedeOperar(Orden orden);
 
+	@Transactional
+	void acreditarDinero();
+
 }

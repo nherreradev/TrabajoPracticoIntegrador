@@ -13,6 +13,7 @@ import com.unlam.tpi.repositorio.OrdenRepositorio;
 
 @Service
 public class OrdenServicioImpl implements OrdenServicio {
+
 	@Autowired
 	OrdenRepositorio ordenRepositorio;
 
@@ -30,11 +31,12 @@ public class OrdenServicioImpl implements OrdenServicio {
 		}
 	}
 
-	private void crearOrden(OrdenDTO ordenDTO) {
+	public Orden crearOrden(OrdenDTO ordenDTO) {
 		ModelMapper modelMapper = new ModelMapper();
 		Orden orden = modelMapper.map(ordenDTO, Orden.class);
 		preCreacion(orden);
-		ordenRepositorio.save(orden);
+		
+		return ordenRepositorio.save(orden);
 	}
 
 	private void preCreacion(Orden orden) {
@@ -45,7 +47,7 @@ public class OrdenServicioImpl implements OrdenServicio {
 		puedeOperar(orden);
 	}
 
-	private void puedeOperar(Orden orden) throws ServiceException {
+	public void puedeOperar(Orden orden) throws ServiceException {
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);
 		if (!puedeOperarResultado.getPuedeOperar()) {
 			throw new ServiceException("Puede operar hasta: " + puedeOperarResultado.getDisponible());

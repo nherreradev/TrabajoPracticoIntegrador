@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.unlam.tpi.modelo.persistente.Instrumento;
-import com.unlam.tpi.servicio.PanelesService;
+import com.unlam.tpi.servicio.PanelesServicio;
 
 @RestController
 @RequestMapping("/panel")
 public class PanelesControladorImpl implements PanelesControlador {
 
 	@Autowired
-	PanelesService panelesService;
+	PanelesServicio panelesService;
 
 	@Override
 	@GetMapping("/acciones")

@@ -46,7 +46,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		valuacionTotalRespuesta.setTotalCartera(totalCartera.toString());
 
 		return valuacionTotalRespuesta;
-	}
+	} 
 
 	@Override
 	public PuedeOperarResultado puedeOperar(Orden orden) {
@@ -96,6 +96,12 @@ public class PosicionServicioImpl implements PosicionServicio {
 			}
 		}
 		return puedeOperarResultado;
+	}
+	
+	@Override
+	public void acreditarDinero() {
+		
+		
 	}
 
 	private void completarPosicionDeDinero(Orden orden, Posicion posicionDinero) {
@@ -226,4 +232,5 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 		return totalMonedas;
 	}
+	
 }
