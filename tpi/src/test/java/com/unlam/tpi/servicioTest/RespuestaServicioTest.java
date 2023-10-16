@@ -8,8 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.unlam.tpi.dto.CategoriaDTO;
 import com.unlam.tpi.dto.RespuestaDTO;
-import com.unlam.tpi.servicio.CategoriaServicio;
-import com.unlam.tpi.servicio.RespuestaServicio;
+import com.unlam.tpi.interfaces.CategoriaServicio;
+import com.unlam.tpi.interfaces.RespuestaServicio;
 
 @SpringBootTest
 public class RespuestaServicioTest {

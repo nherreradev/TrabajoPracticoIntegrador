@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.unlam.tpi.dto.CategoriaDTO;
-import com.unlam.tpi.servicio.CategoriaServicio;
+import com.unlam.tpi.interfaces.CategoriaServicio;
 
 @SpringBootTest
 public class CategoriaServicioTest {

@@ -1,6 +1,8 @@
 package com.unlam.tpi.servicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.unlam.tpi.interfaces.UsuarioServicio;
 import com.unlam.tpi.repositorio.UsuarioRepositorio;
 
 @Service

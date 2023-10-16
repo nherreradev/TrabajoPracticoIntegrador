@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.unlam.tpi.dto.SeccionDTO;
-import com.unlam.tpi.servicio.SeccionServicio;
+import com.unlam.tpi.interfaces.SeccionServicio;
 
 @SpringBootTest
 public class SeccionServicioTest {

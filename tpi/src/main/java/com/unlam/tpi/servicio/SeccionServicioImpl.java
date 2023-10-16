@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.SeccionDTO;
 import com.unlam.tpi.helpers.TraductorGenerico;
+import com.unlam.tpi.interfaces.SeccionServicio;
 import com.unlam.tpi.modelo.persistente.Seccion;
 import com.unlam.tpi.repositorio.SeccionRepositorio;
 
