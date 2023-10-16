@@ -37,7 +37,7 @@ class PosicionServicioTest {
 
 	@InjectMocks
 	private PosicionServicioImpl posicionServicio;
-	
+
 	@Mock
 	private PosicionRepositorio posicionRepositorio;
 
@@ -219,51 +219,53 @@ class PosicionServicioTest {
 		when(posicionRepositorio.findAll()).thenReturn(listaPosiciones);
 
 		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal();
-		
+
 		assertEquals(totalMonedas, valuacionTotalRespuesta.getTotalMonedas());
 		assertEquals(totalInstrumentos, valuacionTotalRespuesta.getTotalInstrumentos());
 		assertEquals(totalCartera, valuacionTotalRespuesta.getTotalCartera());
 
 	}
-	
+
 	@Test
 	void testSiNuncaHiceElPerfilObjetivoSeMeAcreditaElPremio() {
 
 		RequestCargaDeDinero requestCargaDeDinero = new RequestCargaDeDinero();
 		requestCargaDeDinero.setCantidadPorAcreditar(new BigDecimal(5000));
 		requestCargaDeDinero.setConcepto(CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS);
-		
+
 		Posicion posicionDinero = new Posicion();
 		posicionDinero.setCantidad(new BigDecimal(4500));
 		posicionDinero.setEsEfectivo(true);
 		posicionDinero.setMonedaOid(1L);
 		posicionDinero.setConcepto("carga manual");
-		
-		when(posicionRepositorio.obtenerPosicionPorConcepto(requestCargaDeDinero.getConcepto())).thenReturn(posicionDinero);
-		
+
+		when(posicionRepositorio.obtenerPosicionPorConcepto(requestCargaDeDinero.getConcepto()))
+				.thenReturn(posicionDinero);
+
 		posicionServicio.acreditarDinero(requestCargaDeDinero);
-		
+
 		verify(posicionRepositorio).save(any(Posicion.class));
 
 	}
-	
+
 	@Test
 	void testSiYaHiceElPerfilObjetivoYLoVuelvoAHacerNoSeDeberiaAcreditarElPremio() {
 
 		RequestCargaDeDinero requestCargaDeDinero = new RequestCargaDeDinero();
 		requestCargaDeDinero.setCantidadPorAcreditar(new BigDecimal(5000));
 		requestCargaDeDinero.setConcepto(CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS);
-		
+
 		Posicion posicionDinero = new Posicion();
 		posicionDinero.setCantidad(new BigDecimal(4500));
 		posicionDinero.setEsEfectivo(true);
 		posicionDinero.setMonedaOid(1L);
 		posicionDinero.setConcepto(CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS);
-		
-		when(posicionRepositorio.obtenerPosicionPorConcepto(requestCargaDeDinero.getConcepto())).thenReturn(posicionDinero);
-		
+
+		when(posicionRepositorio.obtenerPosicionPorConcepto(requestCargaDeDinero.getConcepto()))
+				.thenReturn(posicionDinero);
+
 		posicionServicio.acreditarDinero(requestCargaDeDinero);
-		
+
 		verify(posicionRepositorio, never()).save(any(Posicion.class));
 
 	}
