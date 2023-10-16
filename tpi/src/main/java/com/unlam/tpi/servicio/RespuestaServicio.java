@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.dto.RespuestaDTO;
+import com.unlam.tpi.modelo.persistente.Respuesta;
 
 public interface RespuestaServicio {
 
@@ -24,4 +25,10 @@ public interface RespuestaServicio {
 
     @Transactional
     public void cargaDesdeExcel(MultipartFile excelPregunta);
+
+    @Transactional
+    public Respuesta getRespuestaPorNombre(String nombre);
+
+    @Transactional
+    public RespuestaDTO getRespuestaDTOPorNombre(String nombre);
 }

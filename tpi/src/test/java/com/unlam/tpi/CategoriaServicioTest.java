@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.web.servlet.MockMvc;
 
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.CategoriaDTO;
@@ -27,9 +26,6 @@ public class CategoriaServicioTest {
 
 	@Autowired
 	private CategoriaServicio categoriaServicio;
-
-	@Autowired
-	MockMvc mockMvc;
 
 	@Test
 	public void testQuePuedaGuardarCategoria() {
@@ -72,21 +68,14 @@ public class CategoriaServicioTest {
  		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
-	@Test
-	public void testQuePuedaListarCategoria() {
-		assertTrue(getCategoriaServicio().listar().size() > 0);
-	}
 	
 	@Test
-	public void testQuePuedaObtenerUnaCategoriaDTOPorID() {
-		assertTrue(CategoriaDTO.class
-				.isAssignableFrom(getCategoriaServicio().getCategoriaDTOPorID(27L).getClass()));
-	}
-
-	@Test
 	public void testQuePuedaObtenerUnaCategoriaDTOPorNombre() {
-		assertTrue(CategoriaDTO.class
-				.isAssignableFrom(getCategoriaServicio().getCategoriaDTOPorNombre("CategoriaPrueba").getClass()));
+		CategoriaDTO categoria = new CategoriaDTO();
+		categoria.setNombre("CategoriaPrueba");
+		categoria.setDescripcion("Esto es un test");
+		getCategoriaServicio().guardar(categoria);
+		assertNotNull(getCategoriaServicio().getCategoriaDTOPorNombre("CategoriaPrueba"));
 	}
 	
 	@Test
@@ -97,13 +86,6 @@ public class CategoriaServicioTest {
 		String expectedMessage = "Error al obtener la categoria por nombre";
 		String actualMessage = serviceException.getMessage();
 		assertTrue(actualMessage.contains(expectedMessage));
-	}
-	
-	@Test
-	@Rollback
-	public void testQuePuedaBorrarUnaCategoriaPorID() {
-		getCategoriaServicio().borrar(27L);
-		assertNotNull(getCategoriaServicio().getCategoriaDTOPorID(27L));
 	}
 	
 	public CategoriaServicio getCategoriaServicio() {

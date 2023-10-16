@@ -1,14 +1,9 @@
 package com.unlam.tpi;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.IOException;
-import java.util.List;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +12,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.unlam.tpi.arquitectura.ServiceException;
-import com.unlam.tpi.dto.CategoriaDTO;
-import com.unlam.tpi.modelo.persistente.Categoria;
 import com.unlam.tpi.servicio.CategoriaServicio;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 public class CategoriaControladorTest {
 
 	@Autowired

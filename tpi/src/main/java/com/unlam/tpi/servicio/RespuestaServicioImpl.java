@@ -126,6 +126,36 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	}
 
 	@Override
+	public RespuestaDTO getRespuestaDTOPorNombre(String nombre) {
+		try {
+			Respuesta respuesta = getRespuestaPorNombre(nombre);
+			if(respuesta==null) {
+				throw new ServiceException("Error al obtener la respuesta: "+nombre);
+			}
+			return RespuestaDTO.entidadADTO(respuesta);
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("Error al obtener la respuesta: "+nombre, e);
+		}
+	}
+	
+	@Override
+	public Respuesta getRespuestaPorNombre(String nombre) {
+		try {
+			Respuesta respuesta = getRespuestaRepositorio().findByNombre(nombre);
+			if (respuesta == null) {
+				throw new ServiceException("Error al obtener la respuesta: "+nombre);
+			}
+			return respuesta;
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("Error al obtener la respuesta: "+nombre, e);
+		}
+	}
+	
+	@Override
 	public RespuestaDTO getRespuestaDTOPorID(Long id) {
 		try {
 			Respuesta respuesta = getRespuestaRepositorio().findByOid(id);

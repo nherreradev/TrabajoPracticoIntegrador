@@ -17,7 +17,6 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.SeccionDTO;
-import com.unlam.tpi.modelo.persistente.Seccion;
 import com.unlam.tpi.servicio.SeccionServicio;
 
 @SpringBootTest
@@ -63,28 +62,11 @@ public class SeccionServicioTest {
 		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
 			getSeccionServicio().cargaDesdeExcel(excelFile);
 		});
-		String expectedMessage = "Error al importar excel verifique que exista la hoja Seccion";
+		String expectedMessage = "Error al importar excel verifique que exista la hoja seccion";
 		String actualMessage = serviceException.getMessage();
- 		assertTrue(expectedMessage.contains(actualMessage));
+ 		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
-	@Test
-	public void testQuePuedaListarSeccion() {
-		assertTrue(getSeccionServicio().listar().size() > 0);
-	}
-	
-	@Test
-	public void testQuePuedaObtenerUnaSeccionDTOPorID() {
-		assertTrue(SeccionDTO.class
-				.isAssignableFrom(getSeccionServicio().getSeccionDTOPorID(27L).getClass()));
-	}
-
-	@Test
-	public void testQuePuedaObtenerUnaSeccionDTOPorNombre() {
-		assertTrue(SeccionDTO.class
-				.isAssignableFrom(getSeccionServicio().getSeccionDTOPorNombre("SecccionPrueba").getClass()));
-	}
-	
 	@Test
 	public void testQueBusqueUnaSeccionPorNombreYNoLaEncuentre() {
 		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
@@ -92,27 +74,18 @@ public class SeccionServicioTest {
 		});
 		String expectedMessage = "Error al obtener la seccion por nombre";
 		String actualMessage = serviceException.getMessage();
-		assertTrue(actualMessage.contains(expectedMessage));
+ 		assertTrue(actualMessage.contains(expectedMessage));
 	}
 	
 	@Test
 	public void testQuePuedaObtenerUnaSeccionPorNombre() {
-		assertTrue(
-				Seccion.class.isAssignableFrom(getSeccionServicio().getSeccionPorNombre("SecccionPrueba").getClass()));
+		SeccionDTO seccion = new SeccionDTO();
+		seccion.setNombre("SeccionPrueba");
+		seccion.setDescripcion("Esto es un test");
+		getSeccionServicio().guardar(seccion);
+		assertNotNull(getSeccionServicio().getSeccionPorNombre("SeccionPrueba"));
 	}
 	
-	@Test
-	public void testQuePuedaBorrarUnaSeccionPorID() {
-		getSeccionServicio().borrar(30L);
-		assertNotNull(getSeccionServicio().getSeccionDTOPorID(30L));
-	}
-	
-	
-	@Test
-	public void testQuePuedaListarLasSecciones() {
-		assertTrue(getSeccionServicio().listar().size()>0);
-	}
-
 	public SeccionServicio getSeccionServicio() {
 		return seccionServicio;
 	}

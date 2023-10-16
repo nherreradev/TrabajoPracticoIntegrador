@@ -2,6 +2,8 @@ package com.unlam.tpi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +14,7 @@ import com.unlam.tpi.dto.TipoPerfilInversor;
 import com.unlam.tpi.servicio.PerfilInversorServicio;
 
 @SpringBootTest
+@Transactional
 public class PerfilInversorServicioTest {
 
 	@Autowired

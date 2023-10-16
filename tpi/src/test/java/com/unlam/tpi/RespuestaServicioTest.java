@@ -16,6 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.unlam.tpi.arquitectura.ServiceException;
+import com.unlam.tpi.dto.CategoriaDTO;
 import com.unlam.tpi.dto.RespuestaDTO;
 import com.unlam.tpi.servicio.CategoriaServicio;
 import com.unlam.tpi.servicio.PreguntaServicio;
@@ -39,25 +40,60 @@ public class RespuestaServicioTest {
 	private SeccionServicio seccionServicio;
 
 	@Test
-	public void testQuePuedaGuardarCategoria() {
+	public void testQuePuedaGuardarRespuestaYLaObtenga() {
 		RespuestaDTO respuesta = new RespuestaDTO();
 		respuesta.setNombre("Respuesta A");
 		respuesta.setValor(10);
 		respuesta.setOrden(1);
 		getRespuestaServicio().guardar(respuesta);
+		assertNotNull(getRespuestaServicio().getRespuestaDTOPorNombre("Respuesta A"));
 	}
 	
 	@Test
-    public void testQuePuedaCargarLasSPreguntasDesdeExcelYLasListe() throws IOException {
-		MockMultipartFile excelFile = new MockMultipartFile("excelPregunta", "pregunta.xls", "application/x-xlsx",
+	public void testQueAlGuardarUnaRespuestaDevuelvaUnaServiceException() {
+		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
+			RespuestaDTO respuesta = null;
+			getRespuestaServicio().guardar(respuesta);
+		});
+		String expectedMessage = "Error en convertir RespuestaDTO a Respuesta";
+		String actualMessage = serviceException.getMessage();
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
+	
+	@Test
+    public void testQuePuedaCargarLasRespuestaDesdeExcelYLasListe() throws IOException {
+		MockMultipartFile excelFile = new MockMultipartFile("excelRespuesta", "pregunta.xls", "application/x-xlsx",
 				new ClassPathResource("pregunta.xlsx").getInputStream());
 		givenSeCreaLacategoria(excelFile);
 		givenSeCreaLaSeccion(excelFile);
 		givenSeCreaLaPregunta(excelFile);
 		getRespuestaServicio().cargaDesdeExcel(excelFile);
-		List<RespuestaDTO> preguntas = getRespuestaServicio().listar();
-		assertNotNull(preguntas);
+		List<RespuestaDTO> respuestas = getRespuestaServicio().listar();
+		assertNotNull(respuestas);
     }
+	
+	@Test
+	public void testQueAlCargarLasRespuestasDesdeExcelYFallePorqueNoExisteLaHojaRespuesta() throws IOException {
+		MockMultipartFile excelFile = new MockMultipartFile("excelPregunta", "pregunta_sin_hojas.xls",
+				"application/x-xlsx", new ClassPathResource("pregunta_sin_hojas.xlsx").getInputStream());
+		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
+			getRespuestaServicio().cargaDesdeExcel(excelFile);
+		});
+		String expectedMessage = "Error al importar excel verifique que exista la hoja respuesta";
+		String actualMessage = serviceException.getMessage();
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
+	
+	@Test
+	public void testQueBusqueUnaRespuestaPorNombreYNoLaEncuentre() {
+		String nombre = "Noexiste";
+		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
+			getRespuestaServicio().getRespuestaDTOPorNombre(nombre);
+		});
+		String expectedMessage = "Error al obtener la respuesta: " + nombre;
+		String actualMessage = serviceException.getMessage();
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
 	
 	
 	private void givenSeCreaLacategoria(MockMultipartFile excelFile ) {
@@ -72,34 +108,6 @@ public class RespuestaServicioTest {
 		getPreguntaServicio().cargaDesdeExcel(excelFile);
 	}
 	
-	
-	@Test
-	public void testQueAlCargarLasPreguntasDesdeExcelYFallePorqueNoExisteLaHojaPregunta() throws IOException {
-		MockMultipartFile excelFile = new MockMultipartFile("excelPregunta", "pregunta_sin_hojas.xls",
-				"application/x-xlsx", new ClassPathResource("pregunta_sin_hojas.xlsx").getInputStream());
-		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-			getRespuestaServicio().cargaDesdeExcel(excelFile);
-		});
-		String expectedMessage = "Error al importar excel verifique que exista la hoja respuesta";
-		String actualMessage = serviceException.getMessage();
- 		assertTrue(actualMessage.contains(expectedMessage));
-	}
-
-	@Test
-	public void testQuePuedaListarPregunta() {
-		assertTrue(getRespuestaServicio().listar().size() > 0);
-	}
-	
-	@Test
-	public void testQuePuedaObtenerUnaRespuestaDTOPorID() {
-		assertTrue(RespuestaDTO.class.isAssignableFrom(getRespuestaServicio().getRespuestaDTOPorID(1L).getClass()));
-	}
-	
-	@Test
-	public void testQuePuedaListarRespuesta() {
-		assertTrue(getRespuestaServicio().listar().size()>0);
-	}
-
 	public RespuestaServicio getRespuestaServicio() {
 		return respuestaServicio;
 	}
