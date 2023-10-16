@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.OrdenDTO;
+import com.unlam.tpi.interfaces.OrdenServicio;
+import com.unlam.tpi.interfaces.PosicionServicio;
 import com.unlam.tpi.modelo.persistente.Orden;
 import com.unlam.tpi.modelo.pojo.PuedeOperarResultado;
 import com.unlam.tpi.repositorio.OrdenRepositorio;

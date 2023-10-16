@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.dto.RespuestaDTO;
-import com.unlam.tpi.servicio.RespuestaServicio;
+import com.unlam.tpi.interfaces.RespuestaServicio;
 
 @RestController
 @RequestMapping("/api/respuesta")

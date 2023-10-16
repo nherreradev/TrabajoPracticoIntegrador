@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.OrdenDTO;
-import com.unlam.tpi.servicio.OrdenServicio;
+import com.unlam.tpi.interfaces.OrdenServicio;
 
 @CrossOrigin
 @RestController

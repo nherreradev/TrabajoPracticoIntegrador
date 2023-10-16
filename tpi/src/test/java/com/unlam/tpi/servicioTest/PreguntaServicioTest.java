@@ -13,7 +13,7 @@ import com.unlam.tpi.dto.PreguntaDTO;
 import com.unlam.tpi.dto.RespuestaDTO;
 import com.unlam.tpi.dto.SeccionDTO;
 import com.unlam.tpi.enums.TipoComponente;
-import com.unlam.tpi.servicio.PreguntaServicio;
+import com.unlam.tpi.interfaces.PreguntaServicio;
 
 @SpringBootTest
 public class PreguntaServicioTest {

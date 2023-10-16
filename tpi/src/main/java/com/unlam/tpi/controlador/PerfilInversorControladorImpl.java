@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.dto.PerfilInversorDTO;
-import com.unlam.tpi.servicio.PerfilInversorServicio;
+import com.unlam.tpi.interfaces.PerfilInversorServicio;
 
 @RestController
 @RequestMapping("/api/perfil-inversor")

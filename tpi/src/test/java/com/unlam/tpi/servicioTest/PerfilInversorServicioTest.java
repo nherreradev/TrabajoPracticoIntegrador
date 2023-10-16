@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.unlam.tpi.dto.PerfilInversorDTO;
 import com.unlam.tpi.enums.TipoNivelConocimiento;
 import com.unlam.tpi.enums.TipoPerfilInversor;
-import com.unlam.tpi.servicio.PerfilInversorServicio;
+import com.unlam.tpi.interfaces.PerfilInversorServicio;
 
 @SpringBootTest
 public class PerfilInversorServicioTest {

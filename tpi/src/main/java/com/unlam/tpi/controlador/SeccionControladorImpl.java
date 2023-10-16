@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.dto.SeccionDTO;
-import com.unlam.tpi.servicio.SeccionServicio;
+import com.unlam.tpi.interfaces.SeccionServicio;
 
 @RestController
 @RequestMapping("/api/seccion")

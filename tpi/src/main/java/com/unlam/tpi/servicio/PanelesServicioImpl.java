@@ -19,6 +19,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.constantes.PanelesDePreciosConstantes;
+import com.unlam.tpi.interfaces.ListaPreciosServicio;
+import com.unlam.tpi.interfaces.PanelPrecios;
+import com.unlam.tpi.interfaces.PanelesServicio;
 import com.unlam.tpi.mocks.Mock;
 import com.unlam.tpi.modelo.persistente.Instrumento;
 

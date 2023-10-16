@@ -10,6 +10,7 @@ import com.unlam.tpi.dto.PerfilInversorDTO;
 import com.unlam.tpi.enums.TipoNivelConocimiento;
 import com.unlam.tpi.enums.TipoPerfilInversor;
 import com.unlam.tpi.helpers.TraductorGenerico;
+import com.unlam.tpi.interfaces.PerfilInversorServicio;
 import com.unlam.tpi.modelo.persistente.PerfilInversor;
 import com.unlam.tpi.repositorio.PerfilInversorRepositorio;
 

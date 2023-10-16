@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.unlam.tpi.interfaces.PanelesServicio;
 import com.unlam.tpi.modelo.persistente.Instrumento;
-import com.unlam.tpi.servicio.PanelesServicio;
 
 @RestController
 @RequestMapping("/panel")

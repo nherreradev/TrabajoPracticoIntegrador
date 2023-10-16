@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.dto.CategoriaDTO;
-import com.unlam.tpi.servicio.CategoriaServicio;
+import com.unlam.tpi.interfaces.CategoriaServicio;
 
 @RestController
 @RequestMapping("/api/categoria")
