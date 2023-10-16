@@ -1,11 +1,17 @@
 package com.unlam.tpi.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.unlam.tpi.enums.TipoComponente;
+import org.modelmapper.ModelMapper;
+
+import com.unlam.tpi.arquitectura.ServiceException;
+import com.unlam.tpi.modelo.persistente.Pregunta;
 
 public class PreguntaDTO {
 
+	private static ModelMapper mapper = new ModelMapper();
+	
 	private Long oid;
 	
 	private Integer version;
@@ -104,6 +110,41 @@ public class PreguntaDTO {
 
 	public void setTipoComponente(TipoComponente tipoComponente) {
 		this.tipoComponente = tipoComponente;
+	}
+	
+	public static Pregunta dTOaEntidad(PreguntaDTO pregunta) {
+		try {
+			return mapper.map(pregunta, Pregunta.class);
+		} catch (Exception e) {
+			throw new ServiceException("Error en convertir PreguntaDTO a Pregunta", e);
+		}
+	}
+	
+	public static PreguntaDTO entidadADTO(Pregunta pregunta) {
+		try {
+			return mapper.map(pregunta, PreguntaDTO.class);
+		} catch (Exception e) {
+			throw new ServiceException("Error en convertir Pregunta a PreguntaDTO", e);
+		}
+	}
+	
+	public static List<PreguntaDTO> entidadDTOLista(List<Pregunta> preguntas) {
+		try {
+			return preguntas.stream().map(pregunta -> mapper.map(pregunta, PreguntaDTO.class))
+				.collect(Collectors.toList());
+		}catch (Exception e) {
+			throw new ServiceException("Error en convertir una lista Pregunta a lista PreguntaDTO", e);
+		}
+	}
+	
+	public static List<Pregunta> traductorDeListaDTOaEntidad(List<PreguntaDTO> preguntas) throws ServiceException {
+		try {
+			return preguntas.stream().map(pregunta -> mapper.map(pregunta, Pregunta.class))
+					.collect(Collectors.toList());
+
+		} catch (Exception e) {
+			throw new ServiceException("Error en convertir una lista PreguntaDTO a lista Pregunta", e);
+		}
 	}
 
 }

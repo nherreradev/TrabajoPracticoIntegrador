@@ -4,7 +4,10 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.unlam.tpi.dto.PreguntaDTO;
+import com.unlam.tpi.modelo.persistente.Pregunta;
 
 public interface PreguntaServicio {
 
@@ -12,7 +15,7 @@ public interface PreguntaServicio {
     public void guardar(PreguntaDTO pregunta);
 
 	@Transactional
-    public PreguntaDTO obtener(Long id);
+    public PreguntaDTO getPreguntaDTOPorID(Long id);
 
 	@Transactional
     public void borrar(Long id);
@@ -22,4 +25,13 @@ public interface PreguntaServicio {
 
 	@Transactional
 	public List<PreguntaDTO> listarPorCategoria(String categoria);
+
+	@Transactional
+	public void cargaDesdeExcel(MultipartFile excelPregunta);
+
+	@Transactional
+	public PreguntaDTO getPreguntaDTOPorEnunciado(String nombre);
+
+	@Transactional
+	public Pregunta getPreguntaPorEnunciado(String pregunta);
 }

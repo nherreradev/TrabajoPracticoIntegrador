@@ -1,4 +1,4 @@
-package com.unlam.tpi.enums;
+package com.unlam.tpi.dto;
 
 public enum TipoNivelConocimiento {
 

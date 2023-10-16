@@ -1,45 +1,201 @@
 package com.unlam.tpi.servicio;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections4.map.HashedMap;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.PreguntaDTO;
-import com.unlam.tpi.helpers.TraductorGenerico;
+import com.unlam.tpi.dto.TipoComponente;
+import com.unlam.tpi.modelo.persistente.Categoria;
 import com.unlam.tpi.modelo.persistente.Pregunta;
+import com.unlam.tpi.modelo.persistente.Seccion;
 import com.unlam.tpi.repositorio.PreguntaRepositorio;
 
 @Service
 public class PreguntaServicioImpl implements PreguntaServicio {
 	
+	private static final String COLUMNA_SECCION = "seccion";
+
+	private static final String COLUMNA_CATEGORIA = "categoria";
+
+	private static final String COLUMNA_TIPOCOMPONENTE = "tipocomponente";
+
+	private static final String COLUMNA_DESCRIPCION = "descripcion";
+
+	private static final String COLUMNA_ENUNCIADO = "enunciado";
+
+	private static final String HOJA_PREGUNTA = "pregunta";
+
 	@Autowired
 	PreguntaRepositorio preguntaRepositorio;
+	
+	@Autowired
+	CategoriaServicio categoriaServicio;
+	
+	@Autowired
+	SeccionServicio seccionServicio;
 	
 	@Override
 	public void guardar(PreguntaDTO pregunta) {
 		try {
-			Pregunta persistente = TraductorGenerico.traductorDeDTOaEntidad(pregunta, Pregunta.class);
+			Pregunta persistente = PreguntaDTO.dTOaEntidad(pregunta);
 			getPreguntaRepositorio().save(persistente);
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("Error al guardar la pregunta", e);
+		}
+	}
+	
+	@Override
+	public void cargaDesdeExcel(MultipartFile excelPregunta) {
+		List<Pregunta> listaPregunta = new ArrayList<>();
+		Map<Integer, String> encabezado = new HashedMap<>();
+		Map<String, Categoria> categoriaMap = new HashedMap<>();
+		Map<String, Seccion> seccionMap = new HashedMap<>();
+		XSSFWorkbook libro;
+		try {
+			libro = new XSSFWorkbook(excelPregunta.getInputStream());
+			XSSFSheet hoja = libro.getSheet(HOJA_PREGUNTA);
+			if (hoja == null) {
+				throw new ServiceException("Error al importar excel verifique que exista la hoja pregunta");
+			}
+			for (Row fila : hoja) {
+				Pregunta pregunta = new Pregunta();
+				Iterator<Cell> iteadorColumna = fila.iterator();
+				while (iteadorColumna.hasNext()) {
+					Cell columna = iteadorColumna.next();
+					if (columna.getRowIndex() == 0) {
+						if (!encabezado.containsKey(columna.getColumnIndex())) {
+							encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
+						}
+					} else {
+						if (encabezado.containsKey(columna.getColumnIndex())) {
+							String nombreColumna = encabezado.get(columna.getColumnIndex());
+							switch (nombreColumna) {
+							case COLUMNA_ENUNCIADO:
+								pregunta.setEnunciado(columna.getStringCellValue());
+								break;
+							case COLUMNA_DESCRIPCION:
+								pregunta.setDescripcion(columna.getStringCellValue());
+								break;
+							case COLUMNA_TIPOCOMPONENTE:
+								pregunta.setTipoComponente(TipoComponente.valueOf(columna.getStringCellValue()));
+								break;
+							case COLUMNA_CATEGORIA:
+								String nombreCategoria = columna.getStringCellValue();
+								if (categoriaMap.containsKey(nombreCategoria)) {
+									pregunta.setCategoria(categoriaMap.get(nombreCategoria));
+								} else {
+									Categoria categoria = getCategoriaServicio().getCategoriaPorNombre(nombreCategoria);
+									if (categoria == null) {
+										throw new ServiceException(
+												"Error al obtener la categoria con nombre: " + nombreCategoria);
+									}
+									categoriaMap.put(nombreCategoria, categoria);
+									pregunta.setCategoria(categoriaMap.get(nombreCategoria));
+								}
+								break;
+							case COLUMNA_SECCION:
+								String nombreSeccion = columna.getStringCellValue();
+								if (seccionMap.containsKey(nombreSeccion)) {
+									pregunta.setSeccion(seccionMap.get(nombreSeccion));
+								} else {
+									Seccion seccion = getSeccionServicio().getSeccionPorNombre(nombreSeccion);
+									if (seccion == null) {
+										throw new ServiceException(
+												"Error al obtener la sección con nombre: " + nombreSeccion);
+									}
+									seccionMap.put(nombreSeccion, seccion);
+									pregunta.setSeccion(seccionMap.get(nombreSeccion));
+								}
+								break;
+							}
+						}
+					}
+				}
+				if (pregunta.getEnunciado() != null && pregunta.getDescripcion() != null
+						&& pregunta.getCategoria() != null && pregunta.getTipoComponente() != null
+						&& pregunta.getSeccion() != null) {
+					listaPregunta.add(pregunta);
+				}
+			}
+			if (0 < listaPregunta.size()) {
+				getPreguntaRepositorio().saveAll(listaPregunta);
+			}
+		} catch (IOException e) {
+			throw new ServiceException("Error al guardar la pregunta", e);
+		} catch (ServiceException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la pregunta", e);
 		}
 	}
 
 	@Override
-	public PreguntaDTO obtener(Long id) {
+	public PreguntaDTO getPreguntaDTOPorID(Long id) {
 		try {
-			return TraductorGenerico.traductorDeEntidadaDTO(getPreguntaRepositorio().getReferenceById(id), PreguntaDTO.class);
+			Pregunta pregunta = getPreguntaRepositorio().getReferenceById(id);
+			if(pregunta==null) {
+				throw new ServiceException("Error al obtener la pregunta");
+			}
+			return PreguntaDTO.entidadADTO(pregunta);
+		} catch (ServiceException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al obtener la pregunta", e);
 		}
 	}
 
 	@Override
+	public PreguntaDTO getPreguntaDTOPorEnunciado(String nombre) {
+		try {
+			Pregunta pregunta = getPreguntaPorEnunciado(nombre);
+			if(pregunta==null) {
+				throw new ServiceException("Error al obtener la pregunta: "+nombre);
+			}
+			return PreguntaDTO.entidadADTO(pregunta);
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("Error al obtener la pregunta: "+nombre, e);
+		}
+	}
+	
+	@Override
+	public Pregunta getPreguntaPorEnunciado(String enunciado) {
+		try {
+			Pregunta pregunta = getPreguntaRepositorio().findByEnunciado(enunciado);
+			if (pregunta == null) {
+				throw new ServiceException("Error al obtener la pregunta: "+enunciado);
+			}
+			return pregunta;
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("Error al obtener la pregunta: "+enunciado, e);
+		}
+	}
+
+	
+	@Override
 	public void borrar(Long id) {
 		try {
 			getPreguntaRepositorio().deleteById(id);		
+		} catch (ServiceException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al borrar la pregunta", e);
 		}
@@ -48,7 +204,9 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	@Override
 	public List<PreguntaDTO> listar() {
 		try {
-			return TraductorGenerico.traductorDeListaEntidadaDTO(getPreguntaRepositorio().findAll(), PreguntaDTO.class);
+			return PreguntaDTO.entidadDTOLista(getPreguntaRepositorio().findAll());
+		} catch (ServiceException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al listar las preguntas", e);
 		}
@@ -57,7 +215,9 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	@Override
 	public List<PreguntaDTO> listarPorCategoria(String categoria) {
 		try {
-			return TraductorGenerico.traductorDeListaEntidadaDTO(getPreguntaRepositorio().findByCategoria_Nombre(categoria), PreguntaDTO.class);
+			return PreguntaDTO.entidadDTOLista(getPreguntaRepositorio().findByCategoria_Nombre(categoria));
+		} catch (ServiceException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al listar las preguntas", e);
 		}
@@ -69,5 +229,22 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	public void setPreguntaRepositorio(PreguntaRepositorio preguntaRepositorio) {
 		this.preguntaRepositorio = preguntaRepositorio;
 	}
+
+	public CategoriaServicio getCategoriaServicio() {
+		return categoriaServicio;
+	}
+
+	public void setCategoriaServicio(CategoriaServicio categoriaServicio) {
+		this.categoriaServicio = categoriaServicio;
+	}
+
+	public SeccionServicio getSeccionServicio() {
+		return seccionServicio;
+	}
+
+	public void setSeccionServicio(SeccionServicio seccionServicio) {
+		this.seccionServicio = seccionServicio;
+	}
+	
 	
 }
