@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.unlam.tpi.servicio.UsuarioServicio;
+import com.unlam.tpi.interfaces.UsuarioServicio;
 
 @RestController
 @RequestMapping("/api")

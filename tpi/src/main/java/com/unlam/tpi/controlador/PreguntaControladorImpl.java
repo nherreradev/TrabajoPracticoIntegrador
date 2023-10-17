@@ -3,15 +3,19 @@ package com.unlam.tpi.controlador;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.dto.PreguntaDTO;
-import com.unlam.tpi.servicio.PreguntaServicio;
+import com.unlam.tpi.interfaces.PreguntaServicio;
 
 @RestController
 @RequestMapping("/api/pregunta")
@@ -27,9 +31,15 @@ public class PreguntaControladorImpl implements PreguntaControlador {
 	}
 
 	@Override
+	@RequestMapping(path = "/carga-pregunta-excel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public void cargaDesdeExcel(@RequestParam MultipartFile excelPregunta) {
+		getPreguntaServicio().cargaDesdeExcel(excelPregunta);
+	}
+		
+	@Override
 	@GetMapping("/obtener")
 	public PreguntaDTO obtener(Long id) {
-		return getPreguntaServicio().obtener(id);
+		return getPreguntaServicio().getPreguntaDTOPorID(id);
 	}
 
 	@Override

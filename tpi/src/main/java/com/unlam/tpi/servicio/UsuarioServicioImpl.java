@@ -3,6 +3,8 @@ import com.unlam.tpi.modelo.persistente.Usuario;
 import com.unlam.tpi.modelo.rest.ResponseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.unlam.tpi.interfaces.UsuarioServicio;
 import com.unlam.tpi.repositorio.UsuarioRepositorio;
 
 @Service

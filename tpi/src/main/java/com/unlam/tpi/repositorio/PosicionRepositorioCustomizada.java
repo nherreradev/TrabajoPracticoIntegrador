@@ -9,4 +9,6 @@ public interface PosicionRepositorioCustomizada {
 	List<Posicion> getPosicionEnEfectivo();
 
 	List<Posicion> getTitulosDisponiblesPorSimbolo(String simboloInstrumento);
+	
+	Posicion obtenerPosicionPorConcepto(String concepto);
 }

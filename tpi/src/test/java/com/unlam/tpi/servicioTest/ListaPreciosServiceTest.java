@@ -1,7 +1,7 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
 import com.unlam.tpi.servicio.ListaPreciosServicioImpl;
-import com.unlam.tpi.servicio.PanelesServiceImpl;
+import com.unlam.tpi.servicio.PanelesServicioImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,7 +24,7 @@ public class ListaPreciosServiceTest {
     private final RestTemplate restTemplate = new RestTemplate();
     private ListaPreciosServicioImpl lp = new ListaPreciosServicioImpl(restTemplate);
     @InjectMocks
-    private PanelesServiceImpl ps = new PanelesServiceImpl();
+    private PanelesServicioImpl ps = new PanelesServicioImpl();
     private static final String MERCADOJR_URL_ACCIONES = "https://api.mercadojunior.com.ar/list/precios/acciones";
     private static final String MERCADOJR_URL_BONOS = "https://api.mercadojunior.com.ar/list/precios/bonos";
     private static final String IOL_ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
@@ -37,7 +37,8 @@ public class ListaPreciosServiceTest {
         ResponseEntity<String> mockResponse = new ResponseEntity<>("", HttpStatus.OK);
 
         lp = mock(ListaPreciosServicioImpl.class);
-        ps = mock(PanelesServiceImpl.class);
+        ps = mock(PanelesServicioImpl.class);
+
         when(ps.getInstrumentos(MERCADOJR_URL_ACCIONES)).thenReturn(mockResponse);
         when(lp.ValidateResponse(mockResponse, "acciones")).thenReturn(expect);
 
@@ -55,7 +56,8 @@ public class ListaPreciosServiceTest {
         ResponseEntity<String> mockResponse = new ResponseEntity<>("", HttpStatus.OK);
 
         lp = mock(ListaPreciosServicioImpl.class);
-        PanelesServiceImpl ps = mock(PanelesServiceImpl.class);
+        ps = mock(PanelesServicioImpl.class);
+
         when(ps.getInstrumentos(MERCADOJR_URL_BONOS)).thenReturn(mockResponse);
         when(lp.ValidateResponse(mockResponse, "acciones")).thenReturn(expect);
 
@@ -69,9 +71,9 @@ public class ListaPreciosServiceTest {
     @Test
     public void AlQuererRealizarUnaPeticionAInvertirOnlineParaObtenerAccionesObtengoUnErrorDeRespuestaNoAutorizado (){
         ResponseEntity<String> response = new ResponseEntity<>("{ \"message\": \"Authorization has been denied for this request.\" }", HttpStatus.UNAUTHORIZED);
-
         // Creo un mock de servicio que devuelve la respuesta mockeada
-        ps = mock(PanelesServiceImpl.class);
+        ps = mock(PanelesServicioImpl.class);
+
         when(ps.getInstrumentos(IOL_ACCIONES)).thenReturn(response);
 
         // Realizo la prueba
@@ -84,14 +86,12 @@ public class ListaPreciosServiceTest {
     @Test
     public void AlQuererRealizarUnaPeticionAInvertirOnlineParaObtenerBonosObtengoUnErrorDeRespuestaNoAutorizado (){
         ResponseEntity<String> response = new ResponseEntity<>("{ \"message\": \"Authorization has been denied for this request.\" }", HttpStatus.UNAUTHORIZED);
-
         // Creo un mock de servicio que devuelve la respuesta mockeada
-        ps = mock(PanelesServiceImpl.class);
-        when(ps.getInstrumentos(IOL_BONOS)).thenReturn(response);
+        ps = mock(PanelesServicioImpl.class);
 
+        when(ps.getInstrumentos(IOL_BONOS)).thenReturn(response);
         // Realizo la prueba
         ResponseEntity<String> actualResponse = ps.getInstrumentos(IOL_BONOS);
-
         // Verifico que la respuesta tenga el código 401 (Unauthorized)
         assertEquals(HttpStatus.UNAUTHORIZED, actualResponse.getStatusCode());
     }

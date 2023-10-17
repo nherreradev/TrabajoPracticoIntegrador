@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.PerfilInversorDTO;
-import com.unlam.tpi.enums.TipoNivelConocimiento;
-import com.unlam.tpi.enums.TipoPerfilInversor;
-import com.unlam.tpi.helpers.TraductorGenerico;
+import com.unlam.tpi.dto.TipoNivelConocimiento;
+import com.unlam.tpi.dto.TipoPerfilInversor;
+import com.unlam.tpi.interfaces.PerfilInversorServicio;
 import com.unlam.tpi.modelo.persistente.PerfilInversor;
 import com.unlam.tpi.repositorio.PerfilInversorRepositorio;
 
@@ -30,7 +30,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 			return perfilInversorDTO;
 		} catch (ServiceException e) {
 			throw e;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new ServiceException("Error al calcular el perfil inversor subjetivo", e);
 		}
 	}
@@ -95,8 +95,10 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public void guardar(PerfilInversorDTO perfilInversorDTO) {
 		try {
-			PerfilInversor persistente = TraductorGenerico.traductorDeDTOaEntidad(perfilInversorDTO, PerfilInversor.class);
+			PerfilInversor persistente = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
 			getPerfilInversorRepositorio().save(persistente);
+		} catch (ServiceException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar el perfil inversor", e);
 		}
@@ -105,8 +107,9 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public PerfilInversorDTO obtener(Long id) {
 		try {
-			return TraductorGenerico.traductorDeEntidadaDTO(getPerfilInversorRepositorio().getReferenceById(id),
-					PerfilInversorDTO.class);
+			return PerfilInversorDTO.entidadADTO(getPerfilInversorRepositorio().getReferenceById(id));
+		} catch (ServiceException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al obtener el perfil inversor", e);
 		}
@@ -116,6 +119,8 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	public void borrar(Long id) {
 		try {
 			getPerfilInversorRepositorio().deleteById(id);
+		} catch (ServiceException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al borrar el perfil inversor", e);
 		}
@@ -124,10 +129,11 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public List<PerfilInversorDTO> listar() {
 		try {
-			return TraductorGenerico.traductorDeListaEntidadaDTO(getPerfilInversorRepositorio().findAll(),
-					PerfilInversorDTO.class);
+			return PerfilInversorDTO.entidadDTOLista(getPerfilInversorRepositorio().findAll());
+		} catch (ServiceException e) {
+			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("Error al listar las preguntas", e);
+			throw new ServiceException("Error al listar Perfil inversor.", e);
 		}
 	}
 

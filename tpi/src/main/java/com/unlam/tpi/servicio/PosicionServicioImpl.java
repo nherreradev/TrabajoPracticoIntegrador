@@ -8,16 +8,18 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.unlam.tpi.arquitectura.ServiceException;
+import com.unlam.tpi.constantes.CargaCreditoConstantes;
 import com.unlam.tpi.constantes.OrdenConstantes;
 import com.unlam.tpi.constantes.PanelesDePreciosConstantes;
 import com.unlam.tpi.helpers.CalculosHabituales;
+import com.unlam.tpi.interfaces.PosicionServicio;
 import com.unlam.tpi.modelo.persistente.Orden;
 import com.unlam.tpi.modelo.persistente.Posicion;
 import com.unlam.tpi.modelo.persistente.Puntas;
 import com.unlam.tpi.modelo.pojo.PuedeOperarResultado;
+import com.unlam.tpi.modelo.pojo.RequestCargaDeDinero;
 import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
 import com.unlam.tpi.repositorio.PosicionRepositorio;
 
@@ -25,12 +27,12 @@ import com.unlam.tpi.repositorio.PosicionRepositorio;
 public class PosicionServicioImpl implements PosicionServicio {
 
 	@Autowired
-	PosicionRepositorio PosicionRepositorio;
+	PosicionRepositorio posicionRepositorio;
 
 	@Override
 	public ValuacionTotalRespuesta getValuacionTotal() {
 		ValuacionTotalRespuesta valuacionTotalRespuesta = new ValuacionTotalRespuesta();
-		List<Posicion> posicionTotal = PosicionRepositorio.findAll();
+		List<Posicion> posicionTotal = posicionRepositorio.findAll();
 
 		BigDecimal totalCartera = BigDecimal.ZERO;
 
@@ -52,7 +54,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 	public PuedeOperarResultado puedeOperar(Orden orden) {
 		PuedeOperarResultado puedeOperarResultado = new PuedeOperarResultado();
 		if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
-			List<Posicion> posicionEfectivo = PosicionRepositorio.getPosicionEnEfectivo();
+			List<Posicion> posicionEfectivo = posicionRepositorio.getPosicionEnEfectivo();
 			BigDecimal totalDisponibleEnEfectivo = this.calcularPosicionMoneda(posicionEfectivo);
 			completarPrecioDeLaOrden(orden);
 			BigDecimal montoOrden = orden.getPrecio().multiply(orden.getCantidad());
@@ -63,15 +65,15 @@ public class PosicionServicioImpl implements PosicionServicio {
 				puedeOperarResultado.setPuedeOperar(true);
 				Posicion posicionTitulos = new Posicion();
 				completarPosicionDeTitulos(orden, posicionTitulos);
-				PosicionRepositorio.save(posicionTitulos);
+				posicionRepositorio.save(posicionTitulos);
 
 				Posicion posicionDinero = new Posicion();
 				completarPosicionDeDinero(orden, posicionDinero);
-				PosicionRepositorio.save(posicionDinero);
+				posicionRepositorio.save(posicionDinero);
 
 			}
 		} else {
-			List<Posicion> titulosEnPosicionLista = PosicionRepositorio
+			List<Posicion> titulosEnPosicionLista = posicionRepositorio
 					.getTitulosDisponiblesPorSimbolo(orden.getSimboloInstrumento());
 			completarPrecioDeLaOrden(orden);
 			Map<String, BigDecimal> instrumentosPorCantidad = obtenerCantidadPorInstrumento(titulosEnPosicionLista);
@@ -86,16 +88,39 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 					Posicion posicionDinero = new Posicion();
 					completarPosicionDeTitulos(orden, posicionDinero);
-					PosicionRepositorio.save(posicionDinero);
+					posicionRepositorio.save(posicionDinero);
 
 					Posicion posiciontitulos = new Posicion();
 					completarPosicionDeDinero(orden, posiciontitulos);
-					PosicionRepositorio.save(posiciontitulos);
+					posicionRepositorio.save(posiciontitulos);
 
 				}
 			}
 		}
 		return puedeOperarResultado;
+	}
+
+	@Override
+	public void acreditarDinero(RequestCargaDeDinero request) {
+
+		try {
+			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
+
+			if (posicionBuscada == null || posicionBuscada.getConcepto() != CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS) {
+				Posicion posicion = new Posicion();
+				posicion.setCantidad(request.getCantidadPorAcreditar());
+				posicion.setEsEfectivo(true);
+				posicion.setMonedaOid(1L);
+				posicion.setUsuarioOid(1L);
+				posicion.setConcepto(request.getConcepto());
+				posicionRepositorio.save(posicion);
+			}
+		} catch (ServiceException se) {
+			throw se;
+		} catch (Exception e) {
+			throw new ServiceException("Ocurrio un error al acreditar el dinero");
+		}
+
 	}
 
 	private void completarPosicionDeDinero(Orden orden, Posicion posicionDinero) {
@@ -161,7 +186,8 @@ public class PosicionServicioImpl implements PosicionServicio {
 					orden.setPrecio(precioVenta);
 				}
 			} else {
-				throw new ServiceException("La orden que quiere capturar no se encuentra disponible en el panel o no tiene precio");
+				throw new ServiceException(
+						"La orden que quiere capturar no se encuentra disponible en el panel o no tiene precio");
 			}
 
 			break;
@@ -226,4 +252,5 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 		return totalMonedas;
 	}
+
 }

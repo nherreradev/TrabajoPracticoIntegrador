@@ -1,4 +1,4 @@
-package com.unlam.tpi.servicio;
+package com.unlam.tpi.interfaces;
 
 import com.unlam.tpi.modelo.persistente.Usuario;
 import com.unlam.tpi.modelo.rest.ResponseAPI;
