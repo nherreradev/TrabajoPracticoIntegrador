@@ -1,10 +1,17 @@
 package com.unlam.tpi.dto;
 
-import com.unlam.tpi.enums.TipoNivelConocimiento;
-import com.unlam.tpi.enums.TipoPerfilInversor;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
+
+import com.unlam.tpi.arquitectura.ServiceException;
+import com.unlam.tpi.modelo.persistente.PerfilInversor;
 
 public class PerfilInversorDTO {
 
+	private static ModelMapper mapper = new ModelMapper();
+	
 	private Long oid;
 
 	private Integer version;
@@ -110,6 +117,40 @@ public class PerfilInversorDTO {
 
 	public void setUsuarioDTO(UsuarioDTO usuarioDTO) {
 		this.usuarioDTO = usuarioDTO;
+	}
+	
+	public static PerfilInversor dTOaEntidad(PerfilInversorDTO perfilInversor) {
+		try {
+			return mapper.map(perfilInversor, PerfilInversor.class);
+		} catch (Exception e) {
+			throw new ServiceException("Error en convertir PerfilInversorDTO a PerfilInversor", e);
+		}
+	}
+	
+	public static PerfilInversorDTO entidadADTO(PerfilInversor perfilInversor) {
+		try {
+			return mapper.map(perfilInversor, PerfilInversorDTO.class);
+		} catch (Exception e) {
+			throw new ServiceException("Error en convertir PerfilInversor a PerfilInversorDTO", e);
+		}
+	}
+	
+	public static List<PerfilInversorDTO> entidadDTOLista(List<PerfilInversor> perfilInversorLista) {
+		try {
+			return perfilInversorLista.stream().map(perfilInversor -> mapper.map(perfilInversor, PerfilInversorDTO.class))
+				.collect(Collectors.toList());
+		}catch (Exception e) {
+			throw new ServiceException("Error en convertir una lista PerfilInversor a lista PerfilInversorDTO", e);
+		}
+	}
+	
+	public static List<PerfilInversor> traductorDeListaDTOaEntidad(List<PerfilInversorDTO> perfilInversorLista) throws ServiceException {
+		try {
+			return perfilInversorLista.stream().map(perfilInversor -> mapper.map(perfilInversor, PerfilInversor.class))
+					.collect(Collectors.toList());
+		} catch (Exception e) {
+			throw new ServiceException("Error en convertir una lista PerfilInversorDTO a lista PerfilInversor", e);
+		}
 	}
 	
 }
