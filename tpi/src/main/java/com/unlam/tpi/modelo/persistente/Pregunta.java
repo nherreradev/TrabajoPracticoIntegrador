@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.unlam.tpi.arquitectura.ObjetoPersistente;
-import com.unlam.tpi.enums.TipoComponente;
+import com.unlam.tpi.dto.TipoComponente;
 
 @Entity
 @Table(name = "PREGUNTA")

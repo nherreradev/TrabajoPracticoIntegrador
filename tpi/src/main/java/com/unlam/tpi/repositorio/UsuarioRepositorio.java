@@ -1,7 +1,9 @@
 package com.unlam.tpi.repositorio;
 
-public interface UsuarioRepositorio {
+import com.unlam.tpi.modelo.persistente.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-	public void guardarUsuario(String nombreUsuario);
-
+public interface UsuarioRepositorio extends JpaRepository<Usuario, String> {
+    Boolean existsByEmail(String email);
+    Usuario getUsuarioByEmail(String email);
 }

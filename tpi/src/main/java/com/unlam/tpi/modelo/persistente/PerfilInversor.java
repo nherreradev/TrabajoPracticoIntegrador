@@ -11,8 +11,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.unlam.tpi.arquitectura.ObjetoPersistente;
-import com.unlam.tpi.enums.TipoNivelConocimiento;
-import com.unlam.tpi.enums.TipoPerfilInversor;
+import com.unlam.tpi.dto.TipoNivelConocimiento;
+import com.unlam.tpi.dto.TipoPerfilInversor;
 
 @Entity
 @Table(name = "PERFIL_INVERSOR")
