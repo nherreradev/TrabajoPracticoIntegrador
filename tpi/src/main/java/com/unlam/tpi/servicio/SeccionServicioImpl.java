@@ -23,11 +23,11 @@ import com.unlam.tpi.repositorio.SeccionRepositorio;
 
 @Service
 public class SeccionServicioImpl implements SeccionServicio {
-	
+
 	private static final String COLUMNA_DESCRIPCION = "descripcion";
 	private static final String COLUMNA_NOMBRE = "nombre";
 	private static final String HOJA_SECCION = "seccion";
-	
+
 	@Autowired
 	SeccionRepositorio seccionRepositorio;
 
@@ -66,19 +66,12 @@ public class SeccionServicioImpl implements SeccionServicio {
 					} else {
 						if (encabezado.containsKey(columna.getColumnIndex())) {
 							String nombreColumna = encabezado.get(columna.getColumnIndex());
-							switch (nombreColumna) {
-							case COLUMNA_NOMBRE:
-								seccion.setNombre(columna.getStringCellValue());
-							case COLUMNA_DESCRIPCION:
-								seccion.setDescripcion(columna.getStringCellValue());
-							default:
-								break;
-							}
+							convertirExcelASeccion(seccion, columna, nombreColumna);
 						}
 					}
 				}
-				if (seccion.getNombre() != null && seccion.getDescripcion() != null) {
-					listaSeccion.add(seccion);
+				if (seccionEsValida(seccion)) {
+					listaSeccion.add(agregarModificarSeccion(seccion));
 				}
 			}
 			if (0 < listaSeccion.size()) {
@@ -91,6 +84,33 @@ public class SeccionServicioImpl implements SeccionServicio {
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la seccion", e);
 		}
+	}
+
+	private void convertirExcelASeccion(Seccion seccion, Cell columna, String nombreColumna) {
+		switch (nombreColumna) {
+		case COLUMNA_NOMBRE:
+			seccion.setNombre(columna.getStringCellValue());
+		case COLUMNA_DESCRIPCION:
+			seccion.setDescripcion(columna.getStringCellValue());
+		default:
+			break;
+		}
+	}
+
+	private Boolean seccionEsValida(Seccion seccion) {
+		if (seccion.getNombre() != null) {
+			return true;
+		}
+		return false;
+	}
+
+	private Seccion agregarModificarSeccion(Seccion seccion) {
+		Seccion seccionExistente = getSeccionRepositorio().findByNombre(seccion.getNombre());
+		if (seccionExistente != null) {
+			seccionExistente.setDescripcion(seccion.getDescripcion());
+			return seccionExistente;
+		}
+		return seccion;
 	}
 
 	@Override

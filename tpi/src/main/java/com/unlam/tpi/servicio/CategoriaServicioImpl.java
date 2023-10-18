@@ -65,19 +65,12 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 					} else {
 						if (encabezado.containsKey(columna.getColumnIndex())) {
 							String nombreColumna = encabezado.get(columna.getColumnIndex());
-							switch (nombreColumna) {
-							case COLUMNA_NOMBRE:
-								categoria.setNombre(columna.getStringCellValue());
-							case COLUMNA_DESCRIPCION:
-								categoria.setDescripcion(columna.getStringCellValue());
-							default:
-								break;
-							}
+							convertirExcelACategoria(categoria, columna, nombreColumna);
 						}
 					}
 				}
-				if (categoria.getNombre() != null && categoria.getDescripcion() != null) {
-					listaCategoria.add(categoria);
+				if (categoriaEsValida(categoria)) {
+					listaCategoria.add(agregarModificarCategoria(categoria));
 				}
 			}
 			if (0 < listaCategoria.size()) {
@@ -90,6 +83,34 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la categoria", e);
 		}
+	}
+
+	private void convertirExcelACategoria(Categoria categoria, Cell columna, String nombreColumna) {
+		switch (nombreColumna) {
+		case COLUMNA_NOMBRE:
+			categoria.setNombre(columna.getStringCellValue());
+		case COLUMNA_DESCRIPCION:
+			categoria.setDescripcion(columna.getStringCellValue());
+		default:
+			break;
+		}
+	}
+
+	private Boolean categoriaEsValida(Categoria categoria) {
+		if (categoria.getNombre() != null && categoria.getDescripcion() != null) {
+			return true;
+		}
+		return false;
+
+	}
+
+	private Categoria agregarModificarCategoria(Categoria categoria) {
+		Categoria categoriaExistente = getCategoriaRepositorio().findByNombre(categoria.getNombre());
+		if (categoriaExistente != null) {
+			categoriaExistente.setDescripcion(COLUMNA_DESCRIPCION);
+			return categoriaExistente;
+		}
+		return categoria;
 	}
 
 	@Override
@@ -124,13 +145,13 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 		try {
 			Categoria categoria = getCategoriaRepositorio().findByNombre(nombre);
 			if (categoria == null) {
-				throw new ServiceException("Error al obtener la categoria por nombre "+nombre);
+				throw new ServiceException("Error al obtener la categoria por nombre " + nombre);
 			}
 			return categoria;
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la categoria " +nombre, e);
+			throw new ServiceException("Error al obtener la categoria " + nombre, e);
 		}
 	}
 
