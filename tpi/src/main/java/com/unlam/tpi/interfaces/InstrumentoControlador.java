@@ -8,6 +8,6 @@ import com.unlam.tpi.modelo.rest.HistoricoInstrumentoRespuesta;
 
 public interface InstrumentoControlador {
 
-	public ResponseEntity<List<HistoricoInstrumentoRespuesta>> getHistoricoDeInstrumento();
+	public ResponseEntity<List<HistoricoInstrumentoRespuesta>> getHistoricoDeInstrumento(String simbolo);
 
 }

@@ -6,6 +6,6 @@ import com.unlam.tpi.modelo.rest.HistoricoInstrumentoRespuesta;
 
 public interface InstrumentoServicio {
 
-	List<HistoricoInstrumentoRespuesta> getHistoricoInstrumento();
+	List<HistoricoInstrumentoRespuesta> getHistoricoInstrumento(String simbolo);
 
 }

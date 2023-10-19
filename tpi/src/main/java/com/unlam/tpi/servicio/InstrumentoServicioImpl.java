@@ -16,7 +16,7 @@ import com.unlam.tpi.modelo.rest.HistoricoInstrumentoRespuesta;
 public class InstrumentoServicioImpl implements InstrumentoServicio {
 
 	@Override
-	public List<HistoricoInstrumentoRespuesta> getHistoricoInstrumento() {
+	public List<HistoricoInstrumentoRespuesta> getHistoricoInstrumento(String simbolo) {
 		
 		List<HistoricoInstrumentoRespuesta> listaHistoricoInstrumentoRespuesta = new ArrayList<>();
 
@@ -31,14 +31,12 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 			HistoricoInstrumentoRespuesta historicoInstrumentoRespuesta = new HistoricoInstrumentoRespuesta();
 			JsonObject objeto = elemento.getAsJsonObject();
 
-			// Extraer los valores del objeto JSON
 			String tiempo = objeto.get("time").getAsString();
 			String precioDeApertura = objeto.get("open").getAsString();
 			String maximo = objeto.get("high").getAsString();
 			String minimo = objeto.get("low").getAsString();
 			String precioDeCierre = objeto.get("close").getAsString();
 
-			// Crear un objeto historicoInstrumentoRespuesta y asignar los valores
 			historicoInstrumentoRespuesta = new HistoricoInstrumentoRespuesta();
 			historicoInstrumentoRespuesta.setTiempo(tiempo);
 			historicoInstrumentoRespuesta.setPrecioDeApertura(precioDeApertura);
