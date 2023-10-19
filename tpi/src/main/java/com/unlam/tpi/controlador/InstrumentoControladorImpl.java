@@ -1,5 +1,7 @@
 package com.unlam.tpi.controlador;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,10 +23,8 @@ public class InstrumentoControladorImpl implements InstrumentoControlador {
 	
 	@Override
 	@GetMapping("/historico")
-	public ResponseEntity<HistoricoInstrumentoRespuesta> getHistoricoDeInstrumento() {
-
-		HistoricoInstrumentoRespuesta historicoInstrumentoRespuesta = instrumentoServicio.getHistoricoInstrumento();
-		// posicionServicio.getValuacionTotal();
+	public ResponseEntity<List<HistoricoInstrumentoRespuesta>> getHistoricoDeInstrumento() {
+		List<HistoricoInstrumentoRespuesta> historicoInstrumentoRespuesta = instrumentoServicio.getHistoricoInstrumento();
 		return ResponseEntity.ok(historicoInstrumentoRespuesta);
 	}
 
