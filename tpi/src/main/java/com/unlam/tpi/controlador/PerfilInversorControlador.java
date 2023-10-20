@@ -2,6 +2,9 @@ package com.unlam.tpi.controlador;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.ResponseEntity;
 
 import com.unlam.tpi.dto.PerfilInversorDTO;
@@ -21,5 +24,8 @@ public interface PerfilInversorControlador {
 	public void borrar(Long id);
 
 	public ResponseEntity<List<PerfilInversorDTO>> listar();
+
+	public void obtenerCertificado(String nombreUsuario, HttpServletRequest request, HttpServletResponse response)
+			throws Exception;
 
 }
