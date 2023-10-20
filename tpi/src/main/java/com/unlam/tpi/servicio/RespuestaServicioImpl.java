@@ -74,44 +74,15 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 				while (iteadorColumna.hasNext()) {
 					Cell columna = iteadorColumna.next();
 					if (columna.getRowIndex() == 0) {
-						if (!encabezado.containsKey(columna.getColumnIndex())) {
-							encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
-						}
+						crearEncabezado(encabezado, columna);
 					} else {
 						if (encabezado.containsKey(columna.getColumnIndex())) {
 							String nombreColumna = encabezado.get(columna.getColumnIndex());
-							switch (nombreColumna) {
-							case COLUMNA_INSTRUMENTO:
-								respuesta.setInstrumento(columna.getStringCellValue());
-								break;
-							case COLUMNA_NOMBRE:
-								respuesta.setNombre(columna.getStringCellValue());
-								break;
-							case COLUMNA_VALOR:
-								respuesta.setValor(Integer.valueOf((int) columna.getNumericCellValue()));
-								break;
-							case COLUMNA_ORDEN:
-								respuesta.setOrden(Integer.valueOf((int) columna.getNumericCellValue()));
-								break;
-							case COLUMNA_PREGUNTA:
-								String enunciado = columna.getStringCellValue();
-								if (preguntaMap.containsKey(enunciado)) {
-									respuesta.setPregunta(preguntaMap.get(enunciado));
-								} else {
-									Pregunta pregunta = getPreguntaServicio().getPreguntaPorEnunciado(enunciado);
-									if (pregunta == null) {
-										throw new ServiceException("Error al buscar la pregunta: " + enunciado);
-									}
-									preguntaMap.put(enunciado, pregunta);
-									respuesta.setPregunta(preguntaMap.get(enunciado));
-								}
-								break;
-							}
+							convertirExcelARespuesta(preguntaMap, respuesta, columna, nombreColumna);
 						}
 					}
 				}
-				if (respuesta.getInstrumento() != null && respuesta.getNombre() != null && respuesta.getValor() != null
-						&& respuesta.getOrden() != null && respuesta.getPregunta() != null) {
+				if (respuestaEsValida(respuesta)) {
 					listaRespuesta.add(respuesta);
 				}
 			}
@@ -124,6 +95,56 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la respuesta", e);
+		}
+	}
+
+	
+	private void agregarModificarRespuesta() {
+		
+	}
+	
+	private void crearEncabezado(Map<Integer, String> encabezado, Cell columna) {
+		if (!encabezado.containsKey(columna.getColumnIndex())) {
+			encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
+		}
+	}
+
+	private boolean respuestaEsValida(Respuesta respuesta) {
+		 if(respuesta.getNombre() != null && respuesta.getValor() != null
+				&& respuesta.getOrden() != null && respuesta.getPregunta() != null) {
+			 return Boolean.TRUE;
+		 }
+		 return Boolean.FALSE;
+	}
+
+	private void convertirExcelARespuesta(Map<String, Pregunta> preguntaMap, Respuesta respuesta, Cell columna,
+			String nombreColumna) {
+		switch (nombreColumna) {
+		case COLUMNA_INSTRUMENTO:
+			respuesta.setInstrumento(columna.getStringCellValue());
+			break;
+		case COLUMNA_NOMBRE:
+			respuesta.setNombre(columna.getStringCellValue());
+			break;
+		case COLUMNA_VALOR:
+			respuesta.setValor(Integer.valueOf((int) columna.getNumericCellValue()));
+			break;
+		case COLUMNA_ORDEN:
+			respuesta.setOrden(Integer.valueOf((int) columna.getNumericCellValue()));
+			break;
+		case COLUMNA_PREGUNTA:
+			String enunciado = columna.getStringCellValue();
+			if (preguntaMap.containsKey(enunciado)) {
+				respuesta.setPregunta(preguntaMap.get(enunciado));
+			} else {
+				Pregunta pregunta = getPreguntaServicio().getPreguntaPorEnunciado(enunciado);
+				if (pregunta == null) {
+					throw new ServiceException("Error al buscar la pregunta: " + enunciado);
+				}
+				preguntaMap.put(enunciado, pregunta);
+				respuesta.setPregunta(preguntaMap.get(enunciado));
+			}
+			break;
 		}
 	}
 
