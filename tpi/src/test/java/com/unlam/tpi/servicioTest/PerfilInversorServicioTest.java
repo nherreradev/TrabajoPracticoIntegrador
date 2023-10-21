@@ -20,29 +20,85 @@ public class PerfilInversorServicioTest {
 	@Autowired
 	private PerfilInversorServicio perfilInversorServicio;
 
+	
 	@Test
-	public void testQueMeDefinaUnPerfilSubjetivoConservador() {
+	public void testQueMeDefinaUnPerfilSubjetivoConservador0() {
 		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
-		perfilInversorDTO.setHorizonteTemporal(10);
-		perfilInversorDTO.setToleranciaRiesgo(11);
+		perfilInversorDTO.setHorizonteTemporal(0);
+		perfilInversorDTO.setToleranciaRiesgo(24);
+		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
+		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
+	}
+	
+	@Test
+	public void testQueMeDefinaUnPerfilSubjetivoConservador1() {
+		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
+		perfilInversorDTO.setHorizonteTemporal(1);
+		perfilInversorDTO.setToleranciaRiesgo(24);
+		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
+		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
+	}
+	
+	@Test
+	public void testQueMeDefinaUnPerfilSubjetivoConservador2() {
+		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
+		perfilInversorDTO.setHorizonteTemporal(2);
+		perfilInversorDTO.setToleranciaRiesgo(24);
 		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
 	}
 
 	@Test
+	public void testQueMeDefinaUnPerfilSubjetivoConservador3() {
+		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
+		perfilInversorDTO.setHorizonteTemporal(1);
+		perfilInversorDTO.setToleranciaRiesgo(1);
+		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
+		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
+	}
+	
+	@Test
+	public void testQueMeDefinaUnPerfilSubjetivoConservador4() {
+		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
+		perfilInversorDTO.setHorizonteTemporal(18);
+		perfilInversorDTO.setToleranciaRiesgo(1);
+		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
+		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
+	}
+	
+	
+	@Test
 	public void testQueMeDefinaUnPerfilSubjetivoModerado() {
 		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
-		perfilInversorDTO.setHorizonteTemporal(10);
-		perfilInversorDTO.setToleranciaRiesgo(17);
+		perfilInversorDTO.setHorizonteTemporal(12);
+		perfilInversorDTO.setToleranciaRiesgo(26);
 		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.MODERADO);
 	}
 
 	@Test
-	public void testQueMeDefinaUnPerfilSubjetivoAgresivo() {
+	public void testQueMeDefinaUnPerfilSubjetivoAgresivo0() {
 		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
-		perfilInversorDTO.setHorizonteTemporal(8);
-		perfilInversorDTO.setToleranciaRiesgo(38);
+		perfilInversorDTO.setHorizonteTemporal(0);
+		perfilInversorDTO.setToleranciaRiesgo(25);
+		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
+		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.AGRESIVO);
+	}
+	
+	@Test
+	public void testQueMeDefinaUnPerfilSubjetivoAgresivo1() {
+		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
+		perfilInversorDTO.setHorizonteTemporal(1);
+		perfilInversorDTO.setToleranciaRiesgo(25);
+		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
+		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.AGRESIVO);
+	}
+	
+	@Test
+	public void testQueMeDefinaUnPerfilSubjetivoAgresivo2() {
+		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
+		perfilInversorDTO.setHorizonteTemporal(2);
+		perfilInversorDTO.setToleranciaRiesgo(25);
 		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.AGRESIVO);
 	}
