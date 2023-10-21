@@ -18,16 +18,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.PreguntaDTO;
 import com.unlam.tpi.dto.TipoComponente;
-import com.unlam.tpi.modelo.persistente.Categoria;
 import com.unlam.tpi.interfaces.CategoriaServicio;
 import com.unlam.tpi.interfaces.PreguntaServicio;
 import com.unlam.tpi.interfaces.SeccionServicio;
+import com.unlam.tpi.modelo.persistente.Categoria;
 import com.unlam.tpi.modelo.persistente.Pregunta;
 import com.unlam.tpi.modelo.persistente.Seccion;
 import com.unlam.tpi.repositorio.PreguntaRepositorio;
 
 @Service
 public class PreguntaServicioImpl implements PreguntaServicio {
+
+	private static final int FILA_ENCABEZADO = 0;
 
 	private static final String COLUMNA_SECCION = "seccion";
 
@@ -69,6 +71,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 		Map<String, Categoria> categoriaMap = new HashedMap<>();
 		Map<String, Seccion> seccionMap = new HashedMap<>();
 		XSSFWorkbook libro;
+		Pregunta pregunta;
 		try {
 			libro = new XSSFWorkbook(excelPregunta.getInputStream());
 			XSSFSheet hoja = libro.getSheet(HOJA_PREGUNTA);
@@ -76,34 +79,63 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 				throw new ServiceException("Error al importar excel verifique que exista la hoja pregunta");
 			}
 			for (Row fila : hoja) {
-				Pregunta pregunta = new Pregunta();
-				Iterator<Cell> iteadorColumna = fila.iterator();
-				while (iteadorColumna.hasNext()) {
-					Cell columna = iteadorColumna.next();
-					if (columna.getRowIndex() == 0) {
-						if (!encabezado.containsKey(columna.getColumnIndex())) {
-							encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
-						}
-					} else {
-						if (encabezado.containsKey(columna.getColumnIndex())) {
-							String nombreColumna = encabezado.get(columna.getColumnIndex());
-							convertirExcelAPregunta(categoriaMap, seccionMap, pregunta, columna, nombreColumna);
-						}
-					}
-				}
-				if (preguntaEsValida(pregunta)) {
-					listaPregunta.add(agregarModificarPregunta(pregunta));
-				}
+				pregunta = new Pregunta();
+				leerColumna(encabezado, categoriaMap, seccionMap, pregunta, fila);
+				agregarPreguntaALista(listaPregunta, pregunta);
 			}
-			if (0 < listaPregunta.size()) {
-				getPreguntaRepositorio().saveAll(listaPregunta);
-			}
+			guardarPreguntaLista(listaPregunta);
 		} catch (IOException e) {
 			throw new ServiceException("Error al guardar la pregunta", e);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new ServiceException("Error al guardar la pregunta", e);
+		}
+	}
+
+	private void leerColumna(Map<Integer, String> encabezado, Map<String, Categoria> categoriaMap,
+			Map<String, Seccion> seccionMap, Pregunta pregunta, Row fila) {
+		Iterator<Cell> iteadorColumna = fila.iterator();
+		while (iteadorColumna.hasNext()) {
+			Cell columna = iteadorColumna.next();
+			crearEncabezado(encabezado, columna);
+			crearPregunta(encabezado, categoriaMap, seccionMap, pregunta, columna);
+		}
+	}
+
+	private void agregarPreguntaALista(List<Pregunta> listaPregunta, Pregunta pregunta) {
+		if (preguntaEsValida(pregunta)) {
+			pregunta = agregarModificarPregunta(pregunta);
+			listaPregunta.add(pregunta);
+		}
+	}
+
+	private void guardarPreguntaLista(List<Pregunta> listaPregunta) {
+		if (listaPregunta.isEmpty()) {
+			throw new ServiceException("No hay preguntas para guardar");
+		}
+		getPreguntaRepositorio().saveAll(listaPregunta);
+	}
+
+	private void crearEncabezado(Map<Integer, String> encabezado, Cell columna) {
+		if (esEncabezado(columna) && !columnaEsValida(encabezado, columna)) {
+			encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
+		}
+	}
+
+	private Boolean esEncabezado(Cell columna) {
+		return columna.getRowIndex() == FILA_ENCABEZADO;
+	}
+
+	private boolean columnaEsValida(Map<Integer, String> encabezado, Cell columna) {
+		return encabezado.containsKey(columna.getColumnIndex());
+	}
+
+	private void crearPregunta(Map<Integer, String> encabezado, Map<String, Categoria> categoriaMap,
+			Map<String, Seccion> seccionMap, Pregunta pregunta, Cell columna) {
+		if (!esEncabezado(columna) && columnaEsValida(encabezado, columna)) {
+			String nombreColumna = encabezado.get(columna.getColumnIndex());
+			parsearExcelAPregunta(categoriaMap, seccionMap, pregunta, columna, nombreColumna);
 		}
 	}
 
@@ -120,33 +152,56 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	}
 
 	private Boolean preguntaEsValida(Pregunta pregunta) {
-		if (pregunta.getEnunciado() != null && pregunta.getDescripcion() != null && pregunta.getCategoria() != null
-				&& pregunta.getTipoComponente() != null && pregunta.getSeccion() != null) {
+		if (pregunta.getEnunciado() != null && pregunta.getCategoria() != null
+				&& pregunta.getTipoComponente() != null) {
 			return Boolean.TRUE;
 		}
 		return Boolean.FALSE;
 	}
 
-	private void convertirExcelAPregunta(Map<String, Categoria> categoriaMap, Map<String, Seccion> seccionMap,
+	private void parsearExcelAPregunta(Map<String, Categoria> categoriaMap, Map<String, Seccion> seccionMap,
 			Pregunta pregunta, Cell columna, String nombreColumna) {
 		switch (nombreColumna) {
 		case COLUMNA_ENUNCIADO:
-			pregunta.setEnunciado(columna.getStringCellValue());
+			String enunciado = columna.getStringCellValue().trim();
+			if (esStringValido(enunciado)) {
+				pregunta.setEnunciado(enunciado);
+			}
 			break;
 		case COLUMNA_DESCRIPCION:
-			pregunta.setDescripcion(columna.getStringCellValue());
+			String descripcion = columna.getStringCellValue().trim();
+			if (esStringValido(descripcion)) {
+				pregunta.setDescripcion(descripcion);
+			}
 			break;
 		case COLUMNA_TIPOCOMPONENTE:
-			pregunta.setTipoComponente(TipoComponente.valueOf(columna.getStringCellValue()));
+			String tipoComponenteNombre = columna.getStringCellValue().trim();
+			if (esStringValido(tipoComponenteNombre)) {
+				TipoComponente tipoComponente = parseStringATipoComponente(tipoComponenteNombre);
+				pregunta.setTipoComponente(tipoComponente);
+			}
 			break;
 		case COLUMNA_CATEGORIA:
-			String nombreCategoria = columna.getStringCellValue();
+			String nombreCategoria = columna.getStringCellValue().trim();
 			agregarCategoria(categoriaMap, pregunta, nombreCategoria);
 			break;
 		case COLUMNA_SECCION:
-			String nombreSeccion = columna.getStringCellValue();
-			agregarSeccion(seccionMap, pregunta, nombreSeccion);
-			break;
+			String nombreSeccion = columna.getStringCellValue().trim();
+			if (esStringValido(nombreSeccion)) {
+				agregarSeccion(seccionMap, pregunta, nombreSeccion);
+			}
+		}
+	}
+
+	private Boolean esStringValido(String nombre) {
+		return !nombre.isBlank();
+	}
+
+	private TipoComponente parseStringATipoComponente(String tipoComponente) {
+		try {
+			return TipoComponente.valueOf(tipoComponente);
+		} catch (IllegalArgumentException e) {
+			throw new ServiceException("El TipoComponente con nombre: " + tipoComponente + " no es valido.");
 		}
 	}
 
@@ -167,17 +222,15 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	}
 
 	private void agregarSeccion(Map<String, Seccion> seccionMap, Pregunta pregunta, String nombreSeccion) {
-		if (!nombreSeccion.isBlank()) {
-			if (seccionMap.containsKey(nombreSeccion)) {
-				pregunta.setSeccion(seccionMap.get(nombreSeccion));
-			} else {
-				Seccion seccion = getSeccionServicio().getSeccionPorNombre(nombreSeccion);
-				if (seccion == null) {
-					throw new ServiceException("Error al obtener la sección con nombre: " + nombreSeccion);
-				}
-				seccionMap.put(nombreSeccion, seccion);
-				pregunta.setSeccion(seccionMap.get(nombreSeccion));
+		if (seccionMap.containsKey(nombreSeccion)) {
+			pregunta.setSeccion(seccionMap.get(nombreSeccion));
+		} else {
+			Seccion seccion = getSeccionServicio().getSeccionPorNombre(nombreSeccion);
+			if (seccion == null) {
+				throw new ServiceException("Error al obtener la sección con nombre: " + nombreSeccion);
 			}
+			seccionMap.put(nombreSeccion, seccion);
+			pregunta.setSeccion(seccionMap.get(nombreSeccion));
 		}
 	}
 

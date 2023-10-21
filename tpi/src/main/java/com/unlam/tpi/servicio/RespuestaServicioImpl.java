@@ -26,16 +26,12 @@ import com.unlam.tpi.repositorio.RespuestaRepositorio;
 @Service
 public class RespuestaServicioImpl implements RespuestaServicio {
 
+	private static final int FILA_ENCABEZADO = 0;
 	private static final String COLUMNA_PREGUNTA = "pregunta";
-
 	private static final String COLUMNA_ORDEN = "orden";
-
 	private static final String COLUMNA_VALOR = "valor";
-
 	private static final String COLUMNA_NOMBRE = "nombre";
-
 	private static final String COLUMNA_INSTRUMENTO = "instrumento";
-
 	private static final String HOJA_RESPUESTA = "respuesta";
 
 	@Autowired
@@ -62,6 +58,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 		Map<Integer, String> encabezado = new HashedMap<>();
 		Map<String, Pregunta> preguntaMap = new HashedMap<>();
 		XSSFWorkbook libro;
+		Respuesta respuesta;
 		try {
 			libro = new XSSFWorkbook(excelPregunta.getInputStream());
 			XSSFSheet hoja = libro.getSheet(HOJA_RESPUESTA);
@@ -69,26 +66,11 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 				throw new ServiceException("Error al importar excel verifique que exista la hoja respuesta");
 			}
 			for (Row fila : hoja) {
-				Respuesta respuesta = new Respuesta();
-				Iterator<Cell> iteadorColumna = fila.iterator();
-				while (iteadorColumna.hasNext()) {
-					Cell columna = iteadorColumna.next();
-					if (columna.getRowIndex() == 0) {
-						crearEncabezado(encabezado, columna);
-					} else {
-						if (encabezado.containsKey(columna.getColumnIndex())) {
-							String nombreColumna = encabezado.get(columna.getColumnIndex());
-							convertirExcelARespuesta(preguntaMap, respuesta, columna, nombreColumna);
-						}
-					}
-				}
-				if (respuestaEsValida(respuesta)) {
-					listaRespuesta.add(respuesta);
-				}
+				respuesta = new Respuesta();
+				leerColumna(encabezado, preguntaMap, respuesta, fila);
+				agregarRespuestaALista(listaRespuesta, respuesta);
 			}
-			if (0 < listaRespuesta.size()) {
-				getRespuestaRepositorio().saveAll(listaRespuesta);
-			}
+			guardarRespuestaLista(listaRespuesta);
 		} catch (IOException e) {
 			throw new ServiceException("Error al guardar la respuesta", e);
 		} catch (ServiceException e) {
@@ -98,86 +80,157 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 		}
 	}
 
-	
-	private void agregarModificarRespuesta() {
-		
+	private void leerColumna(Map<Integer, String> encabezado, Map<String, Pregunta> preguntaMap, Respuesta respuesta,
+			Row fila) {
+		Iterator<Cell> iteadorColumna = fila.iterator();
+		while (iteadorColumna.hasNext()) {
+			Cell columna = iteadorColumna.next();
+			crearEncabezado(encabezado, columna);
+			crearRespuesta(encabezado, preguntaMap, respuesta, columna);
+		}
 	}
-	
+
+	private void agregarRespuestaALista(List<Respuesta> listaRespuesta, Respuesta respuesta) {
+		if (respuestaEsValida(respuesta)) {
+			respuesta = agregarModificarRespuesta(respuesta);
+			listaRespuesta.add(respuesta);
+		}
+	}
+
 	private void crearEncabezado(Map<Integer, String> encabezado, Cell columna) {
-		if (!encabezado.containsKey(columna.getColumnIndex())) {
+		if (esEncabezado(columna) && !columnaEsValida(encabezado, columna)) {
 			encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
 		}
 	}
 
-	private boolean respuestaEsValida(Respuesta respuesta) {
-		 if(respuesta.getNombre() != null && respuesta.getValor() != null
-				&& respuesta.getOrden() != null && respuesta.getPregunta() != null) {
-			 return Boolean.TRUE;
-		 }
-		 return Boolean.FALSE;
+	private Boolean esEncabezado(Cell columna) {
+		return columna.getRowIndex() == FILA_ENCABEZADO;
 	}
 
-	private void convertirExcelARespuesta(Map<String, Pregunta> preguntaMap, Respuesta respuesta, Cell columna,
+	private void crearRespuesta(Map<Integer, String> encabezado, Map<String, Pregunta> preguntaMap, Respuesta respuesta,
+			Cell columna) {
+		if (!esEncabezado(columna) && columnaEsValida(encabezado, columna)) {
+			String nombreColumna = encabezado.get(columna.getColumnIndex());
+			parsearExcelARespuesta(preguntaMap, respuesta, columna, nombreColumna);
+		}
+	}
+
+	private boolean columnaEsValida(Map<Integer, String> encabezado, Cell columna) {
+		return encabezado.containsKey(columna.getColumnIndex());
+	}
+
+	private void guardarRespuestaLista(List<Respuesta> listaRespuesta) {
+		if (listaRespuesta.isEmpty()) {
+			throw new ServiceException("No hay respuestas para guardar");
+		}
+		getRespuestaRepositorio().saveAll(listaRespuesta);
+	}
+
+	private Respuesta agregarModificarRespuesta(Respuesta respuesta) {
+		Respuesta respuestaExistente = getRespuestaRepositorio().findByNombre(respuesta.getNombre());
+		if (respuestaExistente != null) {
+			respuestaExistente.setOrden(respuesta.getOrden());
+			respuestaExistente.setValor(respuesta.getValor());
+			respuestaExistente.setPregunta(respuesta.getPregunta());
+			return respuestaExistente;
+		}
+		return respuesta;
+	}
+
+	private boolean respuestaEsValida(Respuesta respuesta) {
+		if (respuesta.getNombre() != null && respuesta.getValor() != null && respuesta.getOrden() != null
+				&& respuesta.getPregunta() != null) {
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
+
+	private void parsearExcelARespuesta(Map<String, Pregunta> preguntaMap, Respuesta respuesta, Cell columna,
 			String nombreColumna) {
 		switch (nombreColumna) {
 		case COLUMNA_INSTRUMENTO:
-			respuesta.setInstrumento(columna.getStringCellValue());
-			break;
-		case COLUMNA_NOMBRE:
-			respuesta.setNombre(columna.getStringCellValue());
-			break;
-		case COLUMNA_VALOR:
-			respuesta.setValor(Integer.valueOf((int) columna.getNumericCellValue()));
-			break;
-		case COLUMNA_ORDEN:
-			respuesta.setOrden(Integer.valueOf((int) columna.getNumericCellValue()));
-			break;
-		case COLUMNA_PREGUNTA:
-			String enunciado = columna.getStringCellValue();
-			if (preguntaMap.containsKey(enunciado)) {
-				respuesta.setPregunta(preguntaMap.get(enunciado));
-			} else {
-				Pregunta pregunta = getPreguntaServicio().getPreguntaPorEnunciado(enunciado);
-				if (pregunta == null) {
-					throw new ServiceException("Error al buscar la pregunta: " + enunciado);
-				}
-				preguntaMap.put(enunciado, pregunta);
-				respuesta.setPregunta(preguntaMap.get(enunciado));
+			String instrumento = columna.getStringCellValue().trim();
+			if (esStringValido(instrumento)) {
+				respuesta.setInstrumento(instrumento);
 			}
 			break;
+		case COLUMNA_NOMBRE:
+			String nombre = columna.getStringCellValue().trim();
+			if (esStringValido(nombre)) {
+				respuesta.setNombre(nombre);
+			}
+			break;
+		case COLUMNA_VALOR:
+			int valor = (int) columna.getNumericCellValue();
+			if (esEnteroValido(valor)) {
+				respuesta.setValor(valor);
+			}
+			break;
+		case COLUMNA_ORDEN:
+			int orden = (int) columna.getNumericCellValue();
+			if (esEnteroValido(orden)) {
+				respuesta.setOrden(orden);
+			}
+			break;
+		case COLUMNA_PREGUNTA:
+			String enunciado = columna.getStringCellValue().trim();
+			if (esStringValido(enunciado)) {
+				Pregunta pregunta = obtenerPregunta(preguntaMap, respuesta, enunciado);
+				respuesta.setPregunta(pregunta);
+			}
 		}
+	}
+
+	private Boolean esStringValido(String nombre) {
+		return !nombre.isBlank();
+	}
+
+	private Boolean esEnteroValido(int valor) {
+		return valor >= 0;
+	}
+
+	private Pregunta obtenerPregunta(Map<String, Pregunta> preguntaMap, Respuesta respuesta, String enunciado) {
+		if (preguntaMap.containsKey(enunciado)) {
+			return preguntaMap.get(enunciado);
+		}
+		Pregunta pregunta = getPreguntaServicio().getPreguntaPorEnunciado(enunciado);
+		if (pregunta == null) {
+			throw new ServiceException("Error al buscar la pregunta: " + enunciado);
+		}
+		preguntaMap.put(enunciado, pregunta);
+		return pregunta;
 	}
 
 	@Override
 	public RespuestaDTO getRespuestaDTOPorNombre(String nombre) {
 		try {
 			Respuesta respuesta = getRespuestaPorNombre(nombre);
-			if(respuesta==null) {
-				throw new ServiceException("Error al obtener la respuesta: "+nombre);
+			if (respuesta == null) {
+				throw new ServiceException("Error al obtener la respuesta: " + nombre);
 			}
 			return RespuestaDTO.entidadADTO(respuesta);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la respuesta: "+nombre, e);
+			throw new ServiceException("Error al obtener la respuesta: " + nombre, e);
 		}
 	}
-	
+
 	@Override
 	public Respuesta getRespuestaPorNombre(String nombre) {
 		try {
 			Respuesta respuesta = getRespuestaRepositorio().findByNombre(nombre);
 			if (respuesta == null) {
-				throw new ServiceException("Error al obtener la respuesta: "+nombre);
+				throw new ServiceException("Error al obtener la respuesta: " + nombre);
 			}
 			return respuesta;
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la respuesta: "+nombre, e);
+			throw new ServiceException("Error al obtener la respuesta: " + nombre, e);
 		}
 	}
-	
+
 	@Override
 	public RespuestaDTO getRespuestaDTOPorID(Long id) {
 		try {

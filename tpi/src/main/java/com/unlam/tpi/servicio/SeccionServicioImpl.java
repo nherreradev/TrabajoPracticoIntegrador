@@ -2,11 +2,11 @@ package com.unlam.tpi.servicio;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -24,6 +24,7 @@ import com.unlam.tpi.repositorio.SeccionRepositorio;
 @Service
 public class SeccionServicioImpl implements SeccionServicio {
 
+	private static final int FILA_ENCABEZADO = 0;
 	private static final String COLUMNA_DESCRIPCION = "descripcion";
 	private static final String COLUMNA_NOMBRE = "nombre";
 	private static final String HOJA_SECCION = "seccion";
@@ -44,41 +45,25 @@ public class SeccionServicioImpl implements SeccionServicio {
 	}
 
 	@Override
-	public void cargaDesdeExcel(MultipartFile excelSeccion) {
+	public void cargaDesdeExcel(MultipartFile excelPregunta) {
 		List<Seccion> listaSeccion = new ArrayList<>();
-		Map<Integer, String> encabezado = new HashMap<>();
+		Map<Integer, String> encabezado = new HashedMap<>();
 		XSSFWorkbook libro;
+		Seccion seccion;
 		try {
-			libro = new XSSFWorkbook(excelSeccion.getInputStream());
+			libro = new XSSFWorkbook(excelPregunta.getInputStream());
 			XSSFSheet hoja = libro.getSheet(HOJA_SECCION);
 			if (hoja == null) {
 				throw new ServiceException("Error al importar excel verifique que exista la hoja seccion");
 			}
 			for (Row fila : hoja) {
-				Seccion seccion = new Seccion();
-				Iterator<Cell> iteadorColumna = fila.iterator();
-				while (iteadorColumna.hasNext()) {
-					Cell columna = iteadorColumna.next();
-					if (columna.getRowIndex() == 0) {
-						if (!encabezado.containsKey(columna.getColumnIndex())) {
-							encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
-						}
-					} else {
-						if (encabezado.containsKey(columna.getColumnIndex())) {
-							String nombreColumna = encabezado.get(columna.getColumnIndex());
-							convertirExcelASeccion(seccion, columna, nombreColumna);
-						}
-					}
-				}
-				if (seccionEsValida(seccion)) {
-					listaSeccion.add(agregarModificarSeccion(seccion));
-				}
+				seccion = new Seccion();
+				leerColumna(encabezado, seccion, fila);
+				agregarSeccionALista(listaSeccion, seccion);
 			}
-			if (0 < listaSeccion.size()) {
-				getSeccionRepositorio().saveAll(listaSeccion);
-			}
+			guardarSeccionLista(listaSeccion);
 		} catch (IOException e) {
-			throw new ServiceException("Error al leer el excel de secciones", e);
+			throw new ServiceException("Error al guardar la seccion", e);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -86,15 +71,68 @@ public class SeccionServicioImpl implements SeccionServicio {
 		}
 	}
 
-	private void convertirExcelASeccion(Seccion seccion, Cell columna, String nombreColumna) {
+	private void leerColumna(Map<Integer, String> encabezado, Seccion seccion, Row fila) {
+		Iterator<Cell> iteadorColumna = fila.iterator();
+		while (iteadorColumna.hasNext()) {
+			Cell columna = iteadorColumna.next();
+			crearEncabezado(encabezado, columna);
+			crearSeccion(encabezado, seccion, columna);
+		}
+	}
+
+	private void crearEncabezado(Map<Integer, String> encabezado, Cell columna) {
+		if (esEncabezado(columna) && !columnaEsValida(encabezado, columna)) {
+			encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
+		}
+	}
+
+	private void crearSeccion(Map<Integer, String> encabezado, Seccion seccion, Cell columna) {
+		if (!esEncabezado(columna) && columnaEsValida(encabezado, columna)) {
+			String nombreColumna = encabezado.get(columna.getColumnIndex());
+			parsearExcelSeccion(seccion, columna, nombreColumna);
+		}
+	}
+
+	private boolean columnaEsValida(Map<Integer, String> encabezado, Cell columna) {
+		return encabezado.containsKey(columna.getColumnIndex());
+	}
+
+	private void agregarSeccionALista(List<Seccion> listaSeccion, Seccion seccion) {
+		if (seccionEsValida(seccion)) {
+			seccion = agregarModificarSeccion(seccion);
+			listaSeccion.add(seccion);
+		}
+	}
+
+	private Boolean esEncabezado(Cell columna) {
+		return columna.getRowIndex() == FILA_ENCABEZADO;
+	}
+
+	private void guardarSeccionLista(List<Seccion> listaSeccion) {
+		if (listaSeccion.isEmpty()) {
+			throw new ServiceException("No hay secciones para guardar");
+		}
+		getSeccionRepositorio().saveAll(listaSeccion);
+	}
+
+	private void parsearExcelSeccion(Seccion seccion, Cell columna, String nombreColumna) {
 		switch (nombreColumna) {
 		case COLUMNA_NOMBRE:
-			seccion.setNombre(columna.getStringCellValue());
-		case COLUMNA_DESCRIPCION:
-			seccion.setDescripcion(columna.getStringCellValue());
-		default:
+			String nombre = columna.getStringCellValue().trim();
+			if (esStringValido(nombre)) {
+				seccion.setNombre(nombre);
+			}
 			break;
+		case COLUMNA_DESCRIPCION:
+			String descripcion = columna.getStringCellValue().trim();
+			if (esStringValido(descripcion)) {
+				seccion.setDescripcion(descripcion);
+			}
 		}
+	}
+
+	private Boolean esStringValido(String nombre) {
+		return !nombre.isBlank();
 	}
 
 	private Boolean seccionEsValida(Seccion seccion) {

@@ -2,11 +2,11 @@ package com.unlam.tpi.servicio;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -24,9 +24,11 @@ import com.unlam.tpi.repositorio.CategoriaRepositorio;
 @Service
 public class CategoriaServicioImpl implements CategoriaServicio {
 
+	private static final int FILA_ENCABEZADO = 0;
 	private static final String COLUMNA_DESCRIPCION = "descripcion";
 	private static final String COLUMNA_NOMBRE = "nombre";
 	private static final String HOJA_CATEGORIA = "categoria";
+
 	@Autowired
 	CategoriaRepositorio categoriaRepositorio;
 
@@ -43,41 +45,25 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 	}
 
 	@Override
-	public void cargaDesdeExcel(MultipartFile excelCategoria) {
+	public void cargaDesdeExcel(MultipartFile excelPregunta) {
 		List<Categoria> listaCategoria = new ArrayList<>();
-		Map<Integer, String> encabezado = new HashMap<>();
+		Map<Integer, String> encabezado = new HashedMap<>();
 		XSSFWorkbook libro;
+		Categoria categoria;
 		try {
-			libro = new XSSFWorkbook(excelCategoria.getInputStream());
+			libro = new XSSFWorkbook(excelPregunta.getInputStream());
 			XSSFSheet hoja = libro.getSheet(HOJA_CATEGORIA);
 			if (hoja == null) {
 				throw new ServiceException("Error al importar excel verifique que exista la hoja categoria");
 			}
 			for (Row fila : hoja) {
-				Categoria categoria = new Categoria();
-				Iterator<Cell> iteadorColumna = fila.iterator();
-				while (iteadorColumna.hasNext()) {
-					Cell columna = iteadorColumna.next();
-					if (columna.getRowIndex() == 0) {
-						if (!encabezado.containsKey(columna.getColumnIndex())) {
-							encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
-						}
-					} else {
-						if (encabezado.containsKey(columna.getColumnIndex())) {
-							String nombreColumna = encabezado.get(columna.getColumnIndex());
-							convertirExcelACategoria(categoria, columna, nombreColumna);
-						}
-					}
-				}
-				if (categoriaEsValida(categoria)) {
-					listaCategoria.add(agregarModificarCategoria(categoria));
-				}
+				categoria = new Categoria();
+				leerColumna(encabezado, categoria, fila);
+				agregarCategoriaALista(listaCategoria, categoria);
 			}
-			if (0 < listaCategoria.size()) {
-				getCategoriaRepositorio().saveAll(listaCategoria);
-			}
+			guardarCategoriaLista(listaCategoria);
 		} catch (IOException e) {
-			throw new ServiceException("Error al leer el excel de categorias", e);
+			throw new ServiceException("Error al guardar la categoria", e);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -85,19 +71,73 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 		}
 	}
 
-	private void convertirExcelACategoria(Categoria categoria, Cell columna, String nombreColumna) {
+	private void guardarCategoriaLista(List<Categoria> listaCategoria) {
+		if (listaCategoria.isEmpty()) {
+			throw new ServiceException("No hay categorias para guardar");
+		}
+		getCategoriaRepositorio().saveAll(listaCategoria);
+	}
+
+	private void leerColumna(Map<Integer, String> encabezado, Categoria categoria, Row fila) {
+		Iterator<Cell> iteadorColumna = fila.iterator();
+		while (iteadorColumna.hasNext()) {
+			Cell columna = iteadorColumna.next();
+			crearEncabezado(encabezado, columna);
+			crearCategoria(encabezado, categoria, columna);
+		}
+	}
+
+	private Boolean esEncabezado(Cell columna) {
+		return columna.getRowIndex() == FILA_ENCABEZADO;
+	}
+
+	private void crearCategoria(Map<Integer, String> encabezado, Categoria categoria, Cell columna) {
+		if (!esEncabezado(columna) && columnaEsValida(encabezado, columna)) {
+			String nombreColumna = encabezado.get(columna.getColumnIndex());
+			parsearExcelACategoria(categoria, columna, nombreColumna);
+		}
+	}
+
+	private void agregarCategoriaALista(List<Categoria> listaCategoria, Categoria categoria) {
+		if (categoriaEsValida(categoria)) {
+			categoria = agregarModificarCategoria(categoria);
+			listaCategoria.add(categoria);
+		}
+	}
+
+	private void crearEncabezado(Map<Integer, String> encabezado, Cell columna) {
+		if (esEncabezado(columna) && !columnaEsValida(encabezado, columna)) {
+			encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
+		}
+	}
+
+	private boolean columnaEsValida(Map<Integer, String> encabezado, Cell columna) {
+		return encabezado.containsKey(columna.getColumnIndex());
+	}
+
+	private void parsearExcelACategoria(Categoria categoria, Cell columna, String nombreColumna) {
 		switch (nombreColumna) {
 		case COLUMNA_NOMBRE:
-			categoria.setNombre(columna.getStringCellValue());
+			String nombre = columna.getStringCellValue().trim();
+			if (esStringValido(nombre)) {
+				categoria.setNombre(nombre);
+			}
+			break;
 		case COLUMNA_DESCRIPCION:
-			categoria.setDescripcion(columna.getStringCellValue());
-		default:
+			String descripcion = columna.getStringCellValue().trim();
+			if (esStringValido(descripcion)) {
+				categoria.setDescripcion(descripcion);
+			}
 			break;
 		}
 	}
 
+	private Boolean esStringValido(String nombre) {
+		return !nombre.isBlank();
+	}
+
 	private Boolean categoriaEsValida(Categoria categoria) {
-		if (categoria.getNombre() != null && categoria.getDescripcion() != null) {
+		if (categoria.getNombre() != null) {
 			return true;
 		}
 		return false;
@@ -107,7 +147,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 	private Categoria agregarModificarCategoria(Categoria categoria) {
 		Categoria categoriaExistente = getCategoriaRepositorio().findByNombre(categoria.getNombre());
 		if (categoriaExistente != null) {
-			categoriaExistente.setDescripcion(COLUMNA_DESCRIPCION);
+			categoriaExistente.setDescripcion(categoria.getDescripcion());
 			return categoriaExistente;
 		}
 		return categoria;
