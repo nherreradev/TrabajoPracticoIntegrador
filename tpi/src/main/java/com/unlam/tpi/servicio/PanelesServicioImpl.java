@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,22 +17,26 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.constantes.PanelesDePreciosConstantes;
-import com.unlam.tpi.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.interfaces.PanelPrecios;
 import com.unlam.tpi.interfaces.PanelesServicio;
-import com.unlam.tpi.mocks.Mock;
+import com.unlam.tpi.interfaces.PosicionServicio;
 import com.unlam.tpi.modelo.persistente.Instrumento;
+import com.unlam.tpi.modelo.persistente.Posicion;
+import com.unlam.tpi.modelo.rest.ValuacionTotalRespuesta;
+import com.unlam.tpi.repositorio.PosicionRepositorio;
 
 @Service
 public class PanelesServicioImpl implements PanelesServicio {
 
 	@Autowired
 	PanelPrecios panelPrecios;
-	
+
 	@Autowired
-    private ListaPreciosServicio listaPreciosServicio;
+	PosicionServicio posicionServicio;
 
 	public static List<Instrumento> listaInstrumentosAux = new ArrayList<>();
+
+	private List<Instrumento> instrumentosQueVariaronSuPrecio = new ArrayList<>();
 
 	private final RestTemplate restTemplate;
 
@@ -53,17 +55,20 @@ public class PanelesServicioImpl implements PanelesServicio {
 
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
-		
+
 		ResponseEntity<String> respuestaJson = postApiAcciones();
-		
+
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
 			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
 			}
-			
+
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
+
+			recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
+
 			listaInstrumentosAux.addAll(listaInstrumentos);
 			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 			return PanelPreciosImpl.panelAcciones;
@@ -85,8 +90,9 @@ public class PanelesServicioImpl implements PanelesServicio {
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.BONOS);
 			}
-			
+
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
+			recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
 			panelPrecios.agregarInstrumentosAlPanelDeBonos(listaInstrumentos);
 			return PanelPreciosImpl.panelBonos;
 		} catch (ServiceException se) {
@@ -101,7 +107,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 		List<Instrumento> listaInstrumentos = new ArrayList<>();
 		Gson gson = new Gson();
 		String json = responseEntity.getBody();
-		//String json = Mock.jsonMock;
+		// String json = Mock.jsonMock;
 		JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
 		JsonArray titulos = jsonObject.getAsJsonArray(PanelesDePreciosConstantes.TITULOS);
 
@@ -118,6 +124,24 @@ public class PanelesServicioImpl implements PanelesServicio {
 	public ResponseEntity<String> postApiAcciones() {
 		String url = "https://api.mercadojunior.com.ar/list/precios/acciones";
 		return getInstrumentos(url);
+	}
+
+	private void recalcularPosicionTotalSegunVariacionDePrecios(List<Instrumento> listaInstrumentos) {
+		List<Posicion> posicionTotal = posicionServicio.obtenerPosicionTotal();
+		for (Instrumento instrumento : listaInstrumentos) {
+			if (instrumento.getFlashCompra() != 0 || instrumento.getFlashVenta() != 0) {
+				for (Posicion posicion : posicionTotal) {
+					if (posicion.getSimboloInstrumento() != null && instrumento.getSimbolo() != null
+							&& !posicion.getEsEfectivo()) {
+						if (posicion.getSimboloInstrumento().equals(instrumento.getSimbolo())) {
+							posicion.setPrecio(
+									instrumento.getPuntas() != null ? instrumento.getPuntas().getPrecioVenta() : null);
+							posicionServicio.actualizarPosicion(posicion);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private ResponseEntity<String> postApiBonos() {
