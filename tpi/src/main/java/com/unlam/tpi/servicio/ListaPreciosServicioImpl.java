@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.time.Instant;
+import java.time.Period;
 import java.util.*;
 
 @Service
@@ -65,6 +66,7 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         RequestEntity<?> requestEntity;
         ResponseEntity<String> responseEntity = null;
         //TODO: definir logica para obtener rango de fecha, si es mensual, trimestral o semestral
+        String rango = DefinirRangoDeMeses(fecha_desde, fecha_hasta);
         try{
             switch (instrumento){
                 case "bonos":
@@ -85,6 +87,10 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
             e.printStackTrace();
         }
         SaveMongoTransaction(ResponseOK, responseEntity);
+    }
+
+    private String DefinirRangoDeMeses(Date fecha_desde, Date fecha_hasta) {
+        return null;
     }
 
     private void SaveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) {
@@ -121,36 +127,6 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         return resultadoFinalJSON;
     }
 
-    //1 será un mes,
-    //2 serán 3 meses
-    //3 serán 6 meses
-    @Override
-    public String GetHistorical(Integer tiemopElegido) {
-        List<String> response = null;
-        Integer index = null;
-        try{
-            switch (tiemopElegido){
-                case 1:
-                    response = this.listaPreciosRepository.GetAllWithoutID("mensual");
-                    index = DeterminarIndexRandomDelArray(response);
-                    return response.get(index);
-                case 2:
-                    response = this.listaPreciosRepository.GetAllWithoutID("trimestral");
-                    index = DeterminarIndexRandomDelArray(response);
-                    return response.get(index);
-                case 3:
-                    response = this.listaPreciosRepository.GetAllWithoutID("semestral");
-                    index = DeterminarIndexRandomDelArray(response);
-                    return response.get(index);
-            }
-            return null;
-        }catch (Exception e){
-            System.out.println("Error al obtener información de mongo"+ e);
-            e.printStackTrace();
-            return null;
-        }
-
-    }
 
     private String GetMapKey(Map<String, Boolean> responseOK) { return responseOK.containsKey("acciones") ? "acciones" : "bonos"; }
     private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
