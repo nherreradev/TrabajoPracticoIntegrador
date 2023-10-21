@@ -40,7 +40,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	private static final String COLUMNA_ENUNCIADO = "enunciado";
 
 	private static final String HOJA_PREGUNTA = "pregunta";
-
+	
 	@Autowired
 	PreguntaRepositorio preguntaRepositorio;
 	
