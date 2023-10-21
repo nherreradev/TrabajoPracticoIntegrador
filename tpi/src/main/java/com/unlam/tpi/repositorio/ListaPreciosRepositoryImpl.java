@@ -29,15 +29,15 @@ public class ListaPreciosRepositoryImpl implements ListaPreciosRepository{
     }
 
     @Override
-    public List<String> GetPriceList(String instrumento) {
+    public List<String> GetAllWithoutID(String instrumento) {
         List<Document> documents = mongoTemplate.findAll(Document.class, instrumento);
         for (Document doc : documents) {
             doc.remove("_id");
         }
-
         List<String> jsonStrings = documents.stream()
                 .map(Document::toJson)
                 .collect(Collectors.toList());
         return jsonStrings;
     }
+
 }
