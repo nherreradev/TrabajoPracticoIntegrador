@@ -1,5 +1,9 @@
 package com.unlam.tpi.interfaces;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unlam.tpi.modelo.persistente.Orden;
@@ -18,5 +22,14 @@ public interface PosicionServicio {
 
 	@Transactional
 	void acreditarDinero(RequestCargaDeDinero posicionParcial);
+	
+	@Transactional
+	public Map<String, BigDecimal> obtenerCantidadPorInstrumento(List<Posicion> posicionTotal);
+
+	@Transactional
+	List<Posicion> obtenerPosicionTotal();
+
+	@Transactional
+	void actualizarPosicion(Posicion posicion);
 
 }

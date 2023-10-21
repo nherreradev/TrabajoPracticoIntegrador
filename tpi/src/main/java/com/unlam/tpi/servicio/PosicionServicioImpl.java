@@ -212,7 +212,8 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 	}
 
-	private Map<String, BigDecimal> obtenerCantidadPorInstrumento(List<Posicion> posicionTotal) {
+	@Override
+	public Map<String, BigDecimal> obtenerCantidadPorInstrumento(List<Posicion> posicionTotal) {
 		Map<String, BigDecimal> instrumentosPorCantidad = new HashMap<>();
 		for (Posicion posicion : posicionTotal) {
 
@@ -231,6 +232,18 @@ public class PosicionServicioImpl implements PosicionServicio {
 			}
 		}
 		return instrumentosPorCantidad;
+	}
+	
+	@Override
+	public List<Posicion> obtenerPosicionTotal() {
+		return posicionRepositorio.findAll();
+	}
+	
+	@Override
+	public void actualizarPosicion(Posicion posicion) {
+		/*JPARepository si la entidad existe hace una actualizacion*/
+		posicionRepositorio.save(posicion);
+		
 	}
 
 	private BigDecimal calcularPosicionEnInstrumentos(List<Posicion> posicionTotal) {
@@ -252,5 +265,9 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 		return totalMonedas;
 	}
+
+	
+
+	
 
 }
