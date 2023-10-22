@@ -8,6 +8,8 @@ public interface RespuestaRepositorio extends JpaRepository<Respuesta, Long>{
 	
 	public Respuesta findByNombre(String nombre);
 	
+	public Respuesta findByNombreAndInstrumento(String nombre, String instrumento);
+	
 	public Respuesta findByOid(Long oid);
 
 }

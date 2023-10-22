@@ -127,7 +127,13 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	}
 
 	private Respuesta agregarModificarRespuesta(Respuesta respuesta) {
-		Respuesta respuestaExistente = getRespuestaRepositorio().findByNombre(respuesta.getNombre());
+		Respuesta respuestaExistente = null;
+		if (respuesta.getInstrumento() != null) {
+			respuestaExistente = getRespuestaRepositorio().findByNombreAndInstrumento(respuesta.getNombre(),
+					respuesta.getInstrumento());
+		} else {
+			respuestaExistente = getRespuestaRepositorio().findByNombre(respuesta.getNombre());
+		}
 		if (respuestaExistente != null) {
 			respuestaExistente.setOrden(respuesta.getOrden());
 			respuestaExistente.setValor(respuesta.getValor());
