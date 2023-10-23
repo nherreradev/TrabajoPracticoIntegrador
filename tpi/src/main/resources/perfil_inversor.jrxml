@@ -11,8 +11,8 @@
 	<parameter name="p_cat_agresivo_path" class="java.lang.String"/>
 	<parameter name="p_nombre_usuario" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[SELECT * FROM  test.perfil_inversor  pi
-JOIN   test.usuario u ON  pi.usuario_oid = u.oid_
+		<![CDATA[SELECT * FROM  perfil_inversor  pi
+JOIN   usuario u ON  pi.usuario_oid = u.oid_
 WHERE u.nombre_usuario = $P{p_nombre_usuario}]]>
 	</queryString>
 	<field name="oid_" class="java.lang.Long">

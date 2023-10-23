@@ -17,14 +17,18 @@ public class PanelPreciosImpl implements PanelPrecios {
 	@Override
 	public void agregarInstrumentosAlPanelDeAcciones(List<Instrumento> instrumentos) {
 		for (Instrumento instrumento : instrumentos) {
-			panelAcciones.put(instrumento.getSimbolo(), instrumento);
+			if (instrumento.getPuntas() != null) {
+				panelAcciones.put(instrumento.getSimbolo(), instrumento);
+			}
 		}
 	}
 
 	@Override
 	public void agregarInstrumentosAlPanelDeBonos(List<Instrumento> instrumentos) {
 		for (Instrumento instrumento : instrumentos) {
-			panelBonos.put(instrumento.getSimbolo(), instrumento);
+			if (instrumento.getPuntas().getPrecioCompra() != null && instrumento.getPuntas().getPrecioVenta() != null) {
+				panelBonos.put(instrumento.getSimbolo(), instrumento);
+			}
 		}
 	}
 
