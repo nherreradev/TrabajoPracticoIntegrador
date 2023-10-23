@@ -18,17 +18,19 @@ import org.springframework.web.multipart.MultipartFile;
 import com.unlam.tpi.arquitectura.ServiceException;
 import com.unlam.tpi.dto.PreguntaDTO;
 import com.unlam.tpi.dto.TipoComponente;
-import com.unlam.tpi.modelo.persistente.Categoria;
 import com.unlam.tpi.interfaces.CategoriaServicio;
 import com.unlam.tpi.interfaces.PreguntaServicio;
 import com.unlam.tpi.interfaces.SeccionServicio;
+import com.unlam.tpi.modelo.persistente.Categoria;
 import com.unlam.tpi.modelo.persistente.Pregunta;
 import com.unlam.tpi.modelo.persistente.Seccion;
 import com.unlam.tpi.repositorio.PreguntaRepositorio;
 
 @Service
 public class PreguntaServicioImpl implements PreguntaServicio {
-	
+
+	private static final int FILA_ENCABEZADO = 0;
+
 	private static final String COLUMNA_SECCION = "seccion";
 
 	private static final String COLUMNA_CATEGORIA = "categoria";
@@ -43,13 +45,13 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 
 	@Autowired
 	PreguntaRepositorio preguntaRepositorio;
-	
+
 	@Autowired
 	CategoriaServicio categoriaServicio;
-	
+
 	@Autowired
 	SeccionServicio seccionServicio;
-	
+
 	@Override
 	public void guardar(PreguntaDTO pregunta) {
 		try {
@@ -61,7 +63,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 			throw new ServiceException("Error al guardar la pregunta", e);
 		}
 	}
-	
+
 	@Override
 	public void cargaDesdeExcel(MultipartFile excelPregunta) {
 		List<Pregunta> listaPregunta = new ArrayList<>();
@@ -69,6 +71,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 		Map<String, Categoria> categoriaMap = new HashedMap<>();
 		Map<String, Seccion> seccionMap = new HashedMap<>();
 		XSSFWorkbook libro;
+		Pregunta pregunta;
 		try {
 			libro = new XSSFWorkbook(excelPregunta.getInputStream());
 			XSSFSheet hoja = libro.getSheet(HOJA_PREGUNTA);
@@ -76,68 +79,11 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 				throw new ServiceException("Error al importar excel verifique que exista la hoja pregunta");
 			}
 			for (Row fila : hoja) {
-				Pregunta pregunta = new Pregunta();
-				Iterator<Cell> iteadorColumna = fila.iterator();
-				while (iteadorColumna.hasNext()) {
-					Cell columna = iteadorColumna.next();
-					if (columna.getRowIndex() == 0) {
-						if (!encabezado.containsKey(columna.getColumnIndex())) {
-							encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
-						}
-					} else {
-						if (encabezado.containsKey(columna.getColumnIndex())) {
-							String nombreColumna = encabezado.get(columna.getColumnIndex());
-							switch (nombreColumna) {
-							case COLUMNA_ENUNCIADO:
-								pregunta.setEnunciado(columna.getStringCellValue());
-								break;
-							case COLUMNA_DESCRIPCION:
-								pregunta.setDescripcion(columna.getStringCellValue());
-								break;
-							case COLUMNA_TIPOCOMPONENTE:
-								pregunta.setTipoComponente(TipoComponente.valueOf(columna.getStringCellValue()));
-								break;
-							case COLUMNA_CATEGORIA:
-								String nombreCategoria = columna.getStringCellValue();
-								if (categoriaMap.containsKey(nombreCategoria)) {
-									pregunta.setCategoria(categoriaMap.get(nombreCategoria));
-								} else {
-									Categoria categoria = getCategoriaServicio().getCategoriaPorNombre(nombreCategoria);
-									if (categoria == null) {
-										throw new ServiceException(
-												"Error al obtener la categoria con nombre: " + nombreCategoria);
-									}
-									categoriaMap.put(nombreCategoria, categoria);
-									pregunta.setCategoria(categoriaMap.get(nombreCategoria));
-								}
-								break;
-							case COLUMNA_SECCION:
-								String nombreSeccion = columna.getStringCellValue();
-								if (seccionMap.containsKey(nombreSeccion)) {
-									pregunta.setSeccion(seccionMap.get(nombreSeccion));
-								} else {
-									Seccion seccion = getSeccionServicio().getSeccionPorNombre(nombreSeccion);
-									if (seccion == null) {
-										throw new ServiceException(
-												"Error al obtener la sección con nombre: " + nombreSeccion);
-									}
-									seccionMap.put(nombreSeccion, seccion);
-									pregunta.setSeccion(seccionMap.get(nombreSeccion));
-								}
-								break;
-							}
-						}
-					}
-				}
-				if (pregunta.getEnunciado() != null && pregunta.getDescripcion() != null
-						&& pregunta.getCategoria() != null && pregunta.getTipoComponente() != null
-						&& pregunta.getSeccion() != null) {
-					listaPregunta.add(pregunta);
-				}
+				pregunta = new Pregunta();
+				leerColumna(encabezado, categoriaMap, seccionMap, pregunta, fila);
+				agregarPreguntaALista(listaPregunta, pregunta);
 			}
-			if (0 < listaPregunta.size()) {
-				getPreguntaRepositorio().saveAll(listaPregunta);
-			}
+			guardarPreguntaLista(listaPregunta);
 		} catch (IOException e) {
 			throw new ServiceException("Error al guardar la pregunta", e);
 		} catch (ServiceException e) {
@@ -147,11 +93,152 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 		}
 	}
 
+	private void leerColumna(Map<Integer, String> encabezado, Map<String, Categoria> categoriaMap,
+			Map<String, Seccion> seccionMap, Pregunta pregunta, Row fila) {
+		Iterator<Cell> iteadorColumna = fila.iterator();
+		while (iteadorColumna.hasNext()) {
+			Cell columna = iteadorColumna.next();
+			crearEncabezado(encabezado, columna);
+			crearPregunta(encabezado, categoriaMap, seccionMap, pregunta, columna);
+		}
+	}
+
+	private void agregarPreguntaALista(List<Pregunta> listaPregunta, Pregunta pregunta) {
+		if (preguntaEsValida(pregunta)) {
+			pregunta = agregarModificarPregunta(pregunta);
+			listaPregunta.add(pregunta);
+		}
+	}
+
+	private void guardarPreguntaLista(List<Pregunta> listaPregunta) {
+		if (listaPregunta.isEmpty()) {
+			throw new ServiceException("No hay preguntas para guardar");
+		}
+		getPreguntaRepositorio().saveAll(listaPregunta);
+	}
+
+	private void crearEncabezado(Map<Integer, String> encabezado, Cell columna) {
+		if (esEncabezado(columna) && !columnaEsValida(encabezado, columna)) {
+			encabezado.put(columna.getColumnIndex(), columna.getStringCellValue());
+		}
+	}
+
+	private Boolean esEncabezado(Cell columna) {
+		return columna.getRowIndex() == FILA_ENCABEZADO;
+	}
+
+	private boolean columnaEsValida(Map<Integer, String> encabezado, Cell columna) {
+		return encabezado.containsKey(columna.getColumnIndex());
+	}
+
+	private void crearPregunta(Map<Integer, String> encabezado, Map<String, Categoria> categoriaMap,
+			Map<String, Seccion> seccionMap, Pregunta pregunta, Cell columna) {
+		if (!esEncabezado(columna) && columnaEsValida(encabezado, columna)) {
+			String nombreColumna = encabezado.get(columna.getColumnIndex());
+			parsearExcelAPregunta(categoriaMap, seccionMap, pregunta, columna, nombreColumna);
+		}
+	}
+
+	private Pregunta agregarModificarPregunta(Pregunta pregunta) {
+		Pregunta preguntaExistente = getPreguntaRepositorio().findByEnunciado(pregunta.getEnunciado());
+		if (preguntaExistente != null) {
+			preguntaExistente.setCategoria(pregunta.getCategoria());
+			preguntaExistente.setDescripcion(pregunta.getDescripcion());
+			preguntaExistente.setTipoComponente(pregunta.getTipoComponente());
+			preguntaExistente.setSeccion(pregunta.getSeccion());
+			return preguntaExistente;
+		}
+		return pregunta;
+	}
+
+	private Boolean preguntaEsValida(Pregunta pregunta) {
+		if (pregunta.getEnunciado() != null && pregunta.getCategoria() != null
+				&& pregunta.getTipoComponente() != null) {
+			return Boolean.TRUE;
+		}
+		return Boolean.FALSE;
+	}
+
+	private void parsearExcelAPregunta(Map<String, Categoria> categoriaMap, Map<String, Seccion> seccionMap,
+			Pregunta pregunta, Cell columna, String nombreColumna) {
+		switch (nombreColumna) {
+		case COLUMNA_ENUNCIADO:
+			String enunciado = columna.getStringCellValue().trim();
+			if (esStringValido(enunciado)) {
+				pregunta.setEnunciado(enunciado);
+			}
+			break;
+		case COLUMNA_DESCRIPCION:
+			String descripcion = columna.getStringCellValue().trim();
+			if (esStringValido(descripcion)) {
+				pregunta.setDescripcion(descripcion);
+			}
+			break;
+		case COLUMNA_TIPOCOMPONENTE:
+			String tipoComponenteNombre = columna.getStringCellValue().trim();
+			if (esStringValido(tipoComponenteNombre)) {
+				TipoComponente tipoComponente = parseStringATipoComponente(tipoComponenteNombre);
+				pregunta.setTipoComponente(tipoComponente);
+			}
+			break;
+		case COLUMNA_CATEGORIA:
+			String nombreCategoria = columna.getStringCellValue().trim();
+			agregarCategoria(categoriaMap, pregunta, nombreCategoria);
+			break;
+		case COLUMNA_SECCION:
+			String nombreSeccion = columna.getStringCellValue().trim();
+			if (esStringValido(nombreSeccion)) {
+				agregarSeccion(seccionMap, pregunta, nombreSeccion);
+			}
+		}
+	}
+
+	private Boolean esStringValido(String nombre) {
+		return !nombre.isBlank();
+	}
+
+	private TipoComponente parseStringATipoComponente(String tipoComponente) {
+		try {
+			return TipoComponente.valueOf(tipoComponente);
+		} catch (IllegalArgumentException e) {
+			throw new ServiceException("El TipoComponente con nombre: " + tipoComponente + " no es valido.");
+		}
+	}
+
+	private void agregarCategoria(Map<String, Categoria> categoriaMap, Pregunta pregunta, String nombreCategoria) {
+		if (nombreCategoria.isBlank()) {
+			throw new ServiceException("Categoria obligatoria. Debe agregar una categoria a la pregunta");
+		}
+		if (categoriaMap.containsKey(nombreCategoria)) {
+			pregunta.setCategoria(categoriaMap.get(nombreCategoria));
+		} else {
+			Categoria categoria = getCategoriaServicio().getCategoriaPorNombre(nombreCategoria);
+			if (categoria == null) {
+				throw new ServiceException("Error al obtener la categoria con nombre: " + nombreCategoria);
+			}
+			categoriaMap.put(nombreCategoria, categoria);
+			pregunta.setCategoria(categoriaMap.get(nombreCategoria));
+		}
+	}
+
+	private void agregarSeccion(Map<String, Seccion> seccionMap, Pregunta pregunta, String nombreSeccion) {
+		if (seccionMap.containsKey(nombreSeccion)) {
+			pregunta.setSeccion(seccionMap.get(nombreSeccion));
+		} else {
+			Seccion seccion = getSeccionServicio().getSeccionPorNombre(nombreSeccion);
+			if (seccion == null) {
+				throw new ServiceException("Error al obtener la sección con nombre: " + nombreSeccion);
+			}
+			seccionMap.put(nombreSeccion, seccion);
+			pregunta.setSeccion(seccionMap.get(nombreSeccion));
+		}
+	}
+
 	@Override
 	public PreguntaDTO getPreguntaDTOPorID(Long id) {
 		try {
 			Pregunta pregunta = getPreguntaRepositorio().getReferenceById(id);
-			if(pregunta==null) {
+			if (pregunta == null) {
 				throw new ServiceException("Error al obtener la pregunta");
 			}
 			return PreguntaDTO.entidadADTO(pregunta);
@@ -166,37 +253,36 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	public PreguntaDTO getPreguntaDTOPorEnunciado(String nombre) {
 		try {
 			Pregunta pregunta = getPreguntaPorEnunciado(nombre);
-			if(pregunta==null) {
-				throw new ServiceException("Error al obtener la pregunta: "+nombre);
+			if (pregunta == null) {
+				throw new ServiceException("Error al obtener la pregunta: " + nombre);
 			}
 			return PreguntaDTO.entidadADTO(pregunta);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la pregunta: "+nombre, e);
+			throw new ServiceException("Error al obtener la pregunta: " + nombre, e);
 		}
 	}
-	
+
 	@Override
 	public Pregunta getPreguntaPorEnunciado(String enunciado) {
 		try {
 			Pregunta pregunta = getPreguntaRepositorio().findByEnunciado(enunciado);
 			if (pregunta == null) {
-				throw new ServiceException("Error al obtener la pregunta: "+enunciado);
+				throw new ServiceException("Error al obtener la pregunta: " + enunciado);
 			}
 			return pregunta;
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la pregunta: "+enunciado, e);
+			throw new ServiceException("Error al obtener la pregunta: " + enunciado, e);
 		}
 	}
 
-	
 	@Override
 	public void borrar(Long id) {
 		try {
-			getPreguntaRepositorio().deleteById(id);		
+			getPreguntaRepositorio().deleteById(id);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -214,7 +300,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 			throw new ServiceException("Error al listar las preguntas", e);
 		}
 	}
-	
+
 	@Override
 	public List<PreguntaDTO> listarPorCategoria(String categoria) {
 		try {
@@ -229,6 +315,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	public PreguntaRepositorio getPreguntaRepositorio() {
 		return preguntaRepositorio;
 	}
+
 	public void setPreguntaRepositorio(PreguntaRepositorio preguntaRepositorio) {
 		this.preguntaRepositorio = preguntaRepositorio;
 	}
@@ -248,6 +335,5 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	public void setSeccionServicio(SeccionServicio seccionServicio) {
 		this.seccionServicio = seccionServicio;
 	}
-	
-	
+
 }
