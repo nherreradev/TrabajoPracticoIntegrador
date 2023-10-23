@@ -57,42 +57,6 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         return responseEntity;
     }
 
-    @Override
-    public void SaveHistorical(String instrumento, Date fecha_desde, Date fecha_hasta, String token) {
-        Map<String, Boolean> ResponseOK = new HashMap<>();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        RequestEntity<?> requestEntity;
-        ResponseEntity<String> responseEntity = null;
-        //TODO: definir logica para obtener rango de fecha, si es mensual, trimestral o semestral
-        String rango = DefinirRangoDeMeses(fecha_desde, fecha_hasta);
-        try{
-            switch (instrumento){
-                case "bonos":
-                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(BONOS));
-                    responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.ValidateResponse(responseEntity, "bonos");
-                    break;
-                case "acciones":
-                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(ACCIONES));
-                    responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.ValidateResponse(responseEntity, "acciones");
-                    break;
-                default:
-                    break;
-            }
-        }catch (Exception e){
-            System.out.println("|HTTP ERROR| "+"Error en la llamada a la API, exception: "+ e);
-            e.printStackTrace();
-        }
-        SaveMongoTransaction(ResponseOK, responseEntity);
-    }
-
-    private String DefinirRangoDeMeses(Date fecha_desde, Date fecha_hasta) {
-        return null;
-    }
-
     private void SaveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) {
         int IndexLlaveAbertura = responseEntity.toString().indexOf('{');
         int IndexLlaveCierre = responseEntity.toString().lastIndexOf('}');
@@ -126,7 +90,6 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         }
         return resultadoFinalJSON;
     }
-
 
     private String GetMapKey(Map<String, Boolean> responseOK) { return responseOK.containsKey("acciones") ? "acciones" : "bonos"; }
     private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
