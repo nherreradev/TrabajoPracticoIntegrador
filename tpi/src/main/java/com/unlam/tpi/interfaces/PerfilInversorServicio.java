@@ -6,6 +6,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import com.unlam.tpi.dto.PerfilInversorDTO;
+import com.unlam.tpi.modelo.persistente.PerfilInversor;
 
 import net.sf.jasperreports.engine.JRException;
 
@@ -34,5 +35,8 @@ public interface PerfilInversorServicio {
 
 	@Transactional
 	public byte[] obtenerCertificado(String nombreUsuario) throws JRException, SQLException;
+
+	@Transactional
+	public void guardar(PerfilInversor perfilInversor);
 
 }
