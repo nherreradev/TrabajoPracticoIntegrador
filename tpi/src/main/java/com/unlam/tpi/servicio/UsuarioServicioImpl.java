@@ -4,6 +4,8 @@ import com.unlam.tpi.modelo.rest.ResponseAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.unlam.tpi.arquitectura.ServiceException;
+import com.unlam.tpi.dto.UsuarioDTO;
 import com.unlam.tpi.interfaces.UsuarioServicio;
 import com.unlam.tpi.repositorio.UsuarioRepositorio;
 
@@ -40,7 +42,35 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			throw e;
 		}
 	}
-
+	
+	@Override
+	public Usuario ObtenerUsuarioPorNombreUsuario(String nombreUsuario) {
+		try {
+			Usuario usaurio = this.usuarioRepositorio.findByNombreUsuario(nombreUsuario);
+			if (usaurio == null) {
+				throw new ServiceException("Usuario no encontrado: " + nombreUsuario);
+			}
+			return usaurio;
+		} catch (Exception e) {
+			throw new ServiceException("Usuario no encontrado: " + nombreUsuario);
+		}
+	}
+	
+	@Override
+	public UsuarioDTO ObtenerUsuarioDTOPorNombreUsuario(String nombreUsuario) {
+		try {
+			Usuario usaurio = ObtenerUsuarioPorNombreUsuario(nombreUsuario);
+			if (usaurio == null) {
+				return null;
+			} 
+			return UsuarioDTO.entidadADTO(usaurio);
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("Error obteniendo el usuario: " + nombreUsuario);
+		}
+	}
+	 
 	@Override
 	public ResponseAPI ModificarUsuario(Usuario usuario) {
 		try {
