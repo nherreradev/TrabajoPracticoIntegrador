@@ -41,7 +41,7 @@ public class PerfilInversor extends ObjetoPersistente {
 	@Enumerated(EnumType.STRING)
 	private TipoPerfilInversor perfilInversor;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "USUARIO_OID", referencedColumnName = "OID_")
 	private Usuario usuario;
 
