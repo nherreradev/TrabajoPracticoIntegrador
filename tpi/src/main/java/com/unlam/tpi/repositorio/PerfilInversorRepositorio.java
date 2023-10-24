@@ -6,4 +6,5 @@ import com.unlam.tpi.modelo.persistente.PerfilInversor;
 
 public interface PerfilInversorRepositorio extends JpaRepository<PerfilInversor, Long>{
 
+	public PerfilInversor findByUsuario_NombreUsuario(String nombreUsuario);
 }
