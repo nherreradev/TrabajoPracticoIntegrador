@@ -2,15 +2,16 @@ package com.unlam.tpi;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import com.unlam.tpi.modelo.persistente.Usuario;
-import com.unlam.tpi.modelo.rest.ResponseAPI;
-import com.unlam.tpi.repositorio.UsuarioRepositorio;
-import com.unlam.tpi.servicio.UsuarioServicioImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+
+import com.unlam.tpi.core.servicio.UsuarioServicioImpl;
+import com.unlam.tpi.infraestructura.modelo.ResponseAPI;
+import com.unlam.tpi.infraestructura.modelo.Usuario;
+import com.unlam.tpi.infraestructura.repositorio.UsuarioRepositorio;
 
 @SpringBootTest
 public class UsuarioServicioTest {
