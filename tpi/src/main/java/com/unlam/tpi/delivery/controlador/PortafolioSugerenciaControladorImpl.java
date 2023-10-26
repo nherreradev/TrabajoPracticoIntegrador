@@ -1,5 +1,7 @@
 package com.unlam.tpi.delivery.controlador;
 
+import java.net.ProtocolException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,7 +24,13 @@ public class PortafolioSugerenciaControladorImpl implements PortafolioSugerencia
 	@GetMapping("/portafolio")
 	public ResponseEntity<String> obtenerRecomendacion() {
 
-		ResponseEntity<String> response = portafolioSugerenciaServicio.obtenerRecomendacion();
+		String response = null;
+		try {
+			response = portafolioSugerenciaServicio.obtenerRecomendacion();
+		} catch (ProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String json = new Gson().toJson(response);
 		return ResponseEntity.ok(json);
 	}

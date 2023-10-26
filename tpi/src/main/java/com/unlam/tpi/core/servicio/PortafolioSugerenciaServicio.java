@@ -1,9 +1,9 @@
 package com.unlam.tpi.core.servicio;
 
-import org.springframework.http.ResponseEntity;
+import java.net.ProtocolException;
 
 public interface PortafolioSugerenciaServicio {
 	
-	public ResponseEntity<String> obtenerRecomendacion();
+	public String obtenerRecomendacion() throws ProtocolException;
 
 }
