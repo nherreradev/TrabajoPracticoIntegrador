@@ -150,8 +150,15 @@ public class PanelesServicioImpl implements PanelesServicio {
 	}
 
 	public ResponseEntity<String> getInstrumentos(String url) {
-		ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
-		return responseEntity;
+		try {
+			ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+			return responseEntity;
+		} catch(ServiceException se) {
+			throw se;
+		} catch (Exception e) {
+			throw new ServiceException("Error al conectar con mongo DB");
+		}
+		
 	}
 
 	public void determinarFlashDeCompraVenta(Map<String, Instrumento> mapaInstrumentosAux,
