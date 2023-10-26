@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="perfil_inversor" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a285288e-84e6-4c87-bbef-a134a50dbbea">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Test"/>
+	<parameter name="p_logo_path" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{p_logo_path}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="p_cat_conservador_path" class="java.lang.String"/>
+	<parameter name="p_cat_moderado_path" class="java.lang.String"/>
+	<parameter name="p_cat_agresivo_path" class="java.lang.String"/>
+	<parameter name="p_nombre_usuario" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM  perfil_inversor  pi
+JOIN   usuario u ON  pi.usuario_oid = u.oid_
+WHERE u.nombre_usuario = $P{p_nombre_usuario}]]>
+	</queryString>
+	<field name="oid_" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="oid_"/>
+		<property name="com.jaspersoft.studio.field.label" value="oid_"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="deleted_" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.name" value="deleted_"/>
+		<property name="com.jaspersoft.studio.field.label" value="deleted_"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="version_" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="version_"/>
+		<property name="com.jaspersoft.studio.field.label" value="version_"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="horizonte_temporal" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="horizonte_temporal"/>
+		<property name="com.jaspersoft.studio.field.label" value="horizonte_temporal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="nivel_conocimiento" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="nivel_conocimiento"/>
+		<property name="com.jaspersoft.studio.field.label" value="nivel_conocimiento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="perfil_inversor" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="perfil_inversor"/>
+		<property name="com.jaspersoft.studio.field.label" value="perfil_inversor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="tipo_nivel_conocimiento" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="tipo_nivel_conocimiento"/>
+		<property name="com.jaspersoft.studio.field.label" value="tipo_nivel_conocimiento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="tipo_perfil_subjetivo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="tipo_perfil_subjetivo"/>
+		<property name="com.jaspersoft.studio.field.label" value="tipo_perfil_subjetivo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="tolerancia_riesgo" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="tolerancia_riesgo"/>
+		<property name="com.jaspersoft.studio.field.label" value="tolerancia_riesgo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="usuario_oid" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="usuario_oid"/>
+		<property name="com.jaspersoft.studio.field.label" value="usuario_oid"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="perfil_inversor"/>
+	</field>
+	<field name="COLUMN_11" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.name" value="oid_"/>
+		<property name="com.jaspersoft.studio.field.label" value="oid_"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="COLUMN_12" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.name" value="deleted_"/>
+		<property name="com.jaspersoft.studio.field.label" value="deleted_"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="COLUMN_13" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="version_"/>
+		<property name="com.jaspersoft.studio.field.label" value="version_"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="nombre_usuario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombre_usuario"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombre_usuario"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="COLUMN_15" class="byte[]">
+		<property name="com.jaspersoft.studio.field.name" value="perfil_inversor"/>
+		<property name="com.jaspersoft.studio.field.label" value="perfil_inversor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="esta_activo" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.name" value="esta_activo"/>
+		<property name="com.jaspersoft.studio.field.label" value="esta_activo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="apellido" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="apellido"/>
+		<property name="com.jaspersoft.studio.field.label" value="apellido"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="cuenta_confirmada" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.name" value="cuenta_confirmada"/>
+		<property name="com.jaspersoft.studio.field.label" value="cuenta_confirmada"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="email" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="email"/>
+		<property name="com.jaspersoft.studio.field.label" value="email"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="nombre" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombre"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombre"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<field name="password" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="password"/>
+		<property name="com.jaspersoft.studio.field.label" value="password"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
+	</field>
+	<group name="perfil_inversor">
+		<groupExpression><![CDATA[$F{perfil_inversor}]]></groupExpression>
+	</group>
+	<group name="nombre_usuario">
+		<groupExpression><![CDATA[$F{nombre_usuario}]]></groupExpression>
+	</group>
+	<group name="tolerancia_riesgo">
+		<groupExpression><![CDATA[$F{tolerancia_riesgo}]]></groupExpression>
+	</group>
+	<group name="nivel_conocimiento">
+		<groupExpression><![CDATA[$F{nivel_conocimiento}]]></groupExpression>
+	</group>
+	<group name="tipo_nivel_conocimiento">
+		<groupExpression><![CDATA[$F{tipo_nivel_conocimiento}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="800" height="79" uuid="f1b0100c-0684-4011-9016-71ca4845a3fc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="26"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Hola "+$F{nombre}+", "+$F{apellido}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="670" y="0" width="130" height="40" uuid="9b54f9bc-a4ad-4482-b9f5-40fa76260b5d"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="0" y="0" width="80" height="79" uuid="da041c8d-dccc-4349-85a4-af8ac0f02ef4"/>
+				<imageExpression><![CDATA[$P{p_logo_path}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="107" splitType="Stretch">
+			<textField textAdjust="ScaleFont">
+				<reportElement x="0" y="0" width="800" height="107" uuid="150e07ca-3760-4c8b-9ecc-fabace7daa03"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Franklin Gothic Medium Cond" size="30"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Tu Perfil Inversor es: "+$F{perfil_inversor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="315" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="0" width="350" height="315" uuid="fc548eb4-bcca-4cc1-8ad7-d9e12a48bbea"/>
+				<imageExpression><![CDATA[$F{perfil_inversor}.equalsIgnoreCase( "AGRESIVO")?$P{p_cat_agresivo_path}:$F{perfil_inversor}.equalsIgnoreCase( "MODERADO" )?$P{p_cat_moderado_path}:$P{p_cat_conservador_path}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="330" y="0" width="470" height="300" uuid="c752b6b7-c0a5-478d-ab0a-6514abd62b3b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="26"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{perfil_inversor}.equalsIgnoreCase( "AGRESIVO")?"Se caracteriza por inversores cuyo objetivo principal es maximizar el rendimiento de su cartera, asumiendo para ello un alto componente de riesgo. Están dispuestos a mantener sus inversiones por períodos largos, sin asignarle una alta prioridad a la disponibilidad inmediata de sus activos.":
+$F{perfil_inversor}.equalsIgnoreCase( "MODERADO" )?"Se encuentra dispuesto a asumir ciertas oscilaciones en sus inversiones, esperando que en un mediano  largo plazo pueda obtener una mayor rentabilidad. Es un perfil intermedio, tratándose de personas que pueden tolerar cierto riesgo en sus inversiones a cambio de una mayor rentabilidad":
+"Se caracteriza por buscar inversiones que representen un crecimiento moderado, sin asumir riesgos importantes, priorizando tener una disponibilidad inmediata de sus inversiones y buscando minimizar la incidencia de las fluctuaciones del mercado."]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="180" y="3" width="411" height="51" uuid="596e2f27-786d-4328-bb27-e322b192aade"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[www.mercadojunior.com.ar]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

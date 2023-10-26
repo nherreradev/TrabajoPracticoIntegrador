@@ -104,17 +104,23 @@ public class PosicionServicioImpl implements PosicionServicio {
 	public void acreditarDinero(RequestCargaDeDinero request) {
 
 		try {
-			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
+			/*
+			 * Posicion posicionBuscada =
+			 * posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
+			 * 
+			 * if (posicionBuscada == null || posicionBuscada.getConcepto() !=
+			 * CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS) {
+			 * 
+			 * }
+			 */
 
-			if (posicionBuscada == null || posicionBuscada.getConcepto() != CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS) {
-				Posicion posicion = new Posicion();
-				posicion.setCantidad(request.getCantidadPorAcreditar());
-				posicion.setEsEfectivo(true);
-				posicion.setMonedaOid(1L);
-				posicion.setUsuarioOid(1L);
-				posicion.setConcepto(request.getConcepto());
-				posicionRepositorio.save(posicion);
-			}
+			Posicion posicion = new Posicion();
+			posicion.setCantidad(request.getCantidadPorAcreditar());
+			posicion.setEsEfectivo(true);
+			posicion.setMonedaOid(1L);
+			posicion.setUsuarioOid(1L);
+			posicion.setConcepto(request.getConcepto());
+			posicionRepositorio.save(posicion);
 		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
@@ -233,17 +239,17 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 		return instrumentosPorCantidad;
 	}
-	
+
 	@Override
 	public List<Posicion> obtenerPosicionTotal() {
 		return posicionRepositorio.findAll();
 	}
-	
+
 	@Override
 	public void actualizarPosicion(Posicion posicion) {
-		/*JPARepository si la entidad existe hace una actualizacion*/
+		/* JPARepository si la entidad existe hace una actualizacion */
 		posicionRepositorio.save(posicion);
-		
+
 	}
 
 	private BigDecimal calcularPosicionEnInstrumentos(List<Posicion> posicionTotal) {
@@ -265,9 +271,5 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 		return totalMonedas;
 	}
-
-	
-
-	
 
 }
