@@ -15,10 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.unlam.tpi.interfaces.CategoriaServicio;
-import com.unlam.tpi.interfaces.PreguntaServicio;
-import com.unlam.tpi.interfaces.RespuestaServicio;
-import com.unlam.tpi.interfaces.SeccionServicio;
+import com.unlam.tpi.core.servicio.CategoriaServicio;
+import com.unlam.tpi.core.servicio.PreguntaServicio;
+import com.unlam.tpi.core.servicio.RespuestaServicio;
+import com.unlam.tpi.core.servicio.SeccionServicio;
 
 @SpringBootTest
 @AutoConfigureMockMvc

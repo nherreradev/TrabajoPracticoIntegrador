@@ -12,14 +12,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.unlam.tpi.dto.PerfilInversorDTO;
-import com.unlam.tpi.dto.TipoNivelConocimiento;
-import com.unlam.tpi.dto.TipoPerfilInversor;
-import com.unlam.tpi.dto.UsuarioDTO;
-import com.unlam.tpi.interfaces.PerfilInversorServicio;
-import com.unlam.tpi.modelo.persistente.PerfilInversor;
-import com.unlam.tpi.repositorio.PerfilInversorRepositorio;
-import com.unlam.tpi.servicio.PerfilInversorServicioImpl;
+import com.unlam.tpi.core.servicio.PerfilInversorServicio;
+import com.unlam.tpi.core.servicio.PerfilInversorServicioImpl;
+import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
+import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;
+import com.unlam.tpi.delivery.dto.TipoPerfilInversor;
+import com.unlam.tpi.delivery.dto.UsuarioDTO;
+import com.unlam.tpi.infraestructura.modelo.PerfilInversor;
+import com.unlam.tpi.infraestructura.repositorio.PerfilInversorRepositorio;
 
 @SpringBootTest
 @Transactional

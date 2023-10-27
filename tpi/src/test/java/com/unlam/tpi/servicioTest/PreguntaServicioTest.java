@@ -16,15 +16,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.unlam.tpi.arquitectura.ServiceException;
-import com.unlam.tpi.dto.CategoriaDTO;
-import com.unlam.tpi.dto.PreguntaDTO;
-import com.unlam.tpi.dto.RespuestaDTO;
-import com.unlam.tpi.dto.SeccionDTO;
-import com.unlam.tpi.dto.TipoComponente;
-import com.unlam.tpi.interfaces.CategoriaServicio;
-import com.unlam.tpi.interfaces.PreguntaServicio;
-import com.unlam.tpi.interfaces.SeccionServicio;
+import com.unlam.tpi.core.servicio.CategoriaServicio;
+import com.unlam.tpi.core.servicio.PreguntaServicio;
+import com.unlam.tpi.core.servicio.SeccionServicio;
+import com.unlam.tpi.delivery.dto.CategoriaDTO;
+import com.unlam.tpi.delivery.dto.PreguntaDTO;
+import com.unlam.tpi.delivery.dto.RespuestaDTO;
+import com.unlam.tpi.delivery.dto.SeccionDTO;
+import com.unlam.tpi.delivery.dto.TipoComponente;
+import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 
 @SpringBootTest
 @Transactional
