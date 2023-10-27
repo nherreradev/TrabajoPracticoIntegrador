@@ -34,19 +34,12 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 		try {
 			
 		
-		// URL de la API en ASP.NET Core
-		String url = "https://localhost:7011/PortfolioRecomender"; // Asegúrate de reemplazar "puerto" con el
-																	// puerto real en el que se está ejecutando tu
+		String url = "https://localhost:7011/PortfolioRecomender"; 
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(HttpStatus.OK); // aplicación ASP.NET Core.
-
-		// Crear una conexión HTTP
 		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-
-		// Establecer el método HTTP (GET en este caso)
 		connection.setRequestMethod("GET");
-
-		// Leer la respuesta
 		int responseCode = connection.getResponseCode();
+	
 		if (responseCode == HttpURLConnection.HTTP_OK) {
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String inputLine;
@@ -57,8 +50,6 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 			}
 			in.close();
 
-			// La variable "response" contiene la respuesta JSON de la API en ASP.NET Core.
-			System.out.println(response.toString());
 
 		} else {
 			System.out.println("Error en la solicitud. Código de respuesta: " + responseCode);

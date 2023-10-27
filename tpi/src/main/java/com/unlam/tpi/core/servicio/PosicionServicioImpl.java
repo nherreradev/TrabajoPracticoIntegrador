@@ -103,15 +103,12 @@ public class PosicionServicioImpl implements PosicionServicio {
 	public void acreditarDinero(RequestCargaDeDinero request) {
 
 		try {
-			/*
-			 * Posicion posicionBuscada =
-			 * posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
-			 * 
-			 * if (posicionBuscada == null || posicionBuscada.getConcepto() !=
-			 * CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS) {
-			 * 
-			 * }
-			 */
+
+			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
+
+			if (posicionBuscada == null
+					|| posicionBuscada.getConcepto() != CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS) {
+			}
 
 			Posicion posicion = new Posicion();
 			posicion.setCantidad(request.getCantidadPorAcreditar());

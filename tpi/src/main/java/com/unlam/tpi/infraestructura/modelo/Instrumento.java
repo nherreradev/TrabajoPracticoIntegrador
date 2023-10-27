@@ -15,15 +15,19 @@ import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 
 @Entity
 @Table(name = "INSTRUMENTO")
-public class Instrumento extends ObjetoPersistente{
+public class Instrumento extends ObjetoPersistente {
 
 	@Column(name = "SIMBOLO")
 	@SerializedName("simbolo")
 	private String simbolo;
-	
+
 	@Column(name = "CATEGORIA_INSTRUMENTO")
 	@SerializedName("categoriaInstrumento")
 	private String categoriaInstrumento;
+
+	@Column(name = "CATEGORIA_PERFIL")
+	@SerializedName("categoriaPerfil")
+	private String categoriaPerfil;
 
 	@SerializedName("puntas")
 	@OneToOne(mappedBy = "instrumento")
@@ -118,6 +122,14 @@ public class Instrumento extends ObjetoPersistente{
 
 	public void setCategoriaInstrumento(String categoriaInstrumento) {
 		this.categoriaInstrumento = categoriaInstrumento;
+	}
+
+	public String getCategoriaPerfil() {
+		return categoriaPerfil;
+	}
+
+	public void setCategoriaPerfil(String categoriaPerfil) {
+		this.categoriaPerfil = categoriaPerfil;
 	}
 
 	public BigDecimal getUltimoPrecio() {

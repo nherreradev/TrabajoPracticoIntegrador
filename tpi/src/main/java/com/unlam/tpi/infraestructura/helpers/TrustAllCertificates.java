@@ -11,8 +11,6 @@ public class TrustAllCertificates {
 
 	public static void confiarEnCertificado() {
 		try {
-			// Crear un SSLContext personalizado que desactive la verificación de
-			// certificados
 			SSLContext sslContext = SSLContext.getInstance("TLS");
 			sslContext.init(null, new TrustManager[] { (TrustManager) new X509TrustManager() {
 				public X509Certificate[] getAcceptedIssuers() {
@@ -26,13 +24,7 @@ public class TrustAllCertificates {
 				}
 			} }, new java.security.SecureRandom());
 
-			// Configurar la fábrica de sockets SSL para utilizar el SSLContext
-			// personalizado
 			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-
-			// Ahora puedes abrir una conexión a la API .NET sin verificar los certificados
-			// SSL
-			// Escribe aquí tu código de conexión
 
 		} catch (Exception e) {
 			e.printStackTrace();

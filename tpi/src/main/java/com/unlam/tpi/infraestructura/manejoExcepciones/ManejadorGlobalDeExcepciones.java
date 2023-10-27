@@ -20,8 +20,8 @@ public class ManejadorGlobalDeExcepciones extends ResponseEntityExceptionHandler
 	public ResponseEntity<Object> handleCustomException(ServiceException se) {
 		Map<String, Object> body = new LinkedHashMap<>();
 		body.put("timestamp", LocalDateTime.now());
-		body.put("message", se.getMessage());
+		body.put("message", "Ocurrió un error en el servicio: " + se.getMessage());
 		HttpHeaders headers = new HttpHeaders();
-		return new ResponseEntity<>(body, headers, HttpStatus.CONFLICT); 
+		return new ResponseEntity<>(body, headers, HttpStatus.INTERNAL_SERVER_ERROR); 
 	}
 }
