@@ -19,7 +19,7 @@ import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 public class Puntas extends ObjetoPersistente {
 
 	@OneToOne
-	@JoinColumn(name = "INSTRUMENTO_ID")
+	@JoinColumn(name = "INSTRUMENTO_ID", referencedColumnName = "oid_")
 	private Instrumento instrumento;
 
 	@Column(name = "CANTIDAD_COMPRA")

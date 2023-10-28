@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unlam.tpi.core.servicio.InstrumentoControlador;
-import com.unlam.tpi.core.servicio.InstrumentoServicio;
+import com.unlam.tpi.core.interfaces.InstrumentoControlador;
+import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.infraestructura.modelo.HistoricoInstrumentoRespuesta;
 
 @CrossOrigin

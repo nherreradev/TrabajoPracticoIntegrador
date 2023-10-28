@@ -26,7 +26,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.unlam.tpi.core.servicio.PanelPrecios;
+import com.unlam.tpi.core.interfaces.PanelPrecios;
 import com.unlam.tpi.core.servicio.PanelesServicioImpl;
 import com.unlam.tpi.infraestructura.modelo.Instrumento;
 import com.unlam.tpi.infraestructura.modelo.Puntas;

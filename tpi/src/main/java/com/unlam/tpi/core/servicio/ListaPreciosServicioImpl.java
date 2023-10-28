@@ -4,6 +4,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.infraestructura.repositorio.ListaPreciosRepository;
 
 import java.net.URI;

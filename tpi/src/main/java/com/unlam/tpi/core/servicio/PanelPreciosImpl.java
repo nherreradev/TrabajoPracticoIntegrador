@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.unlam.tpi.core.interfaces.PanelPrecios;
 import com.unlam.tpi.infraestructura.modelo.Instrumento;
 
 @Service

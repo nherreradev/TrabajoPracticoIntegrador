@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.unlam.tpi.core.servicio.UsuarioServicio;
+import com.unlam.tpi.core.interfaces.UsuarioServicio;
 import com.unlam.tpi.infraestructura.modelo.ResponseAPI;
 import com.unlam.tpi.infraestructura.modelo.Usuario;
 

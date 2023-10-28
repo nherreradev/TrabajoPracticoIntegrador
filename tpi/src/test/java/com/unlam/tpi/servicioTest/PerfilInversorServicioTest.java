@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.unlam.tpi.core.servicio.PerfilInversorServicio;
+import com.unlam.tpi.core.interfaces.PerfilInversorServicio;
 import com.unlam.tpi.core.servicio.PerfilInversorServicioImpl;
 import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
 import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;

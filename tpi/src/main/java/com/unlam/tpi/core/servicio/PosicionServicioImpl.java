@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 import com.unlam.tpi.infraestructura.helpers.CalculosHabituales;
 import com.unlam.tpi.infraestructura.modelo.CargaCreditoConstantes;

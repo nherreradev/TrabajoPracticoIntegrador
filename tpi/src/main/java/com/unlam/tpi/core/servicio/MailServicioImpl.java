@@ -2,6 +2,7 @@ package com.unlam.tpi.core.servicio;
 
 import org.springframework.stereotype.Service;
 
+import com.unlam.tpi.core.interfaces.MailServicio;
 import com.unlam.tpi.infraestructura.modelo.Usuario;
 
 @Service

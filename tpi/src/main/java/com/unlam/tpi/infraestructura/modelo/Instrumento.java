@@ -2,11 +2,9 @@ package com.unlam.tpi.infraestructura.modelo;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -30,14 +28,14 @@ public class Instrumento extends ObjetoPersistente {
 	private String categoriaPerfil;
 
 	@SerializedName("puntas")
-	@OneToOne(mappedBy = "instrumento")
+	@OneToOne(mappedBy = "instrumento", cascade = CascadeType.ALL)
 	private Puntas puntas;
 
 	@Column(name = "ULTIMO_PRECIO")
 	@SerializedName("ultimoPrecio")
 	private BigDecimal ultimoPrecio;
 
-	@Column(name = "VALOR_PORCENTUAL")
+	@Column(name = "VARIACION_PORCENTUAL")
 	@SerializedName("variacionPorcentual")
 	private BigDecimal variacionPorcentual;
 
