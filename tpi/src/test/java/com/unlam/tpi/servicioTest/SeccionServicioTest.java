@@ -15,9 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.unlam.tpi.arquitectura.ServiceException;
-import com.unlam.tpi.dto.SeccionDTO;
-import com.unlam.tpi.interfaces.SeccionServicio;
+import com.unlam.tpi.core.interfaces.SeccionServicio;
+import com.unlam.tpi.delivery.dto.SeccionDTO;
+import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 
 @SpringBootTest
 @Transactional
