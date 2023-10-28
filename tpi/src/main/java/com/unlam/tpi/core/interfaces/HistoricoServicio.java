@@ -1,4 +1,4 @@
-package com.unlam.tpi.interfaces;
+package com.unlam.tpi.core.interfaces;
 
 import com.unlam.tpi.modelo.rest.FechaRequestHistorico;
 

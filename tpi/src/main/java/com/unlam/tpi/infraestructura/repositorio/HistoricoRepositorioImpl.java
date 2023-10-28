@@ -1,4 +1,4 @@
-package com.unlam.tpi.repositorio;
+package com.unlam.tpi.infraestructura.repositorio;
 
 import org.springframework.stereotype.Repository;
 

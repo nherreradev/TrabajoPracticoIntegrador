@@ -4,9 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
-import com.unlam.tpi.interfaces.HistoricoServicio;
+import com.unlam.tpi.core.interfaces.HistoricoServicio;
 import com.unlam.tpi.modelo.rest.FechaRequestHistorico;
-import com.unlam.tpi.repositorio.HistoricoRepositorio;
+import com.unlam.tpi.infraestructura.repositorio.HistoricoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -104,7 +104,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
     }
 
     private ResponseEntity<String> RealizarPeticionIOL(String url) {
-        String token ="eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiNGJjOGQ4MTItOTZhMy00OGNlLTlhNjktMDg4YmZiOGU3YzZiIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE2OTgxMTY5NjIsImV4cCI6MTY5ODExNzg2MiwiaWF0IjoxNjk4MTE2OTYyLCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.SBVTj8SEN5glQkdK1MVUxWrpm7yeyyAgbdkpl60N_uJJ_QjsjMioWr-C_RJrRqmZxsO8r1eXLyP0hdZL693GqDUfc3q-MvdLP1XR89KxvOGERNql1QtuONNcKBwVmD-sv22ssFQeJnRmjrs7EODUJlNuZpY1EP5QY83-1Mk_9J0gZ_l4nnK629MvRxhMWJVyTPxfq2tYoainWLaVmRYgFM-9ZFSM8NZH0zOxQSXEgzAhR3-8aDtyW2jzBQ_X9l0gOQX-fQ2D9KL7_jp9lqO7dUU3QEyHVxnhl5qN0QzAxfc960gr65smeloiQP8hSz7mGaalJhaDa7Xq_eUIVfsapg";
+        String token = "";
         Map<String, Boolean> ResponseOK = new HashMap<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
