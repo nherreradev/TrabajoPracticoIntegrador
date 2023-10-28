@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.unlam.tpi.core.interfaces.CategoriaServicio;
+import com.unlam.tpi.core.interfaces.PreguntaServicio;
+import com.unlam.tpi.core.interfaces.SeccionServicio;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
 import com.unlam.tpi.delivery.dto.TipoComponente;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;

@@ -1,4 +1,4 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.unlam.tpi.core.servicio.CategoriaServicio;
+import com.unlam.tpi.core.interfaces.CategoriaServicio;
 
 @SpringBootTest
 @AutoConfigureMockMvc

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.unlam.tpi.core.servicio.CategoriaServicio;
+import com.unlam.tpi.core.interfaces.CategoriaServicio;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
 
 @RestController

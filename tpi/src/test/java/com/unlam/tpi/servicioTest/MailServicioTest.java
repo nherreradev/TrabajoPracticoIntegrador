@@ -1,4 +1,4 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

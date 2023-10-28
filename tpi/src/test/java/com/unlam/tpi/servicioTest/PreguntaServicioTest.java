@@ -16,9 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.unlam.tpi.core.servicio.CategoriaServicio;
-import com.unlam.tpi.core.servicio.PreguntaServicio;
-import com.unlam.tpi.core.servicio.SeccionServicio;
+import com.unlam.tpi.core.interfaces.CategoriaServicio;
+import com.unlam.tpi.core.interfaces.PreguntaServicio;
+import com.unlam.tpi.core.interfaces.SeccionServicio;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;

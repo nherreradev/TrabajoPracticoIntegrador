@@ -12,6 +12,8 @@ import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.unlam.tpi.core.interfaces.PerfilInversorServicio;
+import com.unlam.tpi.core.interfaces.UsuarioServicio;
 import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
 import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;
 import com.unlam.tpi.delivery.dto.TipoPerfilInversor;
