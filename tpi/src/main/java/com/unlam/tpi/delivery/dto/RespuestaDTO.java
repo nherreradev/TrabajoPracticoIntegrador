@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 
+import com.unlam.tpi.core.modelo.Respuesta;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
-import com.unlam.tpi.infraestructura.modelo.Respuesta;
 
 public class RespuestaDTO {
 

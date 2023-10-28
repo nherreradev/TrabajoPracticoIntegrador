@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.core.interfaces.CategoriaServicio;
+import com.unlam.tpi.core.modelo.Categoria;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
-import com.unlam.tpi.infraestructura.modelo.Categoria;
 import com.unlam.tpi.infraestructura.repositorio.CategoriaRepositorio;
 
 @Service

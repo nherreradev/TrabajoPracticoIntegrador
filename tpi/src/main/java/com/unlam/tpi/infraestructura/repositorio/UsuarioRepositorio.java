@@ -2,7 +2,7 @@ package com.unlam.tpi.infraestructura.repositorio;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.unlam.tpi.infraestructura.modelo.Usuario;
+import com.unlam.tpi.core.modelo.Usuario;
 
 public interface UsuarioRepositorio extends JpaRepository<Usuario, String> {
     Boolean existsByEmail(String email);

@@ -23,10 +23,10 @@ import org.springframework.web.client.RestTemplate;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PanelPrecios;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
+import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Posicion;
+import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.core.servicio.PanelesServicioImpl;
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
-import com.unlam.tpi.infraestructura.modelo.Posicion;
-import com.unlam.tpi.infraestructura.modelo.Puntas;
 
 @ExtendWith(MockitoExtension.class)
 class PanelesServicioTest {

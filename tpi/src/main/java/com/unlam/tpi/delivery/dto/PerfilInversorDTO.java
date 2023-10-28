@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 
+import com.unlam.tpi.core.modelo.PerfilInversor;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
-import com.unlam.tpi.infraestructura.modelo.PerfilInversor;
 
 public class PerfilInversorDTO {
 

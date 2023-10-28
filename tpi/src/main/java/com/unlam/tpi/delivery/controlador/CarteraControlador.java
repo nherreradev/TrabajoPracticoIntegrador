@@ -2,8 +2,8 @@ package com.unlam.tpi.delivery.controlador;
 
 import org.springframework.http.ResponseEntity;
 
-import com.unlam.tpi.infraestructura.modelo.RequestCargaDeDinero;
-import com.unlam.tpi.infraestructura.modelo.ValuacionTotalRespuesta;
+import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
+import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 
 public interface CarteraControlador {
 	

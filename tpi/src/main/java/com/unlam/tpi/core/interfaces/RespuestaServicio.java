@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.unlam.tpi.core.modelo.Respuesta;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
-import com.unlam.tpi.infraestructura.modelo.Respuesta;
 
 public interface RespuestaServicio {
 

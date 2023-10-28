@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.core.interfaces.PerfilInversorServicio;
 import com.unlam.tpi.core.interfaces.UsuarioServicio;
+import com.unlam.tpi.core.modelo.PerfilInversor;
+import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
 import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;
 import com.unlam.tpi.delivery.dto.TipoPerfilInversor;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
-import com.unlam.tpi.infraestructura.modelo.PerfilInversor;
-import com.unlam.tpi.infraestructura.modelo.Usuario;
 import com.unlam.tpi.infraestructura.repositorio.PerfilInversorRepositorio;
 
 import net.sf.jasperreports.engine.JRException;

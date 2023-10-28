@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import com.unlam.tpi.core.modelo.PerfilInversor;
 import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
-import com.unlam.tpi.infraestructura.modelo.PerfilInversor;
 
 import net.sf.jasperreports.engine.JRException;
 

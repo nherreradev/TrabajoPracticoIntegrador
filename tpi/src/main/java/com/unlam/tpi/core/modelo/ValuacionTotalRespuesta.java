@@ -1,4 +1,4 @@
-package com.unlam.tpi.infraestructura.modelo;
+package com.unlam.tpi.core.modelo;
 
 import java.math.BigDecimal;
 import java.util.Map;

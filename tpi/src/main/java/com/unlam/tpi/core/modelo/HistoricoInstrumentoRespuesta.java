@@ -1,4 +1,4 @@
-package com.unlam.tpi.infraestructura.modelo;
+package com.unlam.tpi.core.modelo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
