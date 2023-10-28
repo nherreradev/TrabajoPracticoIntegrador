@@ -4,23 +4,37 @@ services:
   java-v1:
     restart: unless-stopped
     build: .
+    image: image-java-v1
     container_name: java-v1
     environment:
       - DATABASE_URL=jdbc:mysql://mysqldb:3306/grupo4?allowPublicKeyRetrieval=true
       - DATABASE_USERNAME=root
       - DATABASE_PASSWORD=123456
+    #ports:
+    # - "8080:8080"  
     depends_on: 
       - mysqldb
+    #  - mongodb
     networks:
       - nginx_default
       - java-db
+  #mongodb:
+  #  container_name: mongodb
+  #  restart: unless-stopped
+  #  image: mongo:latest
+  #  #ports:
+  #  # - "27017:27017"
+  #  volumes:
+  #   - mongodata:/data/db
+  #  hostname: mongodb
+  #  networks:
+  #    - nginx_default
+  #    - java-db
 
   mysqldb: 
     image: mysql:8.0.28
     restart: unless-stopped
-    
     container_name: mysqldb
-    
     environment:
        MYSQL_DATABASE: grupo4
        MYSQL_ROOT_PASSWORD: 123456
@@ -37,4 +51,5 @@ networks:
     driver: bridge
 
 volumes:
-  mysqldata:    
+  mysqldata:
+  #mongodata:
