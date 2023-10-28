@@ -1,4 +1,4 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,7 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class SeccionControladorTest {
+public class CategoriaControladorTest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -24,11 +24,11 @@ public class SeccionControladorTest {
 	MockMvc mockMvc;
 
 	@Test
-	public void cuandoCargoUnExcelVerificoSuEstado() throws Exception {
-		MockMultipartFile mockMultipartFile = new MockMultipartFile("excelSeccion", "pregunta.xls",
-				"application/x-xlsx", new ClassPathResource("pregunta.xlsx").getInputStream());
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		mockMvc.perform(multipart("/api/seccion/carga-seccion-excel").file(mockMultipartFile))
-				.andExpect(status().isOk());
+	public void cuandoCargoUnExcel_VerificoSuEstado() throws Exception {
+		MockMultipartFile mockMultipartFile = new MockMultipartFile("excelCategoria", "pregunta.xls", "application/x-xlsx",
+				new ClassPathResource("pregunta.xlsx").getInputStream());
+	    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+			mockMvc.perform(multipart("/api/categoria/carga-categoria-excel").file(mockMultipartFile)).andExpect(status().isOk());
 	}
+
 }

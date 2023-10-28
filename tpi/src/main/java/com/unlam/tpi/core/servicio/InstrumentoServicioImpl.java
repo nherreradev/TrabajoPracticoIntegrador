@@ -1,18 +1,31 @@
 package com.unlam.tpi.core.servicio;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.unlam.tpi.core.interfaces.InstrumentoServicio;
+import com.unlam.tpi.core.interfaces.PuntasServicio;
+import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 import com.unlam.tpi.infraestructura.modelo.HistoricoInstrumentoRespuesta;
+import com.unlam.tpi.infraestructura.modelo.Instrumento;
+import com.unlam.tpi.infraestructura.repositorio.InstrumentoRepositorio;
 
 @Service
 public class InstrumentoServicioImpl implements InstrumentoServicio {
+
+	@Autowired
+	InstrumentoRepositorio instrumentoRepositorio;
+
+	@Autowired
+	PuntasServicio puntasServicio;
 
 	@Override
 	public List<HistoricoInstrumentoRespuesta> getHistoricoInstrumento(String simbolo) {
@@ -62,9 +75,35 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 		return listaHistoricoInstrumentoRespuesta;
 	}
 
-	/*
-	 * { time: "2018-10-19", open: 180.34, high: 180.99, low: 178.57, close: 179.85,
-	 * }
-	 */
+	@Override
+	public void persistirInstrumentos(List<Instrumento> listaInstrumentos) {
+		try {
+			for (Instrumento instrumento : listaInstrumentos) {
 
+				BigDecimal variacion = instrumento.getVariacionPorcentual();
+
+				if (variacion.compareTo(new BigDecimal(-2)) >= 0 && variacion.compareTo(new BigDecimal(2)) <= 0) {
+	                instrumento.setCategoriaPerfil("Conservador");
+	            } else if (variacion.compareTo(new BigDecimal(-5)) >= 0 && variacion.compareTo(new BigDecimal(5)) <= 0) {
+	                instrumento.setCategoriaPerfil("Moderado");
+	            } else {
+	                instrumento.setCategoriaPerfil("Arriesgado");
+	            }
+
+				Instrumento instrumentoBuscado = instrumentoRepositorio.encontrarPorSimbolo(instrumento.getSimbolo());
+
+				if (instrumentoBuscado != null) {
+					instrumentoBuscado.setCategoriaPerfil(instrumento.getCategoriaPerfil());
+					instrumentoBuscado.setVariacionPorcentual(instrumento.getVariacionPorcentual());
+					instrumentoRepositorio.save(instrumentoBuscado);
+				} else {
+					instrumentoRepositorio.save(instrumento);
+				}
+			}
+		} catch (ServiceException se) {
+			throw se;
+		} catch (Exception e) {
+			throw new ServiceException("Error al persistir instrumentos");
+		}
+	}
 }

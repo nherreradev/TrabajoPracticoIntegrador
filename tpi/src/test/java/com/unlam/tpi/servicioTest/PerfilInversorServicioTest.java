@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.unlam.tpi.core.servicio.PerfilInversorServicio;
+import com.unlam.tpi.core.interfaces.PerfilInversorServicio;
 import com.unlam.tpi.core.servicio.PerfilInversorServicioImpl;
 import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
 import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;

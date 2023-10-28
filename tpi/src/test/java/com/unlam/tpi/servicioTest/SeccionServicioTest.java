@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
-import com.unlam.tpi.core.servicio.SeccionServicio;
+import com.unlam.tpi.core.interfaces.SeccionServicio;
 import com.unlam.tpi.core.servicio.SeccionServicioImpl;
 import com.unlam.tpi.delivery.dto.SeccionDTO;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;

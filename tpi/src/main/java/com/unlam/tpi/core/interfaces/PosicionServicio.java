@@ -1,4 +1,4 @@
-package com.unlam.tpi.core.servicio;
+package com.unlam.tpi.core.interfaces;
 
 import java.math.BigDecimal;
 import java.util.List;

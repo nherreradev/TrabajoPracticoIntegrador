@@ -1,4 +1,4 @@
-package com.unlam.tpi;
+package com.unlam.tpi.servicioTest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,7 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class RespuestaControladorTest {
+public class PreguntaControladorTest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -27,14 +27,13 @@ public class RespuestaControladorTest {
 	public void cuandoCargoUnExcelVerificoSuEstado() throws Exception {
 		givenSeCreaLacategoria();
 		givenSeCreaLaSeccion();
-		givenSeCreaLaPregunta();
-		MockMultipartFile mockMultipartFile = new MockMultipartFile("excelRespuesta", "pregunta.xls",
+		MockMultipartFile mockMultipartFile = new MockMultipartFile("excelPregunta", "pregunta.xls",
 				"application/x-xlsx", new ClassPathResource("pregunta.xlsx").getInputStream());
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		mockMvc.perform(multipart("/api/respuesta/carga-respuesta-excel").file(mockMultipartFile))
+		mockMvc.perform(multipart("/api/pregunta/carga-pregunta-excel").file(mockMultipartFile))
 				.andExpect(status().isOk());
 	}
-	
+
 	private void givenSeCreaLacategoria() throws Exception {
 		MockMultipartFile mockMultipartFile = new MockMultipartFile("excelCategoria", "pregunta.xls",
 				"application/x-xlsx", new ClassPathResource("pregunta.xlsx").getInputStream());
@@ -50,13 +49,5 @@ public class RespuestaControladorTest {
 		mockMvc.perform(multipart("/api/seccion/carga-seccion-excel").file(mockMultipartFile))
 				.andExpect(status().isOk());
 	}
-	
-	private void givenSeCreaLaPregunta() throws Exception {
-		MockMultipartFile mockMultipartFile = new MockMultipartFile("excelPregunta", "pregunta.xls",
-				"application/x-xlsx", new ClassPathResource("pregunta.xlsx").getInputStream());
-		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-		mockMvc.perform(multipart("/api/pregunta/carga-pregunta-excel").file(mockMultipartFile))
-				.andExpect(status().isOk());
-	}
-
+		
 }

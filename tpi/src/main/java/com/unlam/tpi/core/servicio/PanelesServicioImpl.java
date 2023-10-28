@@ -15,12 +15,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.unlam.tpi.core.interfaces.InstrumentoServicio;
+import com.unlam.tpi.core.interfaces.PanelPrecios;
+import com.unlam.tpi.core.interfaces.PanelesServicio;
+import com.unlam.tpi.core.interfaces.PosicionServicio;
+import com.unlam.tpi.core.interfaces.PuntasServicio;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 import com.unlam.tpi.infraestructura.modelo.Instrumento;
 import com.unlam.tpi.infraestructura.modelo.PanelesDePreciosConstantes;
 import com.unlam.tpi.infraestructura.modelo.Posicion;
-import com.unlam.tpi.infraestructura.modelo.ValuacionTotalRespuesta;
-import com.unlam.tpi.infraestructura.repositorio.PosicionRepositorio;
 
 @Service
 public class PanelesServicioImpl implements PanelesServicio {
@@ -30,10 +33,14 @@ public class PanelesServicioImpl implements PanelesServicio {
 
 	@Autowired
 	PosicionServicio posicionServicio;
+	
+	@Autowired
+	InstrumentoServicio instrumentoServicio;
+	
+	@Autowired
+	PuntasServicio puntasServicio;
 
 	public static List<Instrumento> listaInstrumentosAux = new ArrayList<>();
-
-	private List<Instrumento> instrumentosQueVariaronSuPrecio = new ArrayList<>();
 
 	private final RestTemplate restTemplate;
 
@@ -68,6 +75,9 @@ public class PanelesServicioImpl implements PanelesServicio {
 
 			listaInstrumentosAux.addAll(listaInstrumentos);
 			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
+			instrumentoServicio.persistirInstrumentos(listaInstrumentos);
+			//puntasServicio.guardarPuntas(null);
+			
 			return PanelPreciosImpl.panelAcciones;
 
 		} catch (ServiceException se) {
