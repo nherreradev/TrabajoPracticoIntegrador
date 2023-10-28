@@ -22,4 +22,5 @@ public class HistoricoRepositorioImpl implements HistoricoRepositorio{
         Document document = Document.parse(instrumento);
         mongoTemplate.save(instrumento, rango);
     }
+
 }
