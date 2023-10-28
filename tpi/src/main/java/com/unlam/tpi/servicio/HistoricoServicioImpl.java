@@ -76,6 +76,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
     }
 
     private String ConsultarHistoricoIOL(FechaRequestHistorico fechaRequestHistorico, String instrumento) {
+        Map<String, String> simbolosVacios = null;
         List<String> simbolos = ObtenerSimbolosDeInstrumentos(instrumento);
         String mercado = ObtenerMercado(instrumento);
         ResponseEntity<String> res = null;
@@ -87,13 +88,23 @@ public class HistoricoServicioImpl implements HistoricoServicio {
         for(int i=0; i<simbolos.size(); i++){
             String url = ArmarURL(fechaRequestHistorico, mercado, simbolos.get(i));
             res = RealizarPeticionIOL(url);
+            if(res.getBody().isEmpty()){
+                simbolosVacios.put(simbolos.get(i),res.getBody());
+            }
+            System.out.println("------------------------------------------INICIO----------------------------------------------------------");
+            System.out.println("SIMBOLO: "+ simbolos.get(i) );
             System.out.println(res.getBody());
+            System.out.println("------------------------------------------FIN-------------------------------------------------------------");
         }
+        System.out.println("------------------------------------------------------");
+        System.out.println("SIMBOLOS VACIOS");
+        System.out.println(simbolosVacios);
+        System.out.println("------------------------------------------------------");
         return null;
     }
 
     private ResponseEntity<String> RealizarPeticionIOL(String url) {
-        String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiMTNhYTIyZWMtNjcwZS00MjY1LWI5MzAtYzIyZGU3NDA4OTJiIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE2OTgxMTM5MTEsImV4cCI6MTY5ODExNDgxMSwiaWF0IjoxNjk4MTEzOTExLCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.jcbJYDitgt3uB91JSDIMixtNFAEXqbyXX86-LTZik9ujykm77jeqaabJyUgYKTlGxhkXxpmLEUfp8o12aHgDcG9k-iRgZ7hKLfz8JV1hElW5ajJ9lmA74tZnSNswcDPPqI_8SQrPV5ERLAIxEIQI7ORiEXKAlnbYjes1PMA5eRKdmkhKeNI53PSSY89QI_0IOmlUxSKKpH9_BiqIi53TSEp0Tx-uNAAHpC-fCgjFoNnoD-uPoPnazPydxd2E3pjLHbGgJ_Dj_J_claY0mbrwZiVgPO2fRQGeAC9tlyKrPyfOyF5fEXlB7qx_tQknhN3LyLxsmsA2dDB504ICobyNRw";
+        String token ="eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiNGJjOGQ4MTItOTZhMy00OGNlLTlhNjktMDg4YmZiOGU3YzZiIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE2OTgxMTY5NjIsImV4cCI6MTY5ODExNzg2MiwiaWF0IjoxNjk4MTE2OTYyLCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.SBVTj8SEN5glQkdK1MVUxWrpm7yeyyAgbdkpl60N_uJJ_QjsjMioWr-C_RJrRqmZxsO8r1eXLyP0hdZL693GqDUfc3q-MvdLP1XR89KxvOGERNql1QtuONNcKBwVmD-sv22ssFQeJnRmjrs7EODUJlNuZpY1EP5QY83-1Mk_9J0gZ_l4nnK629MvRxhMWJVyTPxfq2tYoainWLaVmRYgFM-9ZFSM8NZH0zOxQSXEgzAhR3-8aDtyW2jzBQ_X9l0gOQX-fQ2D9KL7_jp9lqO7dUU3QEyHVxnhl5qN0QzAxfc960gr65smeloiQP8hSz7mGaalJhaDa7Xq_eUIVfsapg";
         Map<String, Boolean> ResponseOK = new HashMap<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
