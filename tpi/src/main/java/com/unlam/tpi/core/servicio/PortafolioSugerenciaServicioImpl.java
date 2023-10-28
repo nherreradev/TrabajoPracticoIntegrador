@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.unlam.tpi.core.interfaces.PortafolioSugerenciaServicio;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.infraestructura.helpers.TrustAllCertificates;
 
 @Service

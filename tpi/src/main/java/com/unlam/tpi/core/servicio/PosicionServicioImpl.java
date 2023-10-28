@@ -1,5 +1,8 @@
 package com.unlam.tpi.core.servicio;
 
+import static com.unlam.tpi.core.modelo.OrdenConstantes.COMPRA;
+import static com.unlam.tpi.infraestructura.helpers.CalculosHabituales.esMasGrandeQue;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -18,8 +21,8 @@ import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 import com.unlam.tpi.infraestructura.helpers.CalculosHabituales;
 import com.unlam.tpi.infraestructura.repositorio.PosicionRepositorio;
 
@@ -53,12 +56,12 @@ public class PosicionServicioImpl implements PosicionServicio {
 	@Override
 	public PuedeOperarResultado puedeOperar(Orden orden) {
 		PuedeOperarResultado puedeOperarResultado = new PuedeOperarResultado();
-		if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
+		if (COMPRA.equals(orden.getSentido())) {
 			List<Posicion> posicionEfectivo = posicionRepositorio.getPosicionEnEfectivo();
 			BigDecimal totalDisponibleEnEfectivo = this.calcularPosicionMoneda(posicionEfectivo);
 			completarPrecioDeLaOrden(orden);
 			BigDecimal montoOrden = orden.getPrecio().multiply(orden.getCantidad());
-			if (CalculosHabituales.esMasGrandeQue(montoOrden, totalDisponibleEnEfectivo)) {
+			if (esMasGrandeQue(montoOrden, totalDisponibleEnEfectivo)) {
 				puedeOperarResultado.setPuedeOperar(false);
 				puedeOperarResultado.setDisponible(totalDisponibleEnEfectivo);
 			} else {

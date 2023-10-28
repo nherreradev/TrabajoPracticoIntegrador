@@ -23,7 +23,7 @@ import com.unlam.tpi.core.interfaces.PuntasServicio;
 import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
 import com.unlam.tpi.core.modelo.Posicion;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
+import com.unlam.tpi.core.modelo.ServiceException;
 
 @Service
 public class PanelesServicioImpl implements PanelesServicio {

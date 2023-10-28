@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.core.interfaces.UsuarioServicio;
 import com.unlam.tpi.core.modelo.ResponseAPI;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 import com.unlam.tpi.infraestructura.repositorio.UsuarioRepositorio;
 
 @Service

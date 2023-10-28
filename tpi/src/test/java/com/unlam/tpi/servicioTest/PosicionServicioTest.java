@@ -26,10 +26,10 @@ import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 import com.unlam.tpi.core.servicio.PanelPreciosImpl;
 import com.unlam.tpi.core.servicio.PosicionServicioImpl;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 import com.unlam.tpi.infraestructura.repositorio.PosicionRepositorio;
 
 @ExtendWith(MockitoExtension.class)

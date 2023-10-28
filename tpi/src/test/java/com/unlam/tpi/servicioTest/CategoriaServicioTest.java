@@ -22,9 +22,9 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import com.unlam.tpi.core.interfaces.CategoriaServicio;
 import com.unlam.tpi.core.modelo.Categoria;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.servicio.CategoriaServicioImpl;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 import com.unlam.tpi.infraestructura.repositorio.CategoriaRepositorio;
 
 @ExtendWith(MockitoExtension.class)

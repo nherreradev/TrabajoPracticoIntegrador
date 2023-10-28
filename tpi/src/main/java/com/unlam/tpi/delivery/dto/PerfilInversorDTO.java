@@ -7,7 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 
 import com.unlam.tpi.core.modelo.PerfilInversor;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
+import com.unlam.tpi.core.modelo.ServiceException;
 
 public class PerfilInversorDTO {
 

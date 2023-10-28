@@ -9,8 +9,8 @@ import com.unlam.tpi.core.interfaces.OrdenServicio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.OrdenDTO;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
 import com.unlam.tpi.infraestructura.repositorio.OrdenRepositorio;
 
 @Service

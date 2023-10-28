@@ -39,10 +39,10 @@ class PanelesServicioTest {
 
 	@Mock
 	PanelPrecios panelPrecios;
-	
+
 	@Mock
 	InstrumentoServicio instrumentoServicio;
-	
+
 	@Mock
 	PosicionServicio posicionServicio;
 
@@ -110,11 +110,8 @@ class PanelesServicioTest {
 		doNothing().when(panelPrecios).agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 		panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 		when(posicionServicio.obtenerPosicionTotal()).thenReturn(listaPosicion);
-		try {
-			panelesServicio.getPanelDeAcciones();
-		} catch (Exception e) {
-			fail("Se arrojó una excepción inesperada: " + e.getMessage());
-		}
+		panelesServicio.getPanelDeAcciones();
+
 	}
 
 	@Test
@@ -147,6 +144,5 @@ class PanelesServicioTest {
 		assertEquals(1, instrumentoNuevo.getFlashVenta()); /* Precio venta subio (1) */
 
 	}
-	
 
 }

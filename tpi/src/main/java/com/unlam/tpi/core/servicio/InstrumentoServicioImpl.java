@@ -15,7 +15,7 @@ import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PuntasServicio;
 import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
 import com.unlam.tpi.core.modelo.Instrumento;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.infraestructura.repositorio.InstrumentoRepositorio;
 
 @Service

@@ -28,6 +28,8 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 
 	@Override
 	public List<Posicion> getPosicionEnEfectivo() {
+		
+		//volar try catch
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
