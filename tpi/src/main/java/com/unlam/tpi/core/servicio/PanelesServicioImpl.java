@@ -33,10 +33,10 @@ public class PanelesServicioImpl implements PanelesServicio {
 
 	@Autowired
 	PosicionServicio posicionServicio;
-	
+
 	@Autowired
 	InstrumentoServicio instrumentoServicio;
-	
+
 	@Autowired
 	PuntasServicio puntasServicio;
 
@@ -59,27 +59,19 @@ public class PanelesServicioImpl implements PanelesServicio {
 
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
-
 		ResponseEntity<String> respuestaJson = postApiAcciones();
-
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
 			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
 			}
-
 			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
-
 			recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
-
 			listaInstrumentosAux.addAll(listaInstrumentos);
 			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 			instrumentoServicio.persistirInstrumentos(listaInstrumentos);
-			//puntasServicio.guardarPuntas(null);
-			
 			return PanelPreciosImpl.panelAcciones;
-
 		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
@@ -160,12 +152,12 @@ public class PanelesServicioImpl implements PanelesServicio {
 		try {
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 			return responseEntity;
-		} catch(ServiceException se) {
+		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
 			throw new ServiceException("Error al conectar con mongo DB");
 		}
-		
+
 	}
 
 	public void determinarFlashDeCompraVenta(Map<String, Instrumento> mapaInstrumentosAux,
