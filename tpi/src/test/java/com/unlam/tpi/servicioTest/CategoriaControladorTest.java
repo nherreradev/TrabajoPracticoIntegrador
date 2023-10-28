@@ -3,8 +3,6 @@ package com.unlam.tpi.servicioTest;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,15 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.unlam.tpi.core.interfaces.CategoriaServicio;
-
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 public class CategoriaControladorTest {
-
-	@Autowired
-	private CategoriaServicio categoriaServicio;
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -37,14 +29,6 @@ public class CategoriaControladorTest {
 				new ClassPathResource("pregunta.xlsx").getInputStream());
 	    mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 			mockMvc.perform(multipart("/api/categoria/carga-categoria-excel").file(mockMultipartFile)).andExpect(status().isOk());
-	}
-
-	public CategoriaServicio getCategoriaServicio() {
-		return categoriaServicio;
-	}
-
-	public void setCategoriaServicio(CategoriaServicio categoriaServicio) {
-		this.categoriaServicio = categoriaServicio;
 	}
 
 }
