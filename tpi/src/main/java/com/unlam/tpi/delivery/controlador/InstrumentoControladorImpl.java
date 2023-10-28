@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.core.interfaces.InstrumentoControlador;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
-import com.unlam.tpi.infraestructura.modelo.HistoricoInstrumentoRespuesta;
+import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
 
 @CrossOrigin
 @RestController

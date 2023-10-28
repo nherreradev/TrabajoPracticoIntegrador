@@ -1,8 +1,8 @@
 package com.unlam.tpi.core.interfaces;
 
+import com.unlam.tpi.core.modelo.ResponseAPI;
+import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
-import com.unlam.tpi.infraestructura.modelo.ResponseAPI;
-import com.unlam.tpi.infraestructura.modelo.Usuario;
 
 import org.springframework.transaction.annotation.Transactional;
 

@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.unlam.tpi.core.modelo.Seccion;
 import com.unlam.tpi.delivery.dto.SeccionDTO;
-import com.unlam.tpi.infraestructura.modelo.Seccion;
 
 
 public interface SeccionServicio {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.unlam.tpi.infraestructura.modelo.HistoricoInstrumentoRespuesta;
+import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
 
 public interface InstrumentoControlador {
 

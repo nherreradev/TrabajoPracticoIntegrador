@@ -3,8 +3,8 @@ package com.unlam.tpi.delivery.controlador;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.unlam.tpi.infraestructura.modelo.ResponseAPI;
-import com.unlam.tpi.infraestructura.modelo.Usuario;
+import com.unlam.tpi.core.modelo.ResponseAPI;
+import com.unlam.tpi.core.modelo.Usuario;
 
 public interface UsuarioControlador {
 	public String bienvenido();

@@ -8,9 +8,9 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+import com.unlam.tpi.core.modelo.ResponseAPI;
+import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.core.servicio.UsuarioServicioImpl;
-import com.unlam.tpi.infraestructura.modelo.ResponseAPI;
-import com.unlam.tpi.infraestructura.modelo.Usuario;
 import com.unlam.tpi.infraestructura.repositorio.UsuarioRepositorio;
 
 @SpringBootTest

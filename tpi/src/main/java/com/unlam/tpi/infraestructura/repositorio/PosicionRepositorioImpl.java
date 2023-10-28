@@ -18,7 +18,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.unlam.tpi.infraestructura.modelo.Posicion;
+import com.unlam.tpi.core.modelo.Posicion;
 
 @Repository
 public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
@@ -28,6 +28,8 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 
 	@Override
 	public List<Posicion> getPosicionEnEfectivo() {
+		
+		//volar try catch
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);

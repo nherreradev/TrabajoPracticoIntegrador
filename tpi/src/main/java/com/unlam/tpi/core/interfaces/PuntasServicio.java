@@ -1,6 +1,6 @@
 package com.unlam.tpi.core.interfaces;
 
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Instrumento;
 
 public interface PuntasServicio {
 
