@@ -71,12 +71,12 @@ public class HistoricoServicioImpl implements HistoricoServicio {
         if (rango == null){
             System.out.println("Rango de fecha no válido");
         }
-        String historico = ConsultarHistoricoIOL(fechaRequestHistorico, instrumento);
+        String historico = ConsultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
 
     }
 
-    private String ConsultarHistoricoIOL(FechaRequestHistorico fechaRequestHistorico, String instrumento) {
-        Map<String, String> simbolosVacios = null;
+    private String ConsultarHistoricoIOL(FechaRequestHistorico fechaRequestHistorico, String instrumento, String rango) {
+        String bodyResponse = null;
         List<String> simbolos = ObtenerSimbolosDeInstrumentos(instrumento);
         String mercado = ObtenerMercado(instrumento);
         ResponseEntity<String> res = null;
@@ -88,23 +88,15 @@ public class HistoricoServicioImpl implements HistoricoServicio {
         for(int i=0; i<simbolos.size(); i++){
             String url = ArmarURL(fechaRequestHistorico, mercado, simbolos.get(i));
             res = RealizarPeticionIOL(url);
-            if(res.getBody().isEmpty()){
-                simbolosVacios.put(simbolos.get(i),res.getBody());
-            }
-            System.out.println("------------------------------------------INICIO----------------------------------------------------------");
-            System.out.println("SIMBOLO: "+ simbolos.get(i) );
-            System.out.println(res.getBody());
-            System.out.println("------------------------------------------FIN-------------------------------------------------------------");
+            bodyResponse =  res.getBody().toString();
+            this.historicoRepositorio.GuardarHistoricoInstrumento(rango, bodyResponse);
         }
-        System.out.println("------------------------------------------------------");
-        System.out.println("SIMBOLOS VACIOS");
-        System.out.println(simbolosVacios);
-        System.out.println("------------------------------------------------------");
+
         return null;
     }
 
     private ResponseEntity<String> RealizarPeticionIOL(String url) {
-        String token = "";
+        String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiMWIyYzY5YjUtMmI5Ni00Mzg5LTlmMTgtMDVkZjA2YmQyZjM4IiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE2OTg1MDc0MzgsImV4cCI6MTY5ODUwODMzOCwiaWF0IjoxNjk4NTA3NDM4LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.jKu7yzGtuE8NIj_RpNwWpeEoDj-Fu2pk9BQx59t64zp92IgQZeWvfPuQUzVuicfpLb-dkVpIPr0vGrYDkKmq3wmVA_kzu_ECaRBfVlXzGLVb65WLxsmgIgFAyMT29isvnu6FX0ypnlITLMXtE8k5YPlzLbWarV77F2d0k7LGuc24zuBlUQLDMkN_dODhRZI9T7Xxuygl-4IBN_9OywNmz22zb0cCDB6x99tVmcLTCbRlN7iO0DNyLGg3IxwX7AFB1GSgfrBOUevnb1lAeQkwobR_autQ83Ui5XajYEkMT8NN51hDU_yKJ98dSupDX4HO00RXWxonhc7gfdFGl2FCyg";
         Map<String, Boolean> ResponseOK = new HashMap<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -121,16 +113,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
     }
 
     private String ObtenerMercado(String instrumento) {
-        switch (instrumento){
-            case "acciones":
-                //SETEO bCBA para hacer pruebas
-                return "bCBA";
-            case "bonos":
-                return "b";
-            case "cedears":
-                return "c";
-        }
-        return null;
+        return "bCBA";
     }
 
     private List<String> ObtenerSimbolosDeInstrumentos(String instrumento) {
@@ -141,8 +124,10 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 
         for (int i = 0; i < TituloArray.size(); i++) {
             JsonObject titulo = TituloArray.get(i).getAsJsonObject();
-            String simbolo = titulo.get("simbolo").getAsString();
-            ArraySimbolos.add(simbolo);
+            if(!titulo.get("puntas").isJsonNull()){
+                String simbolo = titulo.get("simbolo").getAsString();
+                ArraySimbolos.add(simbolo);
+            }
         }
         return ArraySimbolos;
     }
