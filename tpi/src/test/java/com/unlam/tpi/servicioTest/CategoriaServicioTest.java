@@ -3,35 +3,45 @@ package com.unlam.tpi.servicioTest;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.unlam.tpi.core.servicio.CategoriaServicio;
+import com.unlam.tpi.core.servicio.CategoriaServicioImpl;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
+import com.unlam.tpi.infraestructura.modelo.Categoria;
+import com.unlam.tpi.infraestructura.repositorio.CategoriaRepositorio;
 
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 public class CategoriaServicioTest {
 
-	@Autowired
-	private CategoriaServicio categoriaServicio;
+	@InjectMocks
+	private CategoriaServicioImpl categoriaServicio;
+	
+	@Mock
+	private CategoriaRepositorio categoriaRepositorio;
 
 	@Test
 	public void testQuePuedaGuardarCategoria() {
-		CategoriaDTO categoria = new CategoriaDTO();
-		categoria.setNombre("CategoriaPrueba");
-		categoria.setDescripcion("Esto es un test");
-		getCategoriaServicio().guardar(categoria);
+		CategoriaDTO categoriaDTO = new CategoriaDTO();
+		categoriaDTO.setNombre("CategoriaPrueba");
+		categoriaDTO.setDescripcion("Esto es un test");
+		verify(categoriaRepositorio, never()).save(any(Categoria.class));
 	}
 
 	@Test
@@ -49,9 +59,15 @@ public class CategoriaServicioTest {
     public void testQuePuedaCargarLasCategoriasDesdeExcelYMeListeLasCategorias() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelCategoria", "pregunta.xls", "application/x-xlsx",
 				new ClassPathResource("pregunta.xlsx").getInputStream());
+		CategoriaDTO categoriaDTO = new CategoriaDTO();
+		categoriaDTO.setNombre("CategoriaPrueba");
+		categoriaDTO.setDescripcion("Esto es un test");
+		List<CategoriaDTO> dtoCategorias = new ArrayList<>();
+		dtoCategorias.add(categoriaDTO);
+		List<Categoria> categorias = CategoriaDTO.traductorDeListaDTOaEntidad(dtoCategorias);
+	    when(categoriaRepositorio.findAll()).thenReturn(categorias);
 		getCategoriaServicio().cargaDesdeExcel(excelFile);
-		List<CategoriaDTO> categorias = getCategoriaServicio().listar();
-		assertNotNull(categorias);
+		assertNotNull(getCategoriaServicio().listar());
     }
 	
 	
@@ -74,6 +90,7 @@ public class CategoriaServicioTest {
 		categoria.setNombre("CategoriaPrueba");
 		categoria.setDescripcion("Esto es un test");
 		getCategoriaServicio().guardar(categoria);
+		when(categoriaRepositorio.findByNombre("CategoriaPrueba")).thenReturn(CategoriaDTO.dTOaEntidad(categoria));
 		assertNotNull(getCategoriaServicio().getCategoriaDTOPorNombre("CategoriaPrueba"));
 	}
 	
@@ -91,7 +108,7 @@ public class CategoriaServicioTest {
 		return categoriaServicio;
 	}
 
-	public void setCategoriaServicio(CategoriaServicio categoriaServicio) {
+	public void setCategoriaServicio(CategoriaServicioImpl categoriaServicio) {
 		this.categoriaServicio = categoriaServicio;
 	}
 

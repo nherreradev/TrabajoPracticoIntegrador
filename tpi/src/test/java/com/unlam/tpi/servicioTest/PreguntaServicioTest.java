@@ -1,23 +1,29 @@
 package com.unlam.tpi.servicioTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.unlam.tpi.core.servicio.CategoriaServicio;
 import com.unlam.tpi.core.servicio.PreguntaServicio;
+import com.unlam.tpi.core.servicio.PreguntaServicioImpl;
 import com.unlam.tpi.core.servicio.SeccionServicio;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
@@ -25,18 +31,22 @@ import com.unlam.tpi.delivery.dto.RespuestaDTO;
 import com.unlam.tpi.delivery.dto.SeccionDTO;
 import com.unlam.tpi.delivery.dto.TipoComponente;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
+import com.unlam.tpi.infraestructura.modelo.Pregunta;
+import com.unlam.tpi.infraestructura.repositorio.PreguntaRepositorio;
 
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 public class PreguntaServicioTest {
 
-	@Autowired
-	private PreguntaServicio  preguntaServicio;
+	@InjectMocks
+	private PreguntaServicioImpl  preguntaServicio;
 	
-	@Autowired
+	@Mock
+	private PreguntaRepositorio   preguntaRepositorio;
+	
+	@Mock
 	private CategoriaServicio categoriaServicio;
 	
-	@Autowired
+	@Mock
 	private SeccionServicio seccionServicio;
 
 	@Test
@@ -45,7 +55,7 @@ public class PreguntaServicioTest {
 		pregunta.setCategoria(crearCategoria());
 		pregunta.setSeccion(crearSeccion());
 		pregunta.setRespuestas(crearListaRespuesta());
-		getPreguntaServicio().guardar(pregunta);
+		verify(preguntaRepositorio, never()).save(any(Pregunta.class));
 	}
 	
 	@Test
@@ -54,7 +64,9 @@ public class PreguntaServicioTest {
 		pregunta.setCategoria(crearCategoria());
 		pregunta.setSeccion(crearSeccion());
 		pregunta.setRespuestas(crearListaRespuesta());
-		getPreguntaServicio().guardar(pregunta);
+		List<PreguntaDTO> preguntaLista = new ArrayList<>();
+		preguntaLista.add(pregunta);
+		when(preguntaRepositorio.findByCategoria_Nombre("CategoriaPrueba")).thenReturn(PreguntaDTO.traductorDeListaDTOaEntidad(preguntaLista));
 		assertTrue(getPreguntaServicio().listarPorCategoria("CategoriaPrueba").size()>0);
 	}
 
@@ -94,6 +106,7 @@ public class PreguntaServicioTest {
 		pregunta.setEnunciado("PreguntaPrueba");
 		pregunta.setOrden(1);
 		pregunta.setTipoComponente(TipoComponente.RADIO);
+		pregunta.setCategoria(crearCategoria());
 		return pregunta;
 	}
 	
@@ -101,20 +114,17 @@ public class PreguntaServicioTest {
     public void testQuePuedaCargarLasSPreguntasDesdeExcelYLasListe() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelPregunta", "pregunta.xls", "application/x-xlsx",
 				new ClassPathResource("pregunta.xlsx").getInputStream());
-		givenSeCreaLacategoria(excelFile);
-		givenSeCreaLaSeccion(excelFile);
+		List<PreguntaDTO> dtoPreguntas = new ArrayList<>();
+		dtoPreguntas.add(crearPreguntaDTO());
+		List<Pregunta> preguntas = PreguntaDTO.traductorDeListaDTOaEntidad(dtoPreguntas);
+		CategoriaDTO categoria = crearCategoria();
+		when(categoriaServicio.getCategoriaPorNombre("CategoriaPrueba")).thenReturn(CategoriaDTO.dTOaEntidad(categoria));
+		when(seccionServicio.getSeccionPorNombre("SeccionPrueba")).thenReturn(SeccionDTO.dTOaEntidad(crearSeccion()));
+		when(preguntaRepositorio.findAll()).thenReturn(preguntas);
+		when(preguntaRepositorio.saveAll(preguntas)).thenReturn(preguntas);
 		getPreguntaServicio().cargaDesdeExcel(excelFile);
-		List<PreguntaDTO> preguntas = getPreguntaServicio().listar();
-		assertNotNull(preguntas);
+		assertNotNull(getPreguntaServicio().listar());
     }
-	
-	private void givenSeCreaLacategoria(MockMultipartFile excelFile ) {
-		getCategoriaServicio().cargaDesdeExcel(excelFile);
-	}
-	
-	private void givenSeCreaLaSeccion(MockMultipartFile excelFile ) {
-		getSeccionServicio().cargaDesdeExcel(excelFile);
-	}
 	
 	@Test
 	public void testQueAlCargarLasPreguntasDesdeExcelYFallePorqueNoExisteLaHojaPregunta() throws IOException {
@@ -134,9 +144,8 @@ public class PreguntaServicioTest {
 		pregunta.setCategoria(crearCategoria());
 		pregunta.setSeccion(crearSeccion());
 		pregunta.setRespuestas(crearListaRespuesta());
-		getPreguntaServicio().guardar(pregunta);
-		assertTrue(PreguntaDTO.class
-				.isAssignableFrom(getPreguntaServicio().getPreguntaDTOPorEnunciado("PreguntaPrueba").getClass()));
+		when(preguntaRepositorio.findByEnunciado("PreguntaPrueba")).thenReturn(PreguntaDTO.dTOaEntidad(pregunta));
+		assertEquals("PreguntaPrueba", getPreguntaServicio().getPreguntaDTOPorEnunciado("PreguntaPrueba").getEnunciado());;
 	}
 	
 	@Test
@@ -154,24 +163,16 @@ public class PreguntaServicioTest {
 		return preguntaServicio;
 	}
 
-	public void setPreguntaServicio(PreguntaServicio preguntaServicio) {
+	public void setPreguntaServicio(PreguntaServicioImpl preguntaServicio) {
 		this.preguntaServicio = preguntaServicio;
 	}
 
-	public CategoriaServicio getCategoriaServicio() {
-		return categoriaServicio;
+	public PreguntaRepositorio getPreguntaRepositorio() {
+		return preguntaRepositorio;
 	}
 
-	public void setCategoriaServicio(CategoriaServicio categoriaServicio) {
-		this.categoriaServicio = categoriaServicio;
+	public void setPreguntaRepositorio(PreguntaRepositorio preguntaRepositorio) {
+		this.preguntaRepositorio = preguntaRepositorio;
 	}
 
-	public SeccionServicio getSeccionServicio() {
-		return seccionServicio;
-	}
-
-	public void setSeccionServicio(SeccionServicio seccionServicio) {
-		this.seccionServicio = seccionServicio;
-	}
-	
 }

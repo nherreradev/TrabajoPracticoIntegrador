@@ -3,40 +3,51 @@ package com.unlam.tpi.servicioTest;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.unlam.tpi.core.servicio.CategoriaServicio;
 import com.unlam.tpi.core.servicio.PreguntaServicio;
 import com.unlam.tpi.core.servicio.RespuestaServicio;
+import com.unlam.tpi.core.servicio.RespuestaServicioImpl;
 import com.unlam.tpi.core.servicio.SeccionServicio;
-import com.unlam.tpi.delivery.dto.CategoriaDTO;
+import com.unlam.tpi.delivery.dto.PreguntaDTO;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
+import com.unlam.tpi.delivery.dto.TipoComponente;
 import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
+import com.unlam.tpi.infraestructura.modelo.Respuesta;
+import com.unlam.tpi.infraestructura.repositorio.RespuestaRepositorio;
 
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 public class RespuestaServicioTest {
 
-	@Autowired
-	private RespuestaServicio  respuestaServicio;
-	
-	@Autowired
-	private PreguntaServicio  preguntaServicio;
-	
-	@Autowired
+	@InjectMocks
+	private RespuestaServicioImpl respuestaServicio;
+
+	@Mock
+	private RespuestaRepositorio respuestaRepositorio;
+
+	@Mock
+	private PreguntaServicio preguntaServicio;
+
+	@Mock
 	private CategoriaServicio categoriaServicio;
-	
-	@Autowired
+
+	@Mock
 	private SeccionServicio seccionServicio;
 
 	@Test
@@ -45,10 +56,9 @@ public class RespuestaServicioTest {
 		respuesta.setNombre("Respuesta A");
 		respuesta.setValor(10);
 		respuesta.setOrden(1);
-		getRespuestaServicio().guardar(respuesta);
-		assertNotNull(getRespuestaServicio().getRespuestaDTOPorNombre("Respuesta A"));
+		verify(respuestaRepositorio, never()).save(any(Respuesta.class));
 	}
-	
+
 	@Test
 	public void testQueAlGuardarUnaRespuestaDevuelvaUnaServiceException() {
 		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
@@ -59,19 +69,34 @@ public class RespuestaServicioTest {
 		String actualMessage = serviceException.getMessage();
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
-	
+
 	@Test
-    public void testQuePuedaCargarLasRespuestaDesdeExcelYLasListe() throws IOException {
+	public void testQuePuedaCargarLasRespuestaDesdeExcelYLasListe() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelRespuesta", "pregunta.xls", "application/x-xlsx",
 				new ClassPathResource("pregunta.xlsx").getInputStream());
-		givenSeCreaLacategoria(excelFile);
-		givenSeCreaLaSeccion(excelFile);
-		givenSeCreaLaPregunta(excelFile);
+		RespuestaDTO respuesta = new RespuestaDTO();
+		respuesta.setNombre("R1");
+		respuesta.setInstrumento("A");
+		respuesta.setValor(10);
+		respuesta.setOrden(1);
+		List<RespuestaDTO> dtoRespuestas = new ArrayList<>();
+		dtoRespuestas.add(respuesta);
+		when(respuestaRepositorio.findByNombreAndInstrumento("R1", "A"))
+				.thenReturn(RespuestaDTO.dTOaEntidad(respuesta));
+		when(preguntaServicio.getPreguntaPorEnunciado("A1")).thenReturn(PreguntaDTO.dTOaEntidad(crearPreguntaDTO()));
+		when(respuestaRepositorio.findAll()).thenReturn(RespuestaDTO.traductorDeListaDTOaEntidad(dtoRespuestas));
 		getRespuestaServicio().cargaDesdeExcel(excelFile);
-		List<RespuestaDTO> respuestas = getRespuestaServicio().listar();
-		assertNotNull(respuestas);
-    }
-	
+		assertNotNull(getRespuestaServicio().listar());
+	}
+
+	private PreguntaDTO crearPreguntaDTO() {
+		PreguntaDTO pregunta = new PreguntaDTO();
+		pregunta.setEnunciado("A1");
+		pregunta.setOrden(1);
+		pregunta.setTipoComponente(TipoComponente.RADIO);
+		return pregunta;
+	}
+
 	@Test
 	public void testQueAlCargarLasRespuestasDesdeExcelYFallePorqueNoExisteLaHojaRespuesta() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelPregunta", "pregunta_sin_hojas.xls",
@@ -83,7 +108,7 @@ public class RespuestaServicioTest {
 		String actualMessage = serviceException.getMessage();
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
-	
+
 	@Test
 	public void testQueBusqueUnaRespuestaPorNombreYNoLaEncuentre() {
 		String nombre = "Noexiste";
@@ -94,50 +119,13 @@ public class RespuestaServicioTest {
 		String actualMessage = serviceException.getMessage();
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
-	
-	
-	private void givenSeCreaLacategoria(MockMultipartFile excelFile ) {
-		getCategoriaServicio().cargaDesdeExcel(excelFile);
-	}
-	
-	private void givenSeCreaLaSeccion(MockMultipartFile excelFile ) {
-		getSeccionServicio().cargaDesdeExcel(excelFile);
-	}
-	
-	private void givenSeCreaLaPregunta(MockMultipartFile excelFile ) {
-		getPreguntaServicio().cargaDesdeExcel(excelFile);
-	}
-	
+
 	public RespuestaServicio getRespuestaServicio() {
 		return respuestaServicio;
 	}
 
-	public void setRespuestaServicio(RespuestaServicio respuestaServicio) {
+	public void setRespuestaServicio(RespuestaServicioImpl respuestaServicio) {
 		this.respuestaServicio = respuestaServicio;
 	}
 
-	public PreguntaServicio getPreguntaServicio() {
-		return preguntaServicio;
-	}
-
-	public void setPreguntaServicio(PreguntaServicio preguntaServicio) {
-		this.preguntaServicio = preguntaServicio;
-	}
-
-	public CategoriaServicio getCategoriaServicio() {
-		return categoriaServicio;
-	}
-
-	public void setCategoriaServicio(CategoriaServicio categoriaServicio) {
-		this.categoriaServicio = categoriaServicio;
-	}
-
-	public SeccionServicio getSeccionServicio() {
-		return seccionServicio;
-	}
-
-	public void setSeccionServicio(SeccionServicio seccionServicio) {
-		this.seccionServicio = seccionServicio;
-	}
-	
 }

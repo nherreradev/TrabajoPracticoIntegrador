@@ -3,8 +3,6 @@ package com.unlam.tpi;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,23 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.unlam.tpi.core.servicio.CategoriaServicio;
-import com.unlam.tpi.core.servicio.PreguntaServicio;
-import com.unlam.tpi.core.servicio.SeccionServicio;
-
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 public class PreguntaControladorTest {
-
-	@Autowired
-	private PreguntaServicio preguntaServicio;
-	
-	@Autowired
-	private CategoriaServicio categoriaServicio;
-	
-	@Autowired
-	private SeccionServicio seccionServicio;
 
 	@Autowired
 	private WebApplicationContext webApplicationContext;
@@ -40,7 +24,7 @@ public class PreguntaControladorTest {
 	MockMvc mockMvc;
 
 	@Test
-	public void cuandoCargoUnExcel_VerificoSuEstado() throws Exception {
+	public void cuandoCargoUnExcelVerificoSuEstado() throws Exception {
 		givenSeCreaLacategoria();
 		givenSeCreaLaSeccion();
 		MockMultipartFile mockMultipartFile = new MockMultipartFile("excelPregunta", "pregunta.xls",
@@ -66,28 +50,4 @@ public class PreguntaControladorTest {
 				.andExpect(status().isOk());
 	}
 		
-	public PreguntaServicio getPreguntaServicio() {
-		return preguntaServicio;
-	}
-
-	public void setPreguntaServicio(PreguntaServicio preguntaServicio) {
-		this.preguntaServicio = preguntaServicio;
-	}
-
-	public CategoriaServicio getCategoriaServicio() {
-		return categoriaServicio;
-	}
-
-	public void setCategoriaServicio(CategoriaServicio categoriaServicio) {
-		this.categoriaServicio = categoriaServicio;
-	}
-
-	public SeccionServicio getSeccionServicio() {
-		return seccionServicio;
-	}
-
-	public void setSeccionServicio(SeccionServicio seccionServicio) {
-		this.seccionServicio = seccionServicio;
-	}
-
 }

@@ -37,6 +37,6 @@ public interface PerfilInversorServicio {
 	public byte[] obtenerCertificado(String nombreUsuario) throws JRException, SQLException;
 
 	@Transactional
-	public void guardar(PerfilInversor perfilInversor);
+	public PerfilInversor guardar(PerfilInversor perfilInversor);
 
 }
