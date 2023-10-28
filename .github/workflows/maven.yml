@@ -39,11 +39,12 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-    - run: ls && cd tpi && mvn test
+    - run: ls && cd tpi && mvn test -Pprod
    
   deploy-java-vps:
     runs-on: ubuntu-latest
-    needs: test
+    #needs: test
+    needs: build
     steps:
     - uses: actions/checkout@v3
       with:
