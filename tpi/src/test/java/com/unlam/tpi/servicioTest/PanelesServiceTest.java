@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.servicio.PanelesServicioImpl;
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
 
 @SpringBootTest
 public class PanelesServiceTest {

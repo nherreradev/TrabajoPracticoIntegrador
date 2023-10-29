@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.unlam.tpi.core.interfaces.UsuarioServicio;
-import com.unlam.tpi.infraestructura.modelo.ResponseAPI;
-import com.unlam.tpi.infraestructura.modelo.Usuario;
+import com.unlam.tpi.core.modelo.ResponseAPI;
+import com.unlam.tpi.core.modelo.Usuario;
 
 @RestController
 @RequestMapping("/api")
@@ -19,7 +19,7 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	@Override
 	@GetMapping("/index")
 	public String bienvenido() {
-		return "¡Bienvenido al índice de la API!";
+		return "¡Bienvenido al índice de la API! 28/10 14:36 test deploy ....andando";
 	}
 
 	@Override

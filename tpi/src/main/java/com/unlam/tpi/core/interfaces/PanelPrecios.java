@@ -3,7 +3,7 @@ package com.unlam.tpi.core.interfaces;
 import java.util.List;
 import java.util.Map;
 
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Instrumento;
 
 public interface PanelPrecios {
 

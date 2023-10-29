@@ -1,4 +1,4 @@
-package com.unlam.tpi.infraestructura.arquitectura;
+package com.unlam.tpi.core.modelo;
 
 public class ServiceException extends RuntimeException {
 

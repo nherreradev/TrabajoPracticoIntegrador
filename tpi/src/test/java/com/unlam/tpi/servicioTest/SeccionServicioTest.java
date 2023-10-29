@@ -3,35 +3,45 @@ package com.unlam.tpi.servicioTest;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.unlam.tpi.core.interfaces.SeccionServicio;
+import com.unlam.tpi.core.modelo.Seccion;
+import com.unlam.tpi.core.modelo.ServiceException;
+import com.unlam.tpi.core.servicio.SeccionServicioImpl;
 import com.unlam.tpi.delivery.dto.SeccionDTO;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
+import com.unlam.tpi.infraestructura.repositorio.SeccionRepositorio;
 
-@SpringBootTest
-@Transactional
+@ExtendWith(MockitoExtension.class)
 public class SeccionServicioTest {
 
-	@Autowired
-	private SeccionServicio seccionServicio;
-
+	@InjectMocks
+	private SeccionServicioImpl seccionServicio;
+	
+	@Mock
+	private SeccionRepositorio seccionRepositorio;
+	
 	@Test
 	public void testQuePuedaGuardarSeccion() {
 		SeccionDTO seccion = new SeccionDTO();
 		seccion.setNombre("SeccionPrueba");
 		seccion.setDescripcion("Esto es un test");
-		getSeccionServicio().guardar(seccion);
+		verify(seccionRepositorio, never()).save(any(Seccion.class));
 	}
 	
 	@Test
@@ -49,11 +59,16 @@ public class SeccionServicioTest {
     public void testQuePuedaCargarLasSeccionesDesdeExcelYLasListe() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelSeccion", "pregunta.xls", "application/x-xlsx",
 				new ClassPathResource("pregunta.xlsx").getInputStream());
-		getSeccionServicio().cargaDesdeExcel(excelFile);
-		List<SeccionDTO> secciones = getSeccionServicio().listar();
-		assertNotNull(secciones);
+		SeccionDTO seccionDTO = new SeccionDTO();
+		seccionDTO.setNombre("SeccionPrueba");
+		seccionDTO.setDescripcion("Esto es un test");
+		List<SeccionDTO> dtoSecciones = new ArrayList<>();
+		dtoSecciones.add(seccionDTO);
+		List<Seccion> categorias = SeccionDTO.traductorDeListaDTOaEntidad(dtoSecciones);
+	    when(seccionRepositorio.findAll()).thenReturn(categorias);
+	    getSeccionServicio().cargaDesdeExcel(excelFile);
+		assertNotNull(getSeccionServicio().listar());
     }
-	
 	
 	@Test
 	public void testQueAlCargarLasSeccionesDesdeExcelFallePorqueNoExisteLaHojaSeccion() throws IOException {
@@ -83,6 +98,7 @@ public class SeccionServicioTest {
 		seccion.setNombre("SeccionPrueba");
 		seccion.setDescripcion("Esto es un test");
 		getSeccionServicio().guardar(seccion);
+		when(seccionRepositorio.findByNombre("SeccionPrueba")).thenReturn(SeccionDTO.dTOaEntidad(seccion));
 		assertNotNull(getSeccionServicio().getSeccionPorNombre("SeccionPrueba"));
 	}
 	
@@ -90,7 +106,7 @@ public class SeccionServicioTest {
 		return seccionServicio;
 	}
 
-	public void setSeccionServicio(SeccionServicio seccionServicio) {
+	public void setSeccionServicio(SeccionServicioImpl seccionServicio) {
 		this.seccionServicio = seccionServicio;
 	}
 

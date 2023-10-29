@@ -9,8 +9,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
-import com.unlam.tpi.infraestructura.modelo.Posicion;
+import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Posicion;
 
 public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomizado {
 

@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
-import com.unlam.tpi.infraestructura.modelo.PerfilInversor;
+import com.unlam.tpi.core.modelo.PerfilInversor;
+import com.unlam.tpi.core.modelo.ServiceException;
 
 public class PerfilInversorDTO {
 
 	private static ModelMapper mapper = new ModelMapper();
+	private static TypeMap<PerfilInversor, PerfilInversorDTO> propertyMapper = mapper
+			.createTypeMap(PerfilInversor.class, PerfilInversorDTO.class);
 	
 	private Long oid;
 
@@ -26,7 +29,7 @@ public class PerfilInversorDTO {
 
 	private Integer nivelConocimiento;
 	
-	private TipoNivelConocimiento tipoNivelConocimiento;
+	private TipoNivelConocimiento tipoNivelConocimiento;  
 	
 	private TipoPerfilInversor perfilInversor;
 	
@@ -129,6 +132,7 @@ public class PerfilInversorDTO {
 	
 	public static PerfilInversorDTO entidadADTO(PerfilInversor perfilInversor) {
 		try {
+			propertyMapper.addMappings(mapper -> mapper.map(pi -> pi.getUsuario(), PerfilInversorDTO::setUsuarioDTO));
 			return mapper.map(perfilInversor, PerfilInversorDTO.class);
 		} catch (Exception e) {
 			throw new ServiceException("Error en convertir PerfilInversor a PerfilInversorDTO", e);

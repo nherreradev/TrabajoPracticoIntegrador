@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Instrumento;
 
 public interface PanelesServicio {
 	public Map<String, Instrumento> getPanelDeAcciones();

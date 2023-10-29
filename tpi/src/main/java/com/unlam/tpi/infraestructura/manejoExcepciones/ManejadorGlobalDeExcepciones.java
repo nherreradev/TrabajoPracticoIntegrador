@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
+import com.unlam.tpi.core.modelo.ServiceException;
 
 @ControllerAdvice
 public class ManejadorGlobalDeExcepciones extends ResponseEntityExceptionHandler {
