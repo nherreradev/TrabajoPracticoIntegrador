@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.unlam.tpi.core.interfaces.PosicionRepositorio;
 import com.unlam.tpi.core.modelo.CargaCreditoConstantes;
 import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.Orden;
@@ -30,7 +31,6 @@ import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 import com.unlam.tpi.core.servicio.PanelPreciosImpl;
 import com.unlam.tpi.core.servicio.PosicionServicioImpl;
-import com.unlam.tpi.infraestructura.repositorio.PosicionRepositorio;
 
 @ExtendWith(MockitoExtension.class)
 class PosicionServicioTest {

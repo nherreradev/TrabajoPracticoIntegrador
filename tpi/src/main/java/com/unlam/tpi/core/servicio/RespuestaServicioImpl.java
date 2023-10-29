@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.core.interfaces.PreguntaServicio;
+import com.unlam.tpi.core.interfaces.RespuestaRepositorio;
 import com.unlam.tpi.core.interfaces.RespuestaServicio;
 import com.unlam.tpi.core.modelo.Pregunta;
 import com.unlam.tpi.core.modelo.Respuesta;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
-import com.unlam.tpi.infraestructura.repositorio.RespuestaRepositorio;
 
 @Service
 public class RespuestaServicioImpl implements RespuestaServicio {

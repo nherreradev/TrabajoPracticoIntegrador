@@ -9,9 +9,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.stereotype.Repository;
+
+import com.unlam.tpi.core.interfaces.InstrumentoRepositorioCustomizado;
 import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.Posicion;
 
+@Repository
 public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomizado {
 
 	@PersistenceContext
