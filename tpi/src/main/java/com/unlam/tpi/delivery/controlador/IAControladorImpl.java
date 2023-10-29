@@ -22,7 +22,7 @@ public class IAControladorImpl implements IAControlador {
 	@GetMapping("/txt")
 	public ResponseEntity<String> generarArchivoTXT(String tipo) {
 		iAServicio.generarTXT(tipo);
-		return null;
+		return ResponseEntity.ok("OK");
 	}
 
 	
