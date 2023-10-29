@@ -1,4 +1,4 @@
-package com.unlam.tpi.infraestructura.repositorio;
+package com.unlam.tpi.core.interfaces;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

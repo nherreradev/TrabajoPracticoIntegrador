@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.unlam.tpi.core.interfaces.PortafolioSugerenciaControlador;
 import com.unlam.tpi.core.interfaces.PortafolioSugerenciaServicio;
 
 @CrossOrigin

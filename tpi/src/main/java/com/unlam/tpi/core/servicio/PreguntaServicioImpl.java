@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.core.interfaces.CategoriaServicio;
+import com.unlam.tpi.core.interfaces.PreguntaRepositorio;
 import com.unlam.tpi.core.interfaces.PreguntaServicio;
 import com.unlam.tpi.core.interfaces.SeccionServicio;
 import com.unlam.tpi.core.modelo.Categoria;
@@ -24,7 +25,6 @@ import com.unlam.tpi.core.modelo.Seccion;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
 import com.unlam.tpi.delivery.dto.TipoComponente;
-import com.unlam.tpi.infraestructura.repositorio.PreguntaRepositorio;
 
 @Service
 public class PreguntaServicioImpl implements PreguntaServicio {

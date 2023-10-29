@@ -11,12 +11,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.unlam.tpi.core.interfaces.InstrumentoRepositorio;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PuntasServicio;
 import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
 import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.infraestructura.repositorio.InstrumentoRepositorio;
 
 @Service
 public class InstrumentoServicioImpl implements InstrumentoServicio {

@@ -1,7 +1,6 @@
-package com.unlam.tpi.delivery.controlador;
+package com.unlam.tpi.core.interfaces;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.Usuario;
