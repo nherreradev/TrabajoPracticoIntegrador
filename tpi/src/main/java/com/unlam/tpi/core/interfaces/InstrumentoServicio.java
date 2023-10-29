@@ -2,8 +2,8 @@ package com.unlam.tpi.core.interfaces;
 
 import java.util.List;
 
-import com.unlam.tpi.infraestructura.modelo.HistoricoInstrumentoRespuesta;
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
+import com.unlam.tpi.core.modelo.Instrumento;
 
 public interface InstrumentoServicio {
 

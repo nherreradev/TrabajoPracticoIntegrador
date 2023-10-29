@@ -2,7 +2,7 @@ package com.unlam.tpi.infraestructura.repositorio;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.unlam.tpi.infraestructura.modelo.Seccion;
+import com.unlam.tpi.core.modelo.Seccion;
 
 public interface SeccionRepositorio  extends JpaRepository<Seccion, Long>{
 	

@@ -1,4 +1,4 @@
-package com.unlam.tpi.infraestructura.modelo;
+package com.unlam.tpi.core.modelo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

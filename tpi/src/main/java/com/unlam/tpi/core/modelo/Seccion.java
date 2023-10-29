@@ -1,4 +1,4 @@
-package com.unlam.tpi.infraestructura.modelo;
+package com.unlam.tpi.core.modelo;
 
 import java.util.List;
 
@@ -6,6 +6,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -13,8 +16,8 @@ import javax.persistence.Table;
 import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 
 @Entity
-@Table(name = "CATEGORIA")
-public class Categoria extends ObjetoPersistente {
+@Table(name = "SECCION")
+public class Seccion  extends ObjetoPersistente{
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,11 +26,11 @@ public class Categoria extends ObjetoPersistente {
 	
 	@Column(name = "DESCRIPCION")
 	private String descripcion;
-	
-	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
-	@JoinColumn(name = "CATEGORIA_OID", foreignKey = @ForeignKey(name = "FK_CATEGORIA__PREGUNTA"))
-	private List<Pregunta> Preguntas;
 
+	@OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+	@JoinColumn(name = "SECCION_OID", foreignKey = @ForeignKey(name = "FK_SECCION__PREGUNTA"))
+	private List<Pregunta> preguntas;
+	
 	public String getNombre() {
 		return nombre;
 	}
@@ -43,5 +46,5 @@ public class Categoria extends ObjetoPersistente {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-
+	
 }

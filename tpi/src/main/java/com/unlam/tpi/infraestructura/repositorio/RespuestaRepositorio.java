@@ -2,7 +2,7 @@ package com.unlam.tpi.infraestructura.repositorio;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.unlam.tpi.infraestructura.modelo.Respuesta;
+import com.unlam.tpi.core.modelo.Respuesta;
 
 public interface RespuestaRepositorio extends JpaRepository<Respuesta, Long>{
 	

@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.core.interfaces.PuntasServicio;
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
-import com.unlam.tpi.infraestructura.modelo.Puntas;
+import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.infraestructura.repositorio.PuntasRepositorio;
 
 @Service

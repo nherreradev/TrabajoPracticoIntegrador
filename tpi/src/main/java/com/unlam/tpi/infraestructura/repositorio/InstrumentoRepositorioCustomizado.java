@@ -1,6 +1,6 @@
 package com.unlam.tpi.infraestructura.repositorio;
 
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Instrumento;
 
 public interface InstrumentoRepositorioCustomizado {
 

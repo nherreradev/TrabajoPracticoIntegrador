@@ -17,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.core.interfaces.PreguntaServicio;
 import com.unlam.tpi.core.interfaces.RespuestaServicio;
+import com.unlam.tpi.core.modelo.Pregunta;
+import com.unlam.tpi.core.modelo.Respuesta;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
-import com.unlam.tpi.infraestructura.modelo.Pregunta;
-import com.unlam.tpi.infraestructura.modelo.Respuesta;
 import com.unlam.tpi.infraestructura.repositorio.RespuestaRepositorio;
 
 @Service

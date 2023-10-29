@@ -6,8 +6,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.unlam.tpi.core.modelo.Categoria;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
-import com.unlam.tpi.infraestructura.modelo.Categoria;
 
 public interface CategoriaServicio {
 
