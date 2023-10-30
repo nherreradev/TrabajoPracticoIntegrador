@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.unlam.tpi.core.interfaces.PortafolioSugerenciaServicio;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.infraestructura.helpers.TrustAllCertificates;
 
 @Service
@@ -23,42 +24,38 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 	}
 
 	@Override
-	public String obtenerRecomendacion(String tipoPerfil) {
+	public String obtenerRecomendacion(String tipoPerfil, String url_) {
 
 		StringBuilder response = null;
 
-		TrustAllCertificates.confiarEnCertificado();
-
 		try {
-		
-		String url = "https://localhost:7011/PortfolioRecomender/RecomendarPortafolio" + tipoPerfil; 
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>(HttpStatus.OK); // aplicación ASP.NET Core.
-		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-		connection.setRequestMethod("GET");
-		int responseCode = connection.getResponseCode();
-	
-		if (responseCode == HttpURLConnection.HTTP_OK) {
-			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String inputLine;
-			response = new StringBuilder();
+			TrustAllCertificates.confiarEnCertificado();
+			String url = url_ + tipoPerfil;
+			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+			connection.setRequestMethod("GET");
+			int responseCode = connection.getResponseCode();
 
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String inputLine;
+				response = new StringBuilder();
+
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				in.close();
+
 			}
-			in.close();
 
+			return response.toString();
 
-		} else {
-			System.out.println("Error en la solicitud. Código de respuesta: " + responseCode);
-		}
-
-		
-		
+		} catch (ServiceException se) {
+			throw se;
 		} catch (Exception e) {
-			// TODO: handle exception
+			throw new ServiceException("Error al consultar API .NET");
 		}
-		
-		return response.toString();
+
 	}
 
 }

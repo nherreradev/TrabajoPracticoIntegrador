@@ -4,6 +4,6 @@ import java.net.ProtocolException;
 
 public interface PortafolioSugerenciaServicio {
 	
-	public String obtenerRecomendacion(String tipoPerfil) throws ProtocolException;
+	public String obtenerRecomendacion(String tipoPerfil, String url) throws ProtocolException;
 
 }
