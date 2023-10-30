@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,12 +23,12 @@ public class PortafolioSugerenciaControladorImpl implements PortafolioSugerencia
 	PortafolioSugerenciaServicio portafolioSugerenciaServicio;
 
 	@Override
-	@GetMapping("/portafolio")
-	public ResponseEntity<String> obtenerRecomendacion() {
+	@GetMapping("/portafolio/{tipoPerfil}")
+	public ResponseEntity<String> obtenerRecomendacion(@PathVariable String tipoPerfil) {
 
 		String response = null;
 		try {
-			response = portafolioSugerenciaServicio.obtenerRecomendacion();
+			response = portafolioSugerenciaServicio.obtenerRecomendacion(tipoPerfil);
 		} catch (ProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

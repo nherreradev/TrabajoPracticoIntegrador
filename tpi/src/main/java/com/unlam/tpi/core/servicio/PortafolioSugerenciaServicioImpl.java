@@ -1,10 +1,8 @@
 package com.unlam.tpi.core.servicio;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.springframework.http.HttpStatus;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.unlam.tpi.core.interfaces.PortafolioSugerenciaServicio;
-import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.infraestructura.helpers.TrustAllCertificates;
 
 @Service
@@ -26,16 +23,15 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 	}
 
 	@Override
-	public String obtenerRecomendacion() {
+	public String obtenerRecomendacion(String tipoPerfil) {
 
 		StringBuilder response = null;
 
 		TrustAllCertificates.confiarEnCertificado();
 
 		try {
-			
 		
-		String url = "https://localhost:7011/PortfolioRecomender/RecomendarPortafolio"; 
+		String url = "https://localhost:7011/PortfolioRecomender/RecomendarPortafolio" + tipoPerfil; 
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(HttpStatus.OK); // aplicación ASP.NET Core.
 		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 		connection.setRequestMethod("GET");
