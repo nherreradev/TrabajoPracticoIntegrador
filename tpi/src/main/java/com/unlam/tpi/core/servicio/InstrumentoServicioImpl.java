@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.ServiceException;
 
 @Service
+@Transactional
 public class InstrumentoServicioImpl implements InstrumentoServicio {
 
 	@Autowired
@@ -111,5 +114,11 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 	@Override
 	public List<Instrumento> obtenerInstrumentosAlAzar() {
 		return instrumentoRepositorio.obtenerInstrumentosAlAzar();
+	}
+
+	@Override
+	public Instrumento obtenerInstrumentoPorID(Long coProductoID) {
+		return instrumentoRepositorio.obtenerInstrumentoPorID(coProductoID);
+		
 	}
 }
