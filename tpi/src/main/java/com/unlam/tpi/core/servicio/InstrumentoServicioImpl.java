@@ -83,12 +83,13 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 				BigDecimal variacion = instrumento.getVariacionPorcentual();
 
 				if (variacion.compareTo(new BigDecimal(-2)) >= 0 && variacion.compareTo(new BigDecimal(2)) <= 0) {
-	                instrumento.setCategoriaPerfil("Conservador");
-	            } else if (variacion.compareTo(new BigDecimal(-5)) >= 0 && variacion.compareTo(new BigDecimal(5)) <= 0) {
-	                instrumento.setCategoriaPerfil("Moderado");
-	            } else {
-	                instrumento.setCategoriaPerfil("Arriesgado");
-	            }
+					instrumento.setCategoriaPerfil("Conservador");
+				} else if (variacion.compareTo(new BigDecimal(-5)) >= 0
+						&& variacion.compareTo(new BigDecimal(5)) <= 0) {
+					instrumento.setCategoriaPerfil("Moderado");
+				} else {
+					instrumento.setCategoriaPerfil("Arriesgado");
+				}
 
 				Instrumento instrumentoBuscado = instrumentoRepositorio.encontrarPorSimbolo(instrumento.getSimbolo());
 
@@ -105,5 +106,10 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 		} catch (Exception e) {
 			throw new ServiceException("Error al persistir instrumentos");
 		}
+	}
+
+	@Override
+	public List<Instrumento> obtenerInstrumentosAlAzar() {
+		return instrumentoRepositorio.obtenerInstrumentosAlAzar();
 	}
 }
