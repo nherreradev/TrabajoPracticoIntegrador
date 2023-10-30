@@ -38,5 +38,13 @@ public class IAControladorImpl implements IAControlador {
 		String json = new Gson().toJson(instrumentosRecomendados);
 		return ResponseEntity.ok(json);
 	}
+	
+	@Override
+	@GetMapping("/portafolio/sugeridoFake")
+	public ResponseEntity<String> obtenerPortafolioSugeridoFake(String tipoPerfil) {
+		List<Instrumento> instrumentosRecomendados = iAServicio.obtenerPortafolioSugeridoFake(tipoPerfil);
+		String json = new Gson().toJson(instrumentosRecomendados);
+		return ResponseEntity.ok(json);
+	}
 
 }
