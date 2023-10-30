@@ -31,11 +31,13 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public Usuario ObtenerUsuarioPorEmail(String email) {
+		UsuarioDTO usuarioDto = null;
 		try{
 			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(email);
 			if (buscado == null) {
 				return null;
 			}else
+				usuarioDto = usuarioDto.entidadADTO(buscado);
 				return buscado;
 		}catch (Exception e){
 			e.printStackTrace();
