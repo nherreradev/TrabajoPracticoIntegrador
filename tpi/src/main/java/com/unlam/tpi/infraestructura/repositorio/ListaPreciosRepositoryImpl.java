@@ -1,19 +1,13 @@
 package com.unlam.tpi.infraestructura.repositorio;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.bson.Document;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.BasicQuery;
-import org.springframework.stereotype.Repository;
-
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.bson.Document;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.unlam.tpi.core.interfaces.ListaPreciosRepository;
 
 @Repository
 public class ListaPreciosRepositoryImpl implements ListaPreciosRepository{

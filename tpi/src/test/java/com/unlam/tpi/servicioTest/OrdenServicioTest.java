@@ -12,13 +12,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
+import com.unlam.tpi.core.interfaces.OrdenRepositorio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.servicio.OrdenServicioImpl;
 import com.unlam.tpi.delivery.dto.OrdenDTO;
-import com.unlam.tpi.infraestructura.repositorio.OrdenRepositorio;
 
 @ExtendWith(MockitoExtension.class)
 class OrdenServicioTest {

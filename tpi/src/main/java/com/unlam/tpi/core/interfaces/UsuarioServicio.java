@@ -4,8 +4,6 @@ import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
 
-import org.springframework.transaction.annotation.Transactional;
-
 public interface UsuarioServicio {
 
 	void GuardarUsuario(Usuario usuario) throws Exception;

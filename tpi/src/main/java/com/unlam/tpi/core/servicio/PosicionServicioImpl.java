@@ -12,6 +12,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.unlam.tpi.core.interfaces.PosicionRepositorio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.CargaCreditoConstantes;
 import com.unlam.tpi.core.modelo.Orden;
@@ -24,7 +25,6 @@ import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 import com.unlam.tpi.infraestructura.helpers.CalculosHabituales;
-import com.unlam.tpi.infraestructura.repositorio.PosicionRepositorio;
 
 @Service
 public class PosicionServicioImpl implements PosicionServicio {

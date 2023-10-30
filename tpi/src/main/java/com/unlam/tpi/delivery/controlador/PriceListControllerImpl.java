@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
+import com.unlam.tpi.core.interfaces.PriceListController;
 
 @RestController
 @RequestMapping("list")

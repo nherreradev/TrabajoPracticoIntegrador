@@ -1,4 +1,4 @@
-package com.unlam.tpi.delivery.controlador;
+package com.unlam.tpi.core.interfaces;
 
 import org.springframework.http.ResponseEntity;
 
