@@ -35,7 +35,7 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 		try {
 			
 		
-		String url = "https://localhost:7011/PortfolioRecomender"; 
+		String url = "https://localhost:7011/PortfolioRecomender/RecomendarPortafolio"; 
 		ResponseEntity<String> responseEntity = new ResponseEntity<String>(HttpStatus.OK); // aplicación ASP.NET Core.
 		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 		connection.setRequestMethod("GET");

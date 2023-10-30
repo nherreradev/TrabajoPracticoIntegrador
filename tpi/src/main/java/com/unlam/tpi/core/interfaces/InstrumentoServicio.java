@@ -13,4 +13,6 @@ public interface InstrumentoServicio {
 
 	List<Instrumento> obtenerInstrumentosAlAzar();
 
+	Instrumento obtenerInstrumentoPorID(Long coProductoID);
+
 }

@@ -9,5 +9,7 @@ public interface InstrumentoRepositorioCustomizado {
 	Instrumento encontrarPorSimbolo(String simbolo);
 	
 	List<Instrumento> obtenerInstrumentosAlAzar();
+	
+	Instrumento obtenerInstrumentoPorID(Long coProductoID);
 
 }
