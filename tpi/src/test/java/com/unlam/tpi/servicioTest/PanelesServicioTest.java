@@ -1,7 +1,6 @@
 package com.unlam.tpi.servicioTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -23,10 +22,10 @@ import org.springframework.web.client.RestTemplate;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PanelPrecios;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
+import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Posicion;
+import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.core.servicio.PanelesServicioImpl;
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
-import com.unlam.tpi.infraestructura.modelo.Posicion;
-import com.unlam.tpi.infraestructura.modelo.Puntas;
 
 @ExtendWith(MockitoExtension.class)
 class PanelesServicioTest {
@@ -39,10 +38,10 @@ class PanelesServicioTest {
 
 	@Mock
 	PanelPrecios panelPrecios;
-	
+
 	@Mock
 	InstrumentoServicio instrumentoServicio;
-	
+
 	@Mock
 	PosicionServicio posicionServicio;
 
@@ -110,11 +109,8 @@ class PanelesServicioTest {
 		doNothing().when(panelPrecios).agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 		panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 		when(posicionServicio.obtenerPosicionTotal()).thenReturn(listaPosicion);
-		try {
-			panelesServicio.getPanelDeAcciones();
-		} catch (Exception e) {
-			fail("Se arrojó una excepción inesperada: " + e.getMessage());
-		}
+		panelesServicio.getPanelDeAcciones();
+
 	}
 
 	@Test
@@ -147,6 +143,5 @@ class PanelesServicioTest {
 		assertEquals(1, instrumentoNuevo.getFlashVenta()); /* Precio venta subio (1) */
 
 	}
-	
 
 }

@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
-import com.unlam.tpi.infraestructura.modelo.Seccion;
+import com.unlam.tpi.core.modelo.Seccion;
+import com.unlam.tpi.core.modelo.ServiceException;
 
 public class SeccionDTO {
 

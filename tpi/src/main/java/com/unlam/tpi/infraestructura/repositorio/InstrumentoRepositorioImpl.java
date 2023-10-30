@@ -4,14 +4,19 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
-import com.unlam.tpi.infraestructura.modelo.Posicion;
+import org.springframework.stereotype.Repository;
 
+import com.unlam.tpi.core.interfaces.InstrumentoRepositorioCustomizado;
+import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Posicion;
+
+@Repository
 public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomizado {
 
 	@PersistenceContext
@@ -33,7 +38,61 @@ public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomi
 			List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
 
 			if (resultados.isEmpty()) {
-				return null; 
+				return null;
+			}
+
+			return resultados.get(0);
+
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+
+	@Override
+	public List<Instrumento> obtenerInstrumentosAlAzar() {
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
+			Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
+
+			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+
+			criteriaQuery.where(deletedPredicado);
+
+			TypedQuery<Instrumento> query = entityManager.createQuery(criteriaQuery);
+			query.setMaxResults(4);
+
+			List<Instrumento> resultados = query.getResultList();
+
+			if (resultados.isEmpty()) {
+				return null;
+			}
+
+			return resultados;
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public Instrumento obtenerInstrumentoPorID(Long coProductoID) {
+
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
+			Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
+
+			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+			Predicate oidPredicado = criteriaBuilder.equal(root.get("oid"), coProductoID);
+
+			criteriaQuery.where(deletedPredicado, oidPredicado);
+
+			List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
+
+			if (resultados.isEmpty()) {
+				return null;
 			}
 
 			return resultados.get(0);

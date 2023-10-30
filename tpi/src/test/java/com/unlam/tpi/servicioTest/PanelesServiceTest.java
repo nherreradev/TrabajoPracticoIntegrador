@@ -1,9 +1,6 @@
 package com.unlam.tpi.servicioTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.unlam.tpi.core.servicio.PanelesServicioImpl;
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
 
 @SpringBootTest
 public class PanelesServiceTest {

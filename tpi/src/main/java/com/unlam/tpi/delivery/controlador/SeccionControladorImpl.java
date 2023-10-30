@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.unlam.tpi.core.interfaces.SeccionControlador;
 import com.unlam.tpi.core.interfaces.SeccionServicio;
 import com.unlam.tpi.delivery.dto.SeccionDTO;
 

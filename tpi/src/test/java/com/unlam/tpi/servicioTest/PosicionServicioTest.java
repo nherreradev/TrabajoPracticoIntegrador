@@ -18,19 +18,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.unlam.tpi.core.interfaces.PosicionRepositorio;
+import com.unlam.tpi.core.modelo.CargaCreditoConstantes;
+import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.Orden;
+import com.unlam.tpi.core.modelo.OrdenConstantes;
+import com.unlam.tpi.core.modelo.Posicion;
+import com.unlam.tpi.core.modelo.PuedeOperarResultado;
+import com.unlam.tpi.core.modelo.Puntas;
+import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
+import com.unlam.tpi.core.modelo.ServiceException;
+import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 import com.unlam.tpi.core.servicio.PanelPreciosImpl;
 import com.unlam.tpi.core.servicio.PosicionServicioImpl;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
-import com.unlam.tpi.infraestructura.modelo.CargaCreditoConstantes;
-import com.unlam.tpi.infraestructura.modelo.Instrumento;
-import com.unlam.tpi.infraestructura.modelo.Orden;
-import com.unlam.tpi.infraestructura.modelo.OrdenConstantes;
-import com.unlam.tpi.infraestructura.modelo.Posicion;
-import com.unlam.tpi.infraestructura.modelo.PuedeOperarResultado;
-import com.unlam.tpi.infraestructura.modelo.Puntas;
-import com.unlam.tpi.infraestructura.modelo.RequestCargaDeDinero;
-import com.unlam.tpi.infraestructura.modelo.ValuacionTotalRespuesta;
-import com.unlam.tpi.infraestructura.repositorio.PosicionRepositorio;
 
 @ExtendWith(MockitoExtension.class)
 class PosicionServicioTest {

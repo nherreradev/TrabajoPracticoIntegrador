@@ -6,11 +6,11 @@ import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unlam.tpi.infraestructura.modelo.Orden;
-import com.unlam.tpi.infraestructura.modelo.Posicion;
-import com.unlam.tpi.infraestructura.modelo.PuedeOperarResultado;
-import com.unlam.tpi.infraestructura.modelo.RequestCargaDeDinero;
-import com.unlam.tpi.infraestructura.modelo.ValuacionTotalRespuesta;
+import com.unlam.tpi.core.modelo.Orden;
+import com.unlam.tpi.core.modelo.Posicion;
+import com.unlam.tpi.core.modelo.PuedeOperarResultado;
+import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
+import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 
 public interface PosicionServicio {
 

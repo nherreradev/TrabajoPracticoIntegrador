@@ -21,14 +21,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 
 import com.unlam.tpi.core.interfaces.PreguntaServicio;
+import com.unlam.tpi.core.interfaces.RespuestaRepositorio;
 import com.unlam.tpi.core.interfaces.RespuestaServicio;
+import com.unlam.tpi.core.modelo.Respuesta;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.servicio.RespuestaServicioImpl;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
 import com.unlam.tpi.delivery.dto.TipoComponente;
-import com.unlam.tpi.infraestructura.arquitectura.ServiceException;
-import com.unlam.tpi.infraestructura.modelo.Respuesta;
-import com.unlam.tpi.infraestructura.repositorio.RespuestaRepositorio;
 
 @ExtendWith(MockitoExtension.class)
 public class RespuestaServicioTest {
