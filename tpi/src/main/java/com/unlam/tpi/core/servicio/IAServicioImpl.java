@@ -83,13 +83,9 @@ public class IAServicioImpl implements IAServicio {
 
 		} catch (ServiceException se) {
 			throw se;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new ServiceException("Error al obtener portafolio sugerido", e);
 		}
 	}
-
-	/*
-	 * "[{\"coPurchaseProductID\":25,\"score\":0.99967784},{\"coPurchaseProductID\":26,\"score\":0.99967784},{\"coPurchaseProductID\":28,\"score\":0.99967784},{\"coPurchaseProductID\":30,\"score\":0.99967784},{\"coPurchaseProductID\":31,\"score\":0.99967784}]"
-	 */
 
 }
