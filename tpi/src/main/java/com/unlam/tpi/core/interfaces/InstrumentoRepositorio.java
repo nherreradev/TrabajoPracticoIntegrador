@@ -6,6 +6,4 @@ import com.unlam.tpi.core.modelo.Instrumento;
 
 public interface InstrumentoRepositorio extends JpaRepository<Instrumento, Long>, InstrumentoRepositorioCustomizado {
 
-	
-
 }

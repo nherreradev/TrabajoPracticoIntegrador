@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -37,7 +38,7 @@ public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomi
 			List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
 
 			if (resultados.isEmpty()) {
-				return null; 
+				return null;
 			}
 
 			return resultados.get(0);
@@ -46,6 +47,33 @@ public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomi
 			throw e;
 		}
 
+	}
+
+	@Override
+	public List<Instrumento> obtenerInstrumentosAlAzar() {
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
+			Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
+
+			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+
+			criteriaQuery.where(deletedPredicado);
+
+			TypedQuery<Instrumento> query = entityManager.createQuery(criteriaQuery);
+			query.setMaxResults(4);
+
+			List<Instrumento> resultados = query.getResultList();
+
+			if (resultados.isEmpty()) {
+				return null;
+			}
+
+			return resultados;
+
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 }
