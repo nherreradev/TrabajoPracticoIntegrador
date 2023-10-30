@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.core.interfaces.IARepositorio;
 import com.unlam.tpi.core.interfaces.IAServicio;
+import com.unlam.tpi.core.modelo.ServiceException;
 
 @Service
 public class IAServicioImpl implements IAServicio {
@@ -36,7 +37,7 @@ public class IAServicioImpl implements IAServicio {
 			}
 			fileWriter.close();
 		} catch (Exception e) {
-			// TODO: handle exception
+			throw new ServiceException("Error al generar archivos para la IA");
 		}
 	}
 
