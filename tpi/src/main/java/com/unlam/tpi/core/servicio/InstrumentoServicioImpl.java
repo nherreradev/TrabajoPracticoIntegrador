@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.ServiceException;
 
 @Service
+@Transactional
 public class InstrumentoServicioImpl implements InstrumentoServicio {
 
 	@Autowired
@@ -83,12 +86,13 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 				BigDecimal variacion = instrumento.getVariacionPorcentual();
 
 				if (variacion.compareTo(new BigDecimal(-2)) >= 0 && variacion.compareTo(new BigDecimal(2)) <= 0) {
-	                instrumento.setCategoriaPerfil("Conservador");
-	            } else if (variacion.compareTo(new BigDecimal(-5)) >= 0 && variacion.compareTo(new BigDecimal(5)) <= 0) {
-	                instrumento.setCategoriaPerfil("Moderado");
-	            } else {
-	                instrumento.setCategoriaPerfil("Arriesgado");
-	            }
+					instrumento.setCategoriaPerfil("Conservador");
+				} else if (variacion.compareTo(new BigDecimal(-5)) >= 0
+						&& variacion.compareTo(new BigDecimal(5)) <= 0) {
+					instrumento.setCategoriaPerfil("Moderado");
+				} else {
+					instrumento.setCategoriaPerfil("Arriesgado");
+				}
 
 				Instrumento instrumentoBuscado = instrumentoRepositorio.encontrarPorSimbolo(instrumento.getSimbolo());
 
@@ -105,5 +109,16 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 		} catch (Exception e) {
 			throw new ServiceException("Error al persistir instrumentos");
 		}
+	}
+
+	@Override
+	public List<Instrumento> obtenerInstrumentosAlAzar() {
+		return instrumentoRepositorio.obtenerInstrumentosAlAzar();
+	}
+
+	@Override
+	public Instrumento obtenerInstrumentoPorID(Long coProductoID) {
+		return instrumentoRepositorio.obtenerInstrumentoPorID(coProductoID);
+		
 	}
 }

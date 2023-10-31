@@ -1,10 +1,8 @@
 package com.unlam.tpi.core.servicio;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.springframework.http.HttpStatus;
@@ -26,43 +24,38 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 	}
 
 	@Override
-	public String obtenerRecomendacion() {
+	public String obtenerRecomendacion(String tipoPerfil, String url_) {
 
 		StringBuilder response = null;
 
-		TrustAllCertificates.confiarEnCertificado();
-
 		try {
-			
-		
-		String url = "https://localhost:7011/PortfolioRecomender"; 
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>(HttpStatus.OK); // aplicación ASP.NET Core.
-		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-		connection.setRequestMethod("GET");
-		int responseCode = connection.getResponseCode();
-	
-		if (responseCode == HttpURLConnection.HTTP_OK) {
-			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			String inputLine;
-			response = new StringBuilder();
+			TrustAllCertificates.confiarEnCertificado();
+			String url = url_ + tipoPerfil;
+			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+			connection.setRequestMethod("GET");
+			int responseCode = connection.getResponseCode();
 
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String inputLine;
+				response = new StringBuilder();
+
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				
+				in.close();
+
 			}
-			in.close();
 
+			return response.toString();
 
-		} else {
-			System.out.println("Error en la solicitud. Código de respuesta: " + responseCode);
-		}
-
-		
-		
+		} catch (ServiceException se) {
+			throw se;
 		} catch (Exception e) {
-			// TODO: handle exception
+			throw new ServiceException("Error al consultar API .NET");
 		}
-		
-		return response.toString();
+
 	}
 
 }
