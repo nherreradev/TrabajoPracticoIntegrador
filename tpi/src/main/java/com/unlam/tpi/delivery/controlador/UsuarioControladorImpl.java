@@ -1,5 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
+import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +26,11 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 
 	@Override
 	@PostMapping("/guardar-usuario")
-	public ResponseEntity<ResponseAPI> RegistrarUsuario(@RequestBody Usuario usuario) throws Exception {
-		if(this.usuarioServicio.ExisteUsuario(usuario))
+	public ResponseEntity<ResponseAPI> RegistrarUsuario(@RequestBody UsuarioRestDTO usuarioRegistro) throws Exception {
+		if(this.usuarioServicio.ExisteUsuario(usuarioRegistro.getEmail()))
 			return new ResponseEntity<>(response.RecursoYaExistente(), response.RecursoYaExistente().getStatus());
 			else
-				this.usuarioServicio.GuardarUsuario(usuario);
+				this.usuarioServicio.GuardarUsuario(usuarioRegistro);
 			return new ResponseEntity<>(response.MensajeDeExito(), response.MensajeDeExito().getStatus());
 	}
 
