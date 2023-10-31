@@ -53,7 +53,7 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
-			throw new ServiceException("Error al consultar API .NET");
+			throw new ServiceException("Error al consultar API .NET", e);
 		}
 
 	}
