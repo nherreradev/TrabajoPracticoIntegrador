@@ -1,5 +1,6 @@
 package com.unlam.tpi.core.interfaces;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
@@ -18,4 +19,5 @@ public interface UsuarioServicio {
 	ResponseAPI DarDeBajaUsuario(Usuario usuario);
 	public Usuario ObtenerUsuarioPorNombreUsuario(String nombreUsuario);
 	public UsuarioDTO ObtenerUsuarioDTOPorNombreUsuario(String nombreUsuario);
+	boolean UsuarioValidado(String token) throws JsonProcessingException;
 }

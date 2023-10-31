@@ -1,4 +1,4 @@
-package com.unlam.tpi.modelo.rest;
+package com.unlam.tpi.core.modelo;
 
 import java.time.LocalDate;
 

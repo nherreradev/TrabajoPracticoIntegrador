@@ -1,5 +1,7 @@
 package com.unlam.tpi.core.servicio;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.core.interfaces.MailServicio;
+import com.unlam.tpi.delivery.dto.JWTRestDTO;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,7 +93,25 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			throw new ServiceException("Error obteniendo el usuario: " + nombreUsuario);
 		}
 	}
-	 
+
+	@Override
+	public boolean UsuarioValidado(String token) throws JsonProcessingException {
+		JWTRestDTO res = this.autenticacionService.ObtenerClaimsToken(token);
+		try{
+			if (res != null) {
+				Usuario buscado = ObtenerUsuarioPorEmail(res.getEmailUsuario());
+				buscado.setCuentaConfirmada(Boolean.TRUE);
+				this.usuarioRepositorio.save(buscado);
+				return true;
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			System.out.println("ERROR AL ENCONTRAR USUARIO: " + e);
+			return false;
+		}
+		return false;
+	}
+
 	@Override
 	public ResponseAPI ModificarUsuario(Usuario usuario) {
 		try {

@@ -1,6 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
-import com.unlam.tpi.modelo.rest.FechaRequestHistorico;
+import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 import com.unlam.tpi.core.interfaces.HistoricoServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

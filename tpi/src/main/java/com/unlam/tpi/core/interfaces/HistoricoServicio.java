@@ -1,6 +1,6 @@
 package com.unlam.tpi.core.interfaces;
 
-import com.unlam.tpi.modelo.rest.FechaRequestHistorico;
+import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 
 public interface HistoricoServicio {
     String GetHistoricoMongo(String rango, String instrumento);

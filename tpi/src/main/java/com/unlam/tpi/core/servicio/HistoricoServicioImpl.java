@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.core.interfaces.HistoricoServicio;
-import com.unlam.tpi.modelo.rest.FechaRequestHistorico;
+import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 import com.unlam.tpi.infraestructura.repositorio.HistoricoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;

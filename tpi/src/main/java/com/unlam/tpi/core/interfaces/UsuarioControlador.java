@@ -1,5 +1,6 @@
 package com.unlam.tpi.core.interfaces;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -12,4 +13,5 @@ public interface UsuarioControlador {
 	public ResponseEntity<ResponseAPI> ModificarUsuario(Usuario usuario);
 	ResponseEntity<Usuario> ObtenerDatosUsuarioPorEmail(String email);
 	ResponseEntity<ResponseAPI> DarUsuarioDeBaja(Usuario usuario);
+	ResponseEntity<ResponseAPI> ActivarCuenta(String token) throws JsonProcessingException;
 }

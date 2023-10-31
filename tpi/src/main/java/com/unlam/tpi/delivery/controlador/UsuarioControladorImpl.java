@@ -1,5 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,16 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	public ResponseEntity<ResponseAPI> DarUsuarioDeBaja(@RequestBody Usuario usuario) {
 		ResponseAPI response = this.usuarioServicio.DarDeBajaUsuario(usuario);
 		return new ResponseEntity<>(response, response.getStatus());
+	}
+
+	@Override
+	@PostMapping("/activar-cuenta")
+	public ResponseEntity<ResponseAPI> ActivarCuenta(@RequestBody String token) throws JsonProcessingException {
+		if(!this.usuarioServicio.UsuarioValidado(token)){
+			return new ResponseEntity<>(response.MensajeDeErrorEnRequest(), response.MensajeDeErrorEnRequest().getStatus());
+		}
+		//TODO: VALIDAR SI YA ESTA ACTIVADA LA CUENTA
+		return null;
 	}
 
 }

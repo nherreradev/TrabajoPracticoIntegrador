@@ -23,8 +23,8 @@ public class MailServicioImpl implements MailServicio{
     public void PrepararMailYEnviar(UsuarioRestDTO usuarioRestDTO, String token) {
         String asunto = "Bienvenido a MercadoJR";
         String saludo = "Hola " + usuarioRestDTO.getNombre() + ",";
-        String mensaje = "¡Gracias por registrarte en MercadoJR! Para completar el proceso de registro, por favor haz clic en el siguiente enlace:";
-        String validacionUrl = "https://tuaplicacion.com/validar-cuenta?token=" + token;
+        String mensaje = "¡Gracias por registrarte en MercadoJR! Para completar el proceso de registro, active su cuenta con el siguiente token:";
+        String validacionUrl = "https://localhost:8080/api/activar-cuenta?token=" + token;
         String cuerpoMail = saludo + "\n\n" + mensaje + "\n" + validacionUrl;
         EnviarMail(usuarioRestDTO.getEmail(), asunto, cuerpoMail);
     }

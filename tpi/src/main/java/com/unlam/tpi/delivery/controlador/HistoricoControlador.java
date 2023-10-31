@@ -1,6 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
-import com.unlam.tpi.modelo.rest.FechaRequestHistorico;
+import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 import org.springframework.http.ResponseEntity;
 
 public interface HistoricoControlador {
