@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.unlam.tpi.core.interfaces.PanelesControlador;
 import com.unlam.tpi.core.interfaces.PanelesServicio;
 import com.unlam.tpi.core.interfaces.PlaneadorDeTareasServicio;
 import com.unlam.tpi.core.modelo.Instrumento;

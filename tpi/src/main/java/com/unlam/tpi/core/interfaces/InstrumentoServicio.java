@@ -11,4 +11,8 @@ public interface InstrumentoServicio {
 
 	void persistirInstrumentos(List<Instrumento> listaInstrumentos);
 
+	List<Instrumento> obtenerInstrumentosAlAzar();
+
+	Instrumento obtenerInstrumentoPorID(Long coProductoID);
+
 }

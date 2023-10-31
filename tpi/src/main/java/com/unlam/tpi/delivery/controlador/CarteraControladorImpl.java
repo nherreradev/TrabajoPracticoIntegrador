@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unlam.tpi.core.interfaces.CarteraControlador;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;

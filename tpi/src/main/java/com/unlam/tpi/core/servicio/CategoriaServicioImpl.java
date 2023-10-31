@@ -15,11 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.unlam.tpi.core.interfaces.CategoriaRepositorio;
 import com.unlam.tpi.core.interfaces.CategoriaServicio;
 import com.unlam.tpi.core.modelo.Categoria;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
-import com.unlam.tpi.infraestructura.repositorio.CategoriaRepositorio;
 
 @Service
 public class CategoriaServicioImpl implements CategoriaServicio {
