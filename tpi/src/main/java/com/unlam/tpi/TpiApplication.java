@@ -7,7 +7,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.unlam.tpi.dto.TipoPerfilInversor;
+import com.unlam.tpi.delivery.dto.TipoPerfilInversor;
 
 @SpringBootApplication
 public class TpiApplication {

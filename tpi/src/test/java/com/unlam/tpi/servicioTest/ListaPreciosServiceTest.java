@@ -1,7 +1,5 @@
 package com.unlam.tpi.servicioTest;
 
-import com.unlam.tpi.servicio.ListaPreciosServicioImpl;
-import com.unlam.tpi.servicio.PanelesServicioImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -10,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import com.unlam.tpi.core.servicio.ListaPreciosServicioImpl;
+import com.unlam.tpi.core.servicio.PanelesServicioImpl;
 
 import java.util.HashMap;
 import java.util.Map;
