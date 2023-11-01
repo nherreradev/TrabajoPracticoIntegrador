@@ -24,8 +24,7 @@ import com.unlam.tpi.delivery.dto.UsuarioDTO;
 public class PerfilInversorServicioTest {
 
     UsuarioDTO USUARIODTO = new UsuarioDTO("Usuario_Prueba", "Mercado", "Junior","Test@Test.com", "1234", Boolean.TRUE, Boolean.TRUE);
-    Usuario USUARIO = new Usuario ("Usuario_Prueba", "Mercado", "Junior","Test@Test.com", "1234", Boolean.TRUE, Boolean.TRUE);
-    
+    Usuario USUARIO = new Usuario ("Usuario_Prueba", "Mercado", "Junior","Test@Test.com", "1234", Boolean.TRUE, Boolean.TRUE, "");
     @InjectMocks
 	private PerfilInversorServicioImpl perfilInversorServicio;
 
