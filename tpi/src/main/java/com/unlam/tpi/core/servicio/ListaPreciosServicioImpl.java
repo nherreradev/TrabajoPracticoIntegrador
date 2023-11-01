@@ -8,10 +8,9 @@ import com.unlam.tpi.core.interfaces.ListaPreciosRepository;
 import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.time.Instant;
+import java.time.Period;
+import java.util.*;
 
 @Service
 public class ListaPreciosServicioImpl implements ListaPreciosServicio {
@@ -82,7 +81,7 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         List <String> res = null;
         Integer index = null;
         try{
-            res = this.listaPreciosRepository.GetPriceList(instrumento);
+            res = this.listaPreciosRepository.GetAllWithoutID(instrumento);
             index = DeterminarIndexRandomDelArray(res);
             resultadoFinalJSON = res.get(index);
         }catch (Exception e){
@@ -92,6 +91,7 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         }
         return resultadoFinalJSON;
     }
+
     private String GetMapKey(Map<String, Boolean> responseOK) { return responseOK.containsKey("acciones") ? "acciones" : "bonos"; }
     private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
     private Integer DeterminarIndexRandomDelArray(List<String> res) { return new Random().nextInt(res.size()); }

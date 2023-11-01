@@ -2,6 +2,7 @@ package com.unlam.tpi.core.interfaces;
 
 import org.springframework.http.ResponseEntity;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
