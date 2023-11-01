@@ -4,7 +4,7 @@ services:
   java-v1:
     restart: unless-stopped
     build: .
-    image: image-java-v1
+    #image: image-java-v1
     container_name: java-v1
     environment:
       - DATABASE_URL=jdbc:mysql://mysqldb:3306/grupo4?allowPublicKeyRetrieval=true
@@ -17,7 +17,7 @@ services:
     #  - mongodb
     networks:
       - nginx_default
-      - java-db
+      - tpi_java-db
   #mongodb:
   #  container_name: mongodb
   #  restart: unless-stopped
@@ -40,14 +40,14 @@ services:
        MYSQL_ROOT_PASSWORD: 123456
     volumes:
       - mysqldata:/var/lib/mysql
-      
+    
     networks:
       - nginx_default
-      - java-db
+      - tpi_java-db
 networks:
   nginx_default:
     external: true
-  java-db:
+  tpi_java-db:
     driver: bridge
 
 volumes:
