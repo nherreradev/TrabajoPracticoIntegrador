@@ -2,8 +2,6 @@ package com.unlam.tpi.delivery.controlador;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,12 +31,16 @@ public class IAControladorImpl implements IAControlador {
 
 	@Override
 	@GetMapping("/portafolio/sugerido")
-	public ResponseEntity<String> obtenerPortafolioSugerido(String tipoPerfil, String url) {
-		List<Instrumento> instrumentosRecomendados = iAServicio.obtenerPortafolioSugerido(tipoPerfil, url);
-		String json = new Gson().toJson(instrumentosRecomendados);
-		return ResponseEntity.ok(json);
+	public ResponseEntity<String> obtenerPortafolioSugerido(String tipoPerfil, String url, int idProducto) {
+		if (!tipoPerfil.equals("undefined")) {
+			List<Instrumento> instrumentosRecomendados = iAServicio.obtenerPortafolioSugerido(tipoPerfil, url, idProducto);
+			String json = new Gson().toJson(instrumentosRecomendados);
+			return ResponseEntity.ok(json);
+		} else {
+			return null;
+		}
 	}
-	
+
 	@Override
 	@GetMapping("/portafolio/sugeridoFake")
 	public ResponseEntity<String> obtenerPortafolioSugeridoFake(String tipoPerfil) {

@@ -1,21 +1,21 @@
 package com.unlam.tpi.core.servicio;
 
-import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.core.interfaces.MailServicio;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 
 @Service
 public class MailServicioImpl implements MailServicio{
-    private static String EMAIL_MERCADOJR = "grupo.4.tpi.unlam@gmail.com";
+   
+	private static String EMAIL_MERCADOJR = "grupo.4.tpi.unlam@gmail.com";
+   
     @Autowired
     AutenticacionService autenticacionService;
+    
     @Autowired
     private JavaMailSender emailSender;
 
