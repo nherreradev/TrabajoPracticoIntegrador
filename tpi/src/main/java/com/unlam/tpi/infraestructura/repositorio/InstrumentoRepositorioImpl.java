@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import com.unlam.tpi.core.interfaces.InstrumentoRepositorioCustomizado;
 import com.unlam.tpi.core.modelo.Instrumento;
-import com.unlam.tpi.core.modelo.Posicion;
 
 @Repository
 public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomizado {
@@ -86,6 +85,33 @@ public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomi
 
 			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 			Predicate oidPredicado = criteriaBuilder.equal(root.get("oid"), coProductoID);
+
+			criteriaQuery.where(deletedPredicado, oidPredicado);
+
+			List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
+
+			if (resultados.isEmpty()) {
+				return null;
+			}
+
+			return resultados.get(0);
+
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+
+	@Override
+	public Instrumento obtenerInstrumentoPorTipoPerfil(String tipoPerfil) {
+
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
+			Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
+
+			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+			Predicate oidPredicado = criteriaBuilder.equal(root.get("categoriaPerfil"), tipoPerfil);
 
 			criteriaQuery.where(deletedPredicado, oidPredicado);
 

@@ -11,5 +11,7 @@ public interface InstrumentoRepositorioCustomizado {
 	List<Instrumento> obtenerInstrumentosAlAzar();
 	
 	Instrumento obtenerInstrumentoPorID(Long coProductoID);
+	
+	Instrumento obtenerInstrumentoPorTipoPerfil(String tipoPerfil);
 
 }
