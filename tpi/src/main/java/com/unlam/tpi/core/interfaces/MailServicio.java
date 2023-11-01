@@ -1,8 +1,11 @@
 package com.unlam.tpi.core.interfaces;
 
-import com.unlam.tpi.core.modelo.Usuario;
+import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public interface MailServicio {
-    void PrepararMail(Usuario usuario);
+    void PrepararMailYEnviar(UsuarioRestDTO usuarioRestDTO, String token) throws NoSuchAlgorithmException, InvalidKeySpecException;
     void EnviarMail(String destinatario, String asunto, String CuerpoMail);
 }

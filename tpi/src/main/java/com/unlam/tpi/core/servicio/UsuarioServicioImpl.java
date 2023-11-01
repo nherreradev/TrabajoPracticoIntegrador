@@ -1,4 +1,8 @@
 package com.unlam.tpi.core.servicio;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.unlam.tpi.core.interfaces.MailServicio;
+import com.unlam.tpi.delivery.dto.JWTRestDTO;
+import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,33 +13,52 @@ import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
 @Service
 public class UsuarioServicioImpl implements UsuarioServicio {
 	ResponseAPI responseAPI = new ResponseAPI();
 	@Autowired
 	UsuarioRepositorio usuarioRepositorio;
-
+	@Autowired
+	AutenticacionService autenticacionService;
+	@Autowired
+	MailServicio mailServicio;
 	@Override
-	public void GuardarUsuario(Usuario usuario) throws Exception {
-		if(ExisteUsuario(usuario)) throw new Exception("Usuario ya existente");
+	public void GuardarUsuario(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		Usuario nuevo;
 		try {
-			usuario.setActivo(Boolean.TRUE);
-			this.usuarioRepositorio.save(usuario);
+			String token = this.autenticacionService.GenerarTokenValidacionCuenta(usuarioRestDTO);
+			nuevo = CrearUsuario(usuarioRestDTO, token);
+			this.usuarioRepositorio.save(nuevo);
+			this.mailServicio.PrepararMailYEnviar(usuarioRestDTO, token);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
+	private Usuario CrearUsuario(UsuarioRestDTO usuarioRestDTO, String token) {
+		Usuario usuario = usuarioRestDTO.UsuarioRest2UsuarioModel(usuarioRestDTO);
+		usuario.setTokenValidacion(token);
+		usuario.setCuentaConfirmada(Boolean.FALSE);
+		usuario.setActivo(Boolean.TRUE);
+		usuario.setPremium(Boolean.FALSE);
+		return usuario;
+	}
+
 	@Override
-	public Boolean ExisteUsuario(Usuario usuario) { return this.usuarioRepositorio.existsByEmail(usuario.getEmail()); }
+	public Boolean ExisteUsuario(String email) { return this.usuarioRepositorio.existsByEmail(email); }
 
 	@Override
 	public Usuario ObtenerUsuarioPorEmail(String email) {
+		UsuarioDTO usuarioDto = null;
 		try{
 			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(email);
 			if (buscado == null) {
 				return null;
 			}else
+				usuarioDto = usuarioDto.entidadADTO(buscado);
 				return buscado;
 		}catch (Exception e){
 			e.printStackTrace();
@@ -70,7 +93,25 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			throw new ServiceException("Error obteniendo el usuario: " + nombreUsuario);
 		}
 	}
-	 
+
+	@Override
+	public boolean UsuarioValidado(String token) throws JsonProcessingException {
+		JWTRestDTO res = this.autenticacionService.ObtenerClaimsToken(token);
+		try{
+			if (res != null) {
+				Usuario buscado = ObtenerUsuarioPorEmail(res.getEmailUsuario());
+				buscado.setCuentaConfirmada(Boolean.TRUE);
+				this.usuarioRepositorio.save(buscado);
+				return true;
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			System.out.println("ERROR AL ENCONTRAR USUARIO: " + e);
+			return false;
+		}
+		return false;
+	}
+
 	@Override
 	public ResponseAPI ModificarUsuario(Usuario usuario) {
 		try {
@@ -91,7 +132,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public ResponseAPI DarDeBajaUsuario(Usuario usuario)  {
-		if(!ExisteUsuario(usuario)) return responseAPI.MensajeDeErrorRecursoNoEncontrado();
+		if(!ExisteUsuario(usuario.getEmail())) return responseAPI.MensajeDeErrorRecursoNoEncontrado();
 		try{
 			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
 			if (buscado != null){
