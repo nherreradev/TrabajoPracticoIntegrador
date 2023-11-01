@@ -10,6 +10,6 @@ public interface IAServicio {
 
 	List<Instrumento> obtenerPortafolioSugeridoFake(String tipoPerfil);
 	
-	List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, String url);
+	List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, String url, int idProducto);
 
 }

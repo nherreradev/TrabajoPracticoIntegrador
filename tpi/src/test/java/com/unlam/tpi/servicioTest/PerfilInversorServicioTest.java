@@ -24,7 +24,7 @@ import com.unlam.tpi.delivery.dto.UsuarioDTO;
 public class PerfilInversorServicioTest {
 
     UsuarioDTO USUARIODTO = new UsuarioDTO("Usuario_Prueba", "Mercado", "Junior","Test@Test.com", "1234", Boolean.TRUE, Boolean.TRUE);
-    Usuario USUARIO = new Usuario ("Usuario_Prueba", "Mercado", "Junior","Test@Test.com", "1234", Boolean.TRUE, Boolean.TRUE);
+    //Usuario USUARIO = new Usuario ("Usuario_Prueba", "Mercado", "Junior","Test@Test.com", "1234", Boolean.TRUE, Boolean.TRUE);
     
     @InjectMocks
 	private PerfilInversorServicioImpl perfilInversorServicio;
@@ -42,7 +42,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(24);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
 		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
-	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
+	    //when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
@@ -55,7 +55,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(24);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
 		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
-	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
+	   // when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
@@ -68,7 +68,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(24);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
 		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
-	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
+	    //when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
@@ -95,7 +95,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(1);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
 		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
-	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
+	    //when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
