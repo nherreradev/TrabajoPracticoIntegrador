@@ -24,13 +24,13 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 	}
 
 	@Override
-	public String obtenerRecomendacion(String tipoPerfil, String url_) {
+	public String obtenerRecomendacion(String tipoPerfil, String url_, int idProducto) {
 
 		StringBuilder response = null;
 
 		try {
 			TrustAllCertificates.confiarEnCertificado();
-			String url = url_ + tipoPerfil;
+			String url = url_ + tipoPerfil + "?idProducto=" + idProducto;
 			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 			connection.setRequestMethod("GET");
 			int responseCode = connection.getResponseCode();
@@ -53,7 +53,7 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
-			throw new ServiceException("Error al consultar API .NET");
+			throw new ServiceException("Error al consultar API .NET", e);
 		}
 
 	}
