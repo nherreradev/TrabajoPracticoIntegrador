@@ -66,9 +66,11 @@ public class IAServicioImpl implements IAServicio {
 	public List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, String url) {
 		try {
 
+			Instrumento instrumentoPorPerfil = instrumentoServicio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);
+			
 			List<Instrumento> portafolioSugerido = new ArrayList<>();
 
-			String json = portafolioSugerenciaServicio.obtenerRecomendacion(tipoPerfil, url);
+			String json = portafolioSugerenciaServicio.obtenerRecomendacion(tipoPerfil, url, instrumentoPorPerfil.getOid().intValue());
 
 			JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
 
