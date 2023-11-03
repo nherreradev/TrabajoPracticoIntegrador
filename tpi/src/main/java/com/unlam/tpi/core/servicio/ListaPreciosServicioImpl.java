@@ -8,9 +8,10 @@ import com.unlam.tpi.core.interfaces.ListaPreciosRepository;
 import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 
 import java.net.URI;
-import java.time.Instant;
-import java.time.Period;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Service
 public class ListaPreciosServicioImpl implements ListaPreciosServicio {
@@ -79,7 +80,7 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
     @Override
     public String GetPriceListMongo(String instrumento) {
         String resultadoFinalJSON = null;
-        List <String> res = null;
+        List <String> res = null;;
         try{
             res = this.listaPreciosRepository.GetAllWithoutID(instrumento);
             if(INDEX < res.size()){

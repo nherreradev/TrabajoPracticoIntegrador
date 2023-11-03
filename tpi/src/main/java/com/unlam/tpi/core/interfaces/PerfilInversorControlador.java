@@ -28,4 +28,6 @@ public interface PerfilInversorControlador {
 	public void obtenerCertificado(String nombreUsuario, HttpServletRequest request, HttpServletResponse response)
 			throws Exception;
 
+	public ResponseEntity<PerfilInversorDTO> listarPorUsuario(Long id);
+
 }

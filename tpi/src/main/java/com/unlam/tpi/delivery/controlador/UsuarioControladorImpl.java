@@ -3,6 +3,7 @@ package com.unlam.tpi.delivery.controlador;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +20,15 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	@Autowired
 	private UsuarioServicio usuarioServicio;
 
+	@Value("${dolar.prediccion.url}")
+	private String url_python;
+	@Value("${spring.datasource.url}")
+	private String url_bd;
+	
 	@Override
 	@GetMapping("/index")
 	public String bienvenido() {
-		return "¡Bienvenido al índice de la API! 28/10 14:36 test deploy ....andando";
+		return "¡Bienvenido al índice de la API! 28/10 14:36 test deploy ....a "+url_python+"\n"+url_bd;
 	}
 
 	@Override
