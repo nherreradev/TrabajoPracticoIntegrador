@@ -1,6 +1,7 @@
 package com.unlam.tpi.core.servicio;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,16 @@ public class MailServicioImpl implements MailServicio{
     
     @Autowired
     private JavaMailSender emailSender;
+    
+	@Value("${mercado.jr.url}")
+    private String urlMercadoJr; 
 
     @Override
     public void PrepararMailYEnviar(UsuarioRestDTO usuarioRestDTO, String token) {
         String asunto = "Bienvenido a MercadoJR";
         String saludo = "Hola " + usuarioRestDTO.getNombre() + ",";
         String mensaje = "¡Gracias por registrarte en MercadoJR! Para completar el proceso de registro, active su cuenta con el siguiente token:";
-        String validacionUrl = "https://localhost:8080/api/activar-cuenta?token=" + token;
+        String validacionUrl = urlMercadoJr+"activar-cuenta?token=" + token;
         String cuerpoMail = saludo + "\n\n" + mensaje + "\n" + validacionUrl;
         EnviarMail(usuarioRestDTO.getEmail(), asunto, cuerpoMail);
     }
