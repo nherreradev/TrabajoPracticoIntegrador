@@ -39,4 +39,6 @@ public interface PerfilInversorServicio {
 	@Transactional
 	public PerfilInversor guardar(PerfilInversor perfilInversor);
 
+	public PerfilInversorDTO listarporUsuario(Long id);
+
 }
