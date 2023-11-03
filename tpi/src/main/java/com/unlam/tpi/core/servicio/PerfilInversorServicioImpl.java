@@ -306,9 +306,12 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 
 	@Override
 	public PerfilInversorDTO listarporUsuario(Long id) {
-		// TODO Auto-generated method stub
 		try {
-			return PerfilInversorDTO.entidadADTO(getPerfilInversorRepositorio().findByUsuario_Oid(id));
+			PerfilInversor perfilInversor = getPerfilInversorRepositorio().findByUsuario_Oid(id);
+			if (perfilInversor == null) {
+				return null;
+			}
+			return PerfilInversorDTO.entidadADTO(perfilInversor);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
