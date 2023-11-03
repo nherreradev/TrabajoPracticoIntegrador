@@ -31,9 +31,9 @@ public class IAControladorImpl implements IAControlador {
 
 	@Override
 	@GetMapping("/portafolio/sugerido")
-	public ResponseEntity<String> obtenerPortafolioSugerido(String tipoPerfil, String url, int idProducto) {
+	public ResponseEntity<String> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) {
 		if (!tipoPerfil.equals("undefined")) {
-			List<Instrumento> instrumentosRecomendados = iAServicio.obtenerPortafolioSugerido(tipoPerfil, url, idProducto);
+			List<Instrumento> instrumentosRecomendados = iAServicio.obtenerPortafolioSugerido(tipoPerfil, idProducto);
 			String json = new Gson().toJson(instrumentosRecomendados);
 			return ResponseEntity.ok(json);
 		} else {

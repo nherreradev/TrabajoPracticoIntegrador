@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ import com.unlam.tpi.infraestructura.helpers.TrustAllCertificates;
 
 @Service
 public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaServicio {
+	
+	@Value("${net.portafolio.url}")
+	private String url_net;
 
 	private final RestTemplate restTemplate;
 
@@ -24,13 +28,13 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 	}
 
 	@Override
-	public String obtenerRecomendacion(String tipoPerfil, String url_, int idProducto) {
+	public String obtenerRecomendacion(String tipoPerfil, int idProducto) {
 
 		StringBuilder response = null;
 
 		try {
 			TrustAllCertificates.confiarEnCertificado();
-			String url = url_ + tipoPerfil + "?idProducto=" + idProducto;
+			String url = url_net + tipoPerfil + "?idProducto=" + idProducto;
 			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 			connection.setRequestMethod("GET");
 			int responseCode = connection.getResponseCode();
