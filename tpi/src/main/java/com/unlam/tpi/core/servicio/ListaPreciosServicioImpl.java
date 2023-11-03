@@ -8,13 +8,13 @@ import com.unlam.tpi.core.interfaces.ListaPreciosRepository;
 import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.time.Instant;
+import java.time.Period;
+import java.util.*;
 
 @Service
 public class ListaPreciosServicioImpl implements ListaPreciosServicio {
+    Integer INDEX = 0;
     @Autowired
     private ListaPreciosRepository listaPreciosRepository;
     private final RestTemplate restTemplate;
@@ -80,11 +80,15 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
     public String GetPriceListMongo(String instrumento) {
         String resultadoFinalJSON = null;
         List <String> res = null;
-        Integer index = null;
         try{
-            res = this.listaPreciosRepository.GetPriceList(instrumento);
-            index = DeterminarIndexRandomDelArray(res);
-            resultadoFinalJSON = res.get(index);
+            res = this.listaPreciosRepository.GetAllWithoutID(instrumento);
+            if(INDEX < res.size()){
+                resultadoFinalJSON = res.get(INDEX);
+                INDEX++;
+                System.out.println(INDEX);
+            }else{
+                INDEX = 0;
+            }
         }catch (Exception e){
             System.out.println("Error al obtener información de mongo"+ e);
             e.printStackTrace();
@@ -92,8 +96,9 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         }
         return resultadoFinalJSON;
     }
+
     private String GetMapKey(Map<String, Boolean> responseOK) { return responseOK.containsKey("acciones") ? "acciones" : "bonos"; }
     private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
-    private Integer DeterminarIndexRandomDelArray(List<String> res) { return new Random().nextInt(res.size()); }
+    private Integer DeterminarIndexRandomDelArray(List<String> res) { return 0; }
 
 }
