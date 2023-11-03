@@ -304,4 +304,16 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 		this.usuarioServicio = usuarioServicio;
 	}
 
+	@Override
+	public PerfilInversorDTO listarporUsuario(Long id) {
+		// TODO Auto-generated method stub
+		try {
+			return PerfilInversorDTO.entidadADTO(getPerfilInversorRepositorio().findByUsuario_Oid(id));
+		} catch (ServiceException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new ServiceException("Error al listar Perfil inversor.", e);
+		}
+	}
+
 }
