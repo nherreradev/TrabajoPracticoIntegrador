@@ -38,9 +38,12 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			throw e;
 		}
 	}
+	
+	// TODO agregar nickname
 	private Usuario CrearUsuario(UsuarioRestDTO usuarioRestDTO, String token) {
 		Usuario usuario = usuarioRestDTO.UsuarioRest2UsuarioModel(usuarioRestDTO);
 		usuario.setTokenValidacion(token);
+		//usuario.setNombreUsuario(usuario.g);
 		usuario.setCuentaConfirmada(Boolean.FALSE);
 		usuario.setActivo(Boolean.TRUE);
 		usuario.setPremium(Boolean.FALSE);
