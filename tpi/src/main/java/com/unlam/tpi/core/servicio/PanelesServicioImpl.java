@@ -75,7 +75,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
-			throw new ServiceException("Error al obtener panel de acciones");
+			throw new ServiceException("Error al obtener panel de acciones", e);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
-			throw new ServiceException("Error al obtener panel de bonos");
+			throw new ServiceException("Error al obtener panel de bonos", e);
 		}
 	}
 
