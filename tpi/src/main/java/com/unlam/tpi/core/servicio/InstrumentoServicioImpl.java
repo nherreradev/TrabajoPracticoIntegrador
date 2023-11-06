@@ -91,7 +91,7 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 						&& variacion.compareTo(new BigDecimal(5)) <= 0) {
 					instrumento.setCategoriaPerfil("Moderado");
 				} else {
-					instrumento.setCategoriaPerfil("Arriesgado");
+					instrumento.setCategoriaPerfil("Agresivo");
 				}
 
 				Instrumento instrumentoBuscado = instrumentoRepositorio.encontrarPorSimbolo(instrumento.getSimbolo());
@@ -119,6 +119,12 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 	@Override
 	public Instrumento obtenerInstrumentoPorID(Long coProductoID) {
 		return instrumentoRepositorio.obtenerInstrumentoPorID(coProductoID);
+		
+	}
+
+	@Override
+	public Instrumento obtenerInstrumentoPorTipoPerfil(String tipoPerfil) {
+		return instrumentoRepositorio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);
 		
 	}
 }

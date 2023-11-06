@@ -42,7 +42,7 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 	}
 
 	@Override
-	public List<Posicion> getTitulosDisponiblesPorSimbolo(String simboloInstrumento) {
+	public List<Posicion> obtenerTodosLosMovimientosAsociadosAUnSimbolo(String simboloInstrumento) {
 
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -76,6 +76,25 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 			return entityManager.createQuery(criteriaQuery).getSingleResult();
 		} catch (NoResultException nre) {
 			return null;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<Posicion> obtenerTodosLosTitulos() {
+
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
+			Root<Posicion> root = criteriaQuery.from(Posicion.class);
+
+			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+			Predicate noEsEfectivoPredicado = criteriaBuilder.equal(root.get("esEfectivo"), false);
+
+			criteriaQuery.where(deletedPredicado, noEsEfectivoPredicado);
+
+			return entityManager.createQuery(criteriaQuery).getResultList();
 		} catch (Exception e) {
 			throw e;
 		}

@@ -63,12 +63,21 @@ public class IAServicioImpl implements IAServicio {
 	}
 
 	@Override
-	public List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil) {
+	public List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) {
 		try {
+
+			int idProductoAEnviar = 0;
+
+			if (idProducto == 0) {
+				Instrumento instrumentoPorPerfil = instrumentoServicio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);
+				idProductoAEnviar = instrumentoPorPerfil.getOid().intValue();
+			} else {
+				idProductoAEnviar = idProducto;
+			}
 
 			List<Instrumento> portafolioSugerido = new ArrayList<>();
 
-			String json = portafolioSugerenciaServicio.obtenerRecomendacion(tipoPerfil);
+			String json = portafolioSugerenciaServicio.obtenerRecomendacion(tipoPerfil, idProductoAEnviar);
 
 			JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
 

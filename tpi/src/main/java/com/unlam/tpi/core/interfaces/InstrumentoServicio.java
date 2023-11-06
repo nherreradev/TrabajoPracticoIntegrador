@@ -15,4 +15,6 @@ public interface InstrumentoServicio {
 
 	Instrumento obtenerInstrumentoPorID(Long coProductoID);
 
+	Instrumento obtenerInstrumentoPorTipoPerfil(String tipoPerfil);
+
 }

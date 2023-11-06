@@ -19,7 +19,7 @@ import com.unlam.tpi.core.interfaces.PortafolioSugerenciaServicio;
 @RequestMapping("/recomendacion")
 public class PortafolioSugerenciaControladorImpl implements PortafolioSugerenciaControlador {
 
-	@Autowired
+	/*@Autowired
 	PortafolioSugerenciaServicio portafolioSugerenciaServicio;
 
 	@Override
@@ -35,6 +35,6 @@ public class PortafolioSugerenciaControladorImpl implements PortafolioSugerencia
 		}
 		String json = new Gson().toJson(response);
 		return ResponseEntity.ok(json);
-	}
+	}*/
 
 }
