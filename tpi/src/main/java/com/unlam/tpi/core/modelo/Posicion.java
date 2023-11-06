@@ -69,9 +69,12 @@ public class Posicion extends ObjetoPersistente {
 
 	@Column(name = "SIMBOLO_INSTRUMENTO")
 	private String simboloInstrumento;
-	
+
 	@Column(name = "CONCEPTO")
 	private String concepto;
+
+	@Column(name = "PRECIO_ORIGINAL")
+	private BigDecimal precioAlMomentoDeCompra;
 
 	public Long getUsuarioOid() {
 		return usuarioOid;
@@ -160,6 +163,13 @@ public class Posicion extends ObjetoPersistente {
 	public void setConcepto(String concepto) {
 		this.concepto = concepto;
 	}
-	
-	
+
+	public BigDecimal getPrecioAlMomentoDeCompra() {
+		return precioAlMomentoDeCompra;
+	}
+
+	public void setPrecioAlMomentoDeCompra(BigDecimal precioAlMomentoDeCompra) {
+		this.precioAlMomentoDeCompra = precioAlMomentoDeCompra;
+	}
+
 }

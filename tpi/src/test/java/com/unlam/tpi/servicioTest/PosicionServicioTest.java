@@ -145,7 +145,7 @@ class PosicionServicioTest {
 
 		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
 
-		when(posicionRepositorio.getTitulosDisponiblesPorSimbolo(orden.getSimboloInstrumento()))
+		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento()))
 				.thenReturn(listaPosiciones);
 
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);
@@ -184,7 +184,7 @@ class PosicionServicioTest {
 
 		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
 
-		when(posicionRepositorio.getTitulosDisponiblesPorSimbolo(orden.getSimboloInstrumento()))
+		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento()))
 				.thenReturn(listaPosiciones);
 
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);

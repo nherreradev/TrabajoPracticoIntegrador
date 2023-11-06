@@ -4,10 +4,15 @@ import static com.unlam.tpi.core.modelo.OrdenConstantes.COMPRA;
 import static com.unlam.tpi.infraestructura.helpers.CalculosHabituales.esMasGrandeQue;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +27,7 @@ import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
+import com.unlam.tpi.core.modelo.ResponsePorcentaje;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 import com.unlam.tpi.infraestructura.helpers.CalculosHabituales;
@@ -77,7 +83,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			}
 		} else {
 			List<Posicion> titulosEnPosicionLista = posicionRepositorio
-					.getTitulosDisponiblesPorSimbolo(orden.getSimboloInstrumento());
+					.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento());
 			completarPrecioDeLaOrden(orden);
 			Map<String, BigDecimal> instrumentosPorCantidad = obtenerCantidadPorInstrumento(titulosEnPosicionLista);
 			BigDecimal cantidadTitulosAVender = orden.getCantidad();
@@ -166,6 +172,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		posicion.setFecha_posicion(LocalDate.now());
 		posicion.setMonedaOid(orden.getMonedaOid());
 		posicion.setPrecio(orden.getPrecio());
+		posicion.setPrecioAlMomentoDeCompra(orden.getPrecio());
 		posicion.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
 		posicion.setSimboloInstrumento(orden.getSimboloInstrumento());
 	}
@@ -267,4 +274,88 @@ public class PosicionServicioImpl implements PosicionServicio {
 		return totalMonedas;
 	}
 
+	@Override
+	public Map<String, ResponsePorcentaje> calcularPorcentajeGananciaPerdida(String token) {
+		/*
+		 * Deberia traerme Cantidad y precio original de compra por instrumento recibido
+		 * por usuario
+		 */
+		Map<String, ResponsePorcentaje> responseMapa = new HashMap<>();
+
+		List<ResponsePorcentaje> response = new ArrayList<>();
+
+		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos();
+
+		List<Posicion> posicionEnCartera = obtenerSoloPosicionesEnCartera(posicion);
+
+		if (posicionEnCartera != null && !posicionEnCartera.isEmpty()) {
+
+			String simboloActual = null;
+			BigDecimal costoTotalDeLasCompras = new BigDecimal(0);
+			BigDecimal precioActualDelInstrumento = new BigDecimal(100); // pendiente de traer del panel
+			BigDecimal cantidadTotalDeInstrumentosQueTengo = new BigDecimal(0);
+			BigDecimal valorActualDeLaInversion = new BigDecimal(0);
+			BigDecimal gananciaTotalOPerdidaMonto = new BigDecimal(0);
+			BigDecimal gananciaTotalOPerdidaPorcentaje = new BigDecimal(0);
+
+			/* Calcular el total gastado basandome en el precio original */
+
+			for (Posicion posicion2 : posicionEnCartera) {
+
+				String simbolo = posicion2.getSimboloInstrumento();
+
+				if (simboloActual == null) {
+					simboloActual = simbolo;
+				}
+
+				ResponsePorcentaje responsePorcentaje = new ResponsePorcentaje();
+
+				costoTotalDeLasCompras = costoTotalDeLasCompras
+						.add(posicion2.getPrecioAlMomentoDeCompra().multiply(posicion2.getCantidad()));
+				cantidadTotalDeInstrumentosQueTengo = cantidadTotalDeInstrumentosQueTengo.add(posicion2.getCantidad());
+
+				valorActualDeLaInversion = cantidadTotalDeInstrumentosQueTengo.multiply(precioActualDelInstrumento);
+
+				gananciaTotalOPerdidaMonto = valorActualDeLaInversion.subtract(costoTotalDeLasCompras);
+
+				gananciaTotalOPerdidaPorcentaje = (gananciaTotalOPerdidaMonto.divide(costoTotalDeLasCompras, 2,
+						RoundingMode.HALF_UP)).multiply(new BigDecimal(100));
+
+				responsePorcentaje.setSimbolo(posicion2.getSimboloInstrumento());
+				responsePorcentaje.setTotalDineroGeneral(gananciaTotalOPerdidaMonto);
+				responsePorcentaje.setTotalPorcentajeGeneral(gananciaTotalOPerdidaPorcentaje);
+				responsePorcentaje.setSimbolo(posicion2.getSimboloInstrumento());
+
+				if (responseMapa.containsKey(posicion2.getSimboloInstrumento())) {
+					responseMapa.remove(posicion2.getSimboloInstrumento());
+					responseMapa.put(posicion2.getSimboloInstrumento(), responsePorcentaje);
+				} else {
+					responseMapa.put(posicion2.getSimboloInstrumento(), responsePorcentaje);
+				}
+			}
+		}
+
+		return responseMapa;
+
+	}
+
+	private List<Posicion> obtenerSoloPosicionesEnCartera(List<Posicion> todasLasPosiciones) {
+
+		Map<String, BigDecimal> cantidadesPorSimbolo = new HashMap<>();
+
+		for (Posicion posicion2 : todasLasPosiciones) {
+			String simbolo = posicion2.getSimboloInstrumento();
+			BigDecimal cantidad = posicion2.getCantidad();
+
+			BigDecimal cantidadAcumulada = cantidadesPorSimbolo.getOrDefault(simbolo, BigDecimal.ZERO);
+			cantidadAcumulada = cantidadAcumulada.add(cantidad);
+			cantidadesPorSimbolo.put(simbolo, cantidadAcumulada);
+		}
+
+		List<Posicion> posicionesConCantidadesPositivas = todasLasPosiciones.stream().filter(
+				posicion -> cantidadesPorSimbolo.get(posicion.getSimboloInstrumento()).compareTo(BigDecimal.ZERO) > 0)
+				.collect(Collectors.toList());
+
+		return posicionesConCantidadesPositivas;
+	}
 }
