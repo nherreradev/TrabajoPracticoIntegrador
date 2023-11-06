@@ -1,6 +1,7 @@
 package com.unlam.tpi.core.modelo;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ResponsePorcentaje {
@@ -11,6 +12,7 @@ public class ResponsePorcentaje {
 	BigDecimal totalDineroGeneral;
 	BigDecimal totalPorcentajeGeneral;
 	BigDecimal totalValorizadoGeneral;
+	LocalDate fecha;
 
 	public List<ResponsePorcentaje> getInstrumento() {
 		return instrumento;
@@ -50,6 +52,14 @@ public class ResponsePorcentaje {
 
 	public void setTotalValorizadoGeneral(BigDecimal totalValorizadoGeneral) {
 		this.totalValorizadoGeneral = totalValorizadoGeneral;
+	}
+
+	public LocalDate getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
 	}
 
 }

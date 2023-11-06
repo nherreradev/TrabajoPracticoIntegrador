@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -280,9 +279,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		 * Deberia traerme Cantidad y precio original de compra por instrumento recibido
 		 * por usuario
 		 */
-		Map<String, ResponsePorcentaje> responseMapa = new HashMap<>();
-
-		List<ResponsePorcentaje> response = new ArrayList<>();
+		Map<String, ResponsePorcentaje> responseMapaDeTotales = new HashMap<>();
 
 		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos();
 
@@ -292,7 +289,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 			String simboloActual = null;
 			BigDecimal costoTotalDeLasCompras = new BigDecimal(0);
-			BigDecimal precioActualDelInstrumento = new BigDecimal(100); // pendiente de traer del panel
+			BigDecimal precioActualDelInstrumento = new BigDecimal(1000); // pendiente de traer del panel
 			BigDecimal cantidadTotalDeInstrumentosQueTengo = new BigDecimal(0);
 			BigDecimal valorActualDeLaInversion = new BigDecimal(0);
 			BigDecimal gananciaTotalOPerdidaMonto = new BigDecimal(0);
@@ -326,16 +323,33 @@ public class PosicionServicioImpl implements PosicionServicio {
 				responsePorcentaje.setTotalPorcentajeGeneral(gananciaTotalOPerdidaPorcentaje);
 				responsePorcentaje.setSimbolo(posicion2.getSimboloInstrumento());
 
-				if (responseMapa.containsKey(posicion2.getSimboloInstrumento())) {
-					responseMapa.remove(posicion2.getSimboloInstrumento());
-					responseMapa.put(posicion2.getSimboloInstrumento(), responsePorcentaje);
+				String key = posicion2.getSimboloInstrumento() + "+" + posicion2.getFecha_posicion();
+
+				if (responseMapaDeTotales.containsKey(key)) {
+					ResponsePorcentaje responseMap = responseMapaDeTotales.get(key);
+					
+					responseMap.setTotalDineroGeneral(responseMap.getTotalDineroGeneral().add(gananciaTotalOPerdidaMonto));
+					responseMap.setTotalPorcentajeGeneral(responseMap.getTotalPorcentajeGeneral().add(gananciaTotalOPerdidaPorcentaje));
+					responseMapaDeTotales.put(key, responseMap);
+					
+					costoTotalDeLasCompras = BigDecimal.ZERO;
+					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
+					valorActualDeLaInversion = BigDecimal.ZERO;
+					gananciaTotalOPerdidaMonto = BigDecimal.ZERO;
+					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
+					
 				} else {
-					responseMapa.put(posicion2.getSimboloInstrumento(), responsePorcentaje);
+					responseMapaDeTotales.put(key, responsePorcentaje);
+					costoTotalDeLasCompras = BigDecimal.ZERO;
+					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
+					valorActualDeLaInversion = BigDecimal.ZERO;
+					gananciaTotalOPerdidaMonto = BigDecimal.ZERO;
+					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
 				}
 			}
 		}
 
-		return responseMapa;
+		return responseMapaDeTotales;
 
 	}
 
@@ -354,6 +368,8 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 		List<Posicion> posicionesConCantidadesPositivas = todasLasPosiciones.stream().filter(
 				posicion -> cantidadesPorSimbolo.get(posicion.getSimboloInstrumento()).compareTo(BigDecimal.ZERO) > 0)
+				.sorted(Comparator.comparing(Posicion::getFecha_posicion)
+						.thenComparing(Posicion::getSimboloInstrumento))
 				.collect(Collectors.toList());
 
 		return posicionesConCantidadesPositivas;
