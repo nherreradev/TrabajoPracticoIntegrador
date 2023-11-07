@@ -1,6 +1,5 @@
 package com.unlam.tpi.delivery.controlador;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.interfaces.RendimientoControlador;
 import com.unlam.tpi.core.modelo.RequestPorcentaje;
-import com.unlam.tpi.core.modelo.ResponsePorcentaje;
+import com.unlam.tpi.core.modelo.ResponsePorcentajeDiario;
+import com.unlam.tpi.core.modelo.ResponseTotalPorInstrumentoYPorDia;
 
 @CrossOrigin
 @RestController
@@ -26,9 +26,9 @@ public class RendimientoControladorImpl implements RendimientoControlador {
 
 	@Override
 	@PostMapping("/calcular/porcentaje")
-	public ResponseEntity<Map<String, ResponsePorcentaje>> calcularPorcentajeGananciaPerdidaDeTodosLosInstrumentosEnCartera(
+	public ResponseEntity<ResponseTotalPorInstrumentoYPorDia> calcularPorcentajeGananciaPerdidaDeTodosLosInstrumentosEnCartera(
 			@RequestBody RequestPorcentaje request) {
-		Map<String, ResponsePorcentaje> responsePorcentaje = posicionServicio
+		ResponseTotalPorInstrumentoYPorDia responsePorcentaje = posicionServicio
 				.calcularPorcentajeGananciaPerdida(request.getToken());
 		return ResponseEntity.ok(responsePorcentaje);
 	}
