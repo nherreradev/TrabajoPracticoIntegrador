@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.unlam.tpi.core.interfaces.HistoricoDeGananciaPerdidaDiariaServicio;
 import com.unlam.tpi.core.interfaces.PosicionRepositorio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.CargaCreditoConstantes;
+import com.unlam.tpi.core.modelo.HistoricoDeGananciaPerdidaDiaria;
 import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.OrdenConstantes;
 import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
@@ -38,6 +40,9 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	@Autowired
 	PosicionRepositorio posicionRepositorio;
+
+	@Autowired
+	HistoricoDeGananciaPerdidaDiariaServicio historicoDeGananciaPerdidaDiariaServicio;
 
 	@Override
 	public ValuacionTotalRespuesta getValuacionTotal() {
@@ -284,9 +289,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 		ResponseTotalPorInstrumentoYPorDia ResponseTotalPorInstrumentoYPorDia = new ResponseTotalPorInstrumentoYPorDia();
 
-		List<Map<String, ResponsePorcentajeDiario>> listaDeMapas = new ArrayList<>();
-
-		Map<String, ResponsePorcentajeDiario> gananciaInstrumentosTotalesPorDia = new HashMap<>();
+		Map<String, ResponsePorcentajeDiario> instrumentosTotalesPorDia = new HashMap<>();
 
 		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos();
 
@@ -296,7 +299,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 			String simboloActual = null;
 			BigDecimal costoTotalDeLasCompras = new BigDecimal(0);
-			BigDecimal precioActualDelInstrumento = new BigDecimal(1000); // pendiente de traer del panel
+			BigDecimal precioActualDelInstrumento = new BigDecimal(2000); // pendiente de traer del panel
 			BigDecimal cantidadTotalDeInstrumentosQueTengo = new BigDecimal(0);
 			BigDecimal valorActualDeLaInversion = new BigDecimal(0);
 			BigDecimal gananciaTotalOPerdidaMonto = new BigDecimal(0);
@@ -334,15 +337,15 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 				String key = posicion2.getSimboloInstrumento() + "+" + posicion2.getFecha_posicion();
 
-				if (gananciaInstrumentosTotalesPorDia.containsKey(key)) {
-					ResponsePorcentajeDiario responseMap = gananciaInstrumentosTotalesPorDia.get(key);
+				if (instrumentosTotalesPorDia.containsKey(key)) {
+					ResponsePorcentajeDiario responseMap = instrumentosTotalesPorDia.get(key);
 
 					responseMap.setTotalGananciaDelDia(
 							responseMap.getTotalGananciaDelDia().add(gananciaTotalOPerdidaMonto));
 
 					responseMap.setCostoTotalDeLasComprasDelDia(
 							responseMap.getCostoTotalDeLasComprasDelDia().add(costoTotalDeLasCompras));
-					gananciaInstrumentosTotalesPorDia.put(key, responseMap);
+					instrumentosTotalesPorDia.put(key, responseMap);
 
 					responseMap.setTotalPorcentajeDelDia(
 							(responseMap.getTotalGananciaDelDia().divide(responseMap.getCostoTotalDeLasComprasDelDia(),
@@ -355,7 +358,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
 
 				} else {
-					gananciaInstrumentosTotalesPorDia.put(key, responsePorcentaje);
+					instrumentosTotalesPorDia.put(key, responsePorcentaje);
 					costoTotalDeLasCompras = BigDecimal.ZERO;
 					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
 					valorActualDeLaInversion = BigDecimal.ZERO;
@@ -365,13 +368,40 @@ public class PosicionServicioImpl implements PosicionServicio {
 			}
 		}
 
-		Map<String, ResponsePorcentajeUnificado> instrumentosUnificados = totalesPorInstrumento(gananciaInstrumentosTotalesPorDia);
+		Map<String, ResponsePorcentajeUnificado> instrumentosUnificados = totalesPorInstrumento(
+				instrumentosTotalesPorDia);
 
-		ResponseTotalPorInstrumentoYPorDia.setInstrumentosDiarios(gananciaInstrumentosTotalesPorDia);
+		ResponseTotalPorInstrumentoYPorDia.setInstrumentosDiarios(instrumentosTotalesPorDia);
 		ResponseTotalPorInstrumentoYPorDia.setInstrumentosDiariosUnificados(instrumentosUnificados);
+
+		guardarCierresDiarios(instrumentosTotalesPorDia);
 
 		return ResponseTotalPorInstrumentoYPorDia;
 
+	}
+
+	private void guardarCierresDiarios(Map<String, ResponsePorcentajeDiario> instrumentosTotalesPorDia) {
+		String fechaHoy = LocalDate.now().toString();
+
+		for (Map.Entry<String, ResponsePorcentajeDiario> entry : instrumentosTotalesPorDia.entrySet()) {
+			String fechaObjeto = entry.getKey().split("\\+")[1];
+
+			if (!fechaObjeto.equals(fechaHoy)) {
+
+				ResponsePorcentajeDiario responsePorcentajeDiario = entry.getValue();
+				HistoricoDeGananciaPerdidaDiaria historicoDeGananciaPerdidaDiaria = new HistoricoDeGananciaPerdidaDiaria();
+				historicoDeGananciaPerdidaDiaria.setSimbolo(responsePorcentajeDiario.getSimbolo());
+				historicoDeGananciaPerdidaDiaria
+						.setTotalGananciaDelDia(responsePorcentajeDiario.getTotalGananciaDelDia());
+				historicoDeGananciaPerdidaDiaria
+						.setTotalPorcentajeDelDia(responsePorcentajeDiario.getTotalPorcentajeDelDia());
+				historicoDeGananciaPerdidaDiaria.setFecha(responsePorcentajeDiario.getFecha());
+
+				historicoDeGananciaPerdidaDiariaServicio.guardar(historicoDeGananciaPerdidaDiaria);
+
+			}
+
+		}
 	}
 
 	private Map<String, ResponsePorcentajeUnificado> totalesPorInstrumento(
@@ -388,16 +418,17 @@ public class PosicionServicioImpl implements PosicionServicio {
 			ResponsePorcentajeUnificado responsePorcentajeUnificado = new ResponsePorcentajeUnificado();
 			responsePorcentajeUnificado.setTotalGananciaUnificado(totalGananciaDelDia);
 			responsePorcentajeUnificado.setSimbolo(simbolo);
-			
+
 			if (totalGananciaPorInstrumentoUnificado.containsKey(simbolo)) {
-				BigDecimal totalGananciaUnificado = totalGananciaPorInstrumentoUnificado.get(simbolo).getTotalGananciaUnificado();
+				BigDecimal totalGananciaUnificado = totalGananciaPorInstrumentoUnificado.get(simbolo)
+						.getTotalGananciaUnificado();
 				totalGananciaUnificado = totalGananciaUnificado.add(totalGananciaDelDia);
 				responsePorcentajeUnificado.setTotalGananciaUnificado(totalGananciaUnificado);
 				totalGananciaPorInstrumentoUnificado.put(simbolo, responsePorcentajeUnificado);
-			}else {
+			} else {
 				totalGananciaPorInstrumentoUnificado.put(simbolo, responsePorcentajeUnificado);
 			}
-			
+
 		}
 
 		return totalGananciaPorInstrumentoUnificado;
