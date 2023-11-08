@@ -4,14 +4,14 @@ import java.util.Map;
 
 public class RendimientoActualResponse {
 
-	private Map<String, RendimientoResponse> instrumentosDiarios;
+	private Map<String, RendimientoResponse> rendimientosActuales;
 
-	public Map<String, RendimientoResponse> getInstrumentosDiarios() {
-		return instrumentosDiarios;
+	public Map<String, RendimientoResponse> getRendimientosActuales() {
+		return rendimientosActuales;
 	}
 
-	public void setInstrumentosDiarios(Map<String, RendimientoResponse> instrumentosDiarios) {
-		this.instrumentosDiarios = instrumentosDiarios;
+	public void setRendimientosActuales(Map<String, RendimientoResponse> rendimientosActuales) {
+		this.rendimientosActuales = rendimientosActuales;
 	}
 
 }

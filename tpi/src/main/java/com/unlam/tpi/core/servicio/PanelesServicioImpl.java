@@ -128,12 +128,12 @@ public class PanelesServicioImpl implements PanelesServicio {
 	private void recalcularPosicionTotalSegunVariacionDePrecios(List<Instrumento> listaInstrumentos) {
 		List<Posicion> posicionTotal = posicionServicio.obtenerPosicionTotal();
 		for (Instrumento instrumento : listaInstrumentos) {
-			if (instrumento.getFlashCompra() != 0 || instrumento.getFlashVenta() != 0) {
+			if (instrumento.getFlashVenta() != 0) {
 				for (Posicion posicion : posicionTotal) {
 					if (posicion.getSimboloInstrumento() != null && instrumento.getSimbolo() != null
 							&& !posicion.getEsEfectivo()) {
 						if (posicion.getSimboloInstrumento().equals(instrumento.getSimbolo())) {
-							posicion.setPrecio(
+							posicion.setPrecioActualDeVenta(
 									instrumento.getPuntas() != null ? instrumento.getPuntas().getPrecioVenta() : null);
 							posicionServicio.actualizarPosicion(posicion);
 						}

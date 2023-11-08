@@ -18,11 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.core.interfaces.HistoricoRendimientoServicio;
+import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PosicionRepositorio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.CargaCreditoConstantes;
 import com.unlam.tpi.core.modelo.HistoricoRendimientos;
 import com.unlam.tpi.core.modelo.HistoricoRendimientosResponse;
+import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.OrdenConstantes;
 import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
@@ -45,6 +47,9 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	@Autowired
 	HistoricoRendimientoServicio historicoRendimientoServicio;
+
+	@Autowired
+	InstrumentoServicio instrumentoServicio;
 
 	@Override
 	public ValuacionTotalRespuesta getValuacionTotal() {
@@ -147,7 +152,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			posicionDinero.setEsEfectivo(true);
 			posicionDinero.setFecha_posicion(LocalDate.now());
 			posicionDinero.setMonedaOid(orden.getMonedaOid());
-			posicionDinero.setPrecio(null);
+			posicionDinero.setPrecioActualDeVenta(null);
 			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
 			posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
 			posicionDinero.setConcepto("DINERO-COMPLE");
@@ -156,7 +161,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			posicionDinero.setEsEfectivo(true);
 			posicionDinero.setFecha_posicion(LocalDate.now());
 			posicionDinero.setMonedaOid(orden.getMonedaOid());
-			posicionDinero.setPrecio(null);
+			posicionDinero.setPrecioActualDeVenta(null);
 			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
 			posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
 			posicionDinero.setConcepto("DINERO-COMPLE");
@@ -179,7 +184,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		posicion.setEsEfectivo(false);
 		posicion.setFecha_posicion(LocalDate.now());
 		posicion.setMonedaOid(orden.getMonedaOid());
-		posicion.setPrecio(orden.getPrecio());
+		posicion.setPrecioActualDeVenta(orden.getPrecio());
 		posicion.setPrecioAlMomentoDeCompra(orden.getPrecio());
 		posicion.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
 		posicion.setSimboloInstrumento(orden.getSimboloInstrumento());
@@ -266,7 +271,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		BigDecimal totalInstrumentos = BigDecimal.ZERO;
 		for (Posicion posicion : posicionTotal) {
 			if (!posicion.getEsEfectivo()) {
-				totalInstrumentos = totalInstrumentos.add(posicion.getPrecio().multiply(posicion.getCantidad()));
+				totalInstrumentos = totalInstrumentos.add(posicion.getPrecioActualDeVenta().multiply(posicion.getCantidad()));
 			}
 		}
 		return totalInstrumentos;
@@ -294,13 +299,38 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 			String simboloActual = null;
 			BigDecimal costoTotalDeLasCompras = new BigDecimal(0);
-			BigDecimal precioActualDelInstrumento = new BigDecimal(2000); // pendiente de traer del panel
+
 			BigDecimal cantidadTotalDeInstrumentosQueTengo = new BigDecimal(0);
 			BigDecimal valorActualDeLaInversion = new BigDecimal(0);
 			BigDecimal gananciaTotalOPerdidaMonto = new BigDecimal(0);
 			BigDecimal gananciaTotalOPerdidaPorcentaje = new BigDecimal(0);
 
+			Instrumento instrumentoDelPanel = null;
+
 			for (Posicion posicion2 : posicionEnCartera) {
+
+				Instrumento instrumentoObtenido = instrumentoServicio
+						.obtenerInstrumentoPorSimbolo(posicion2.getSimboloInstrumento());
+
+				switch (instrumentoObtenido.getCategoriaInstrumento()) {
+				case "acciones":
+					instrumentoDelPanel = PanelPreciosImpl.panelAcciones.get(posicion2.getSimboloInstrumento());
+					break;
+
+				case "bonos":
+					instrumentoDelPanel = PanelPreciosImpl.panelBonos.get(posicion2.getSimboloInstrumento());
+					break;
+
+				default:
+					break;
+				}
+
+				BigDecimal precioActualDelInstrumento = instrumentoDelPanel != null
+						&& instrumentoDelPanel.getPuntas() != null
+						&& instrumentoDelPanel.getPuntas().getPrecioVenta() != null
+								? instrumentoDelPanel.getPuntas().getPrecioVenta()
+								: BigDecimal.ZERO;
+
 				String simbolo = posicion2.getSimboloInstrumento();
 				if (simboloActual == null) {
 					simboloActual = simbolo;
@@ -352,9 +382,10 @@ public class PosicionServicioImpl implements PosicionServicio {
 			}
 		}
 
-		Map<String, RendimientoResponse> listaSoloRendimientosFechaActual = guardarCierresDiarios(mapaRendimientos);
+		// Map<String, RendimientoResponse> listaSoloRendimientosFechaActual =
+		// guardarCierresDiarios(mapaRendimientos);
 
-		rendimientoActualResponse.setInstrumentosDiarios(listaSoloRendimientosFechaActual);
+		rendimientoActualResponse.setRendimientosActuales(mapaRendimientos);
 
 		return rendimientoActualResponse;
 
@@ -376,14 +407,13 @@ public class PosicionServicioImpl implements PosicionServicio {
 		rendimientoResponse.setFecha(posicion2.getFecha_posicion());
 	}
 
-	private Map<String, RendimientoResponse> guardarCierresDiarios(
-			Map<String, RendimientoResponse> instrumentosTotalesPorDia) {
+	private Map<String, RendimientoResponse> guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos) {
 
 		Map<String, RendimientoResponse> instrumentosSoloDelDiaDeHoy = new HashMap<>();
 
 		String fechaHoy = LocalDate.now().toString();
 
-		for (Map.Entry<String, RendimientoResponse> entry : instrumentosTotalesPorDia.entrySet()) {
+		for (Map.Entry<String, RendimientoResponse> entry : mapaRendimientos.entrySet()) {
 			String fechaObjeto = entry.getKey().split("\\+")[1];
 
 			if (!fechaObjeto.equals(fechaHoy)) {
@@ -411,6 +441,8 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 		Map<String, BigDecimal> cantidadesPorSimbolo = new HashMap<>();
 
+		LocalDate fechaHoy = LocalDate.now();
+
 		for (Posicion posicion2 : todasLasPosiciones) {
 			String simbolo = posicion2.getSimboloInstrumento();
 			BigDecimal cantidad = posicion2.getCantidad();
@@ -422,6 +454,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 		List<Posicion> posicionesConCantidadesPositivas = todasLasPosiciones.stream().filter(
 				posicion -> cantidadesPorSimbolo.get(posicion.getSimboloInstrumento()).compareTo(BigDecimal.ZERO) > 0)
+				.filter(posicion -> posicion.getFecha_posicion().isEqual(fechaHoy))
 				.sorted(Comparator.comparing(Posicion::getFecha_posicion)
 						.thenComparing(Posicion::getSimboloInstrumento))
 				.collect(Collectors.toList());

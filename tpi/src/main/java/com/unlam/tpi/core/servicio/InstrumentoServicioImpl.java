@@ -127,4 +127,9 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 		return instrumentoRepositorio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);
 		
 	}
+
+	@Override
+	public Instrumento obtenerInstrumentoPorSimbolo(String simboloInstrumento) {
+		return instrumentoRepositorio.encontrarPorSimbolo(simboloInstrumento);
+	}
 }

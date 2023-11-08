@@ -49,11 +49,8 @@ public class Posicion extends ObjetoPersistente {
 	@Column(name = "CANTIDAD")
 	private BigDecimal cantidad;
 
-	/**
-	 * Precio de adquisición
-	 */
-	@Column(name = "PRECIO")
-	private BigDecimal precio;
+	@Column(name = "PRECIO_ACTUAL_DE_VENTA")
+	private BigDecimal precioActualDeVenta;
 
 	/**
 	 * Referencia la OID de la orden
@@ -124,12 +121,12 @@ public class Posicion extends ObjetoPersistente {
 		this.cantidad = cantidad;
 	}
 
-	public BigDecimal getPrecio() {
-		return precio;
+	public BigDecimal getPrecioActualDeVenta() {
+		return precioActualDeVenta;
 	}
 
-	public void setPrecio(BigDecimal precio) {
-		this.precio = precio;
+	public void setPrecioActualDeVenta(BigDecimal precioActualDeVenta) {
+		this.precioActualDeVenta = precioActualDeVenta;
 	}
 
 	public Long getOrdenOID() {
