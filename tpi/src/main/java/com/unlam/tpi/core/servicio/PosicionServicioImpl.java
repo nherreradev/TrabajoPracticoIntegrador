@@ -127,7 +127,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		try {
 			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
 			if (posicionBuscada == null
-					|| posicionBuscada.getConcepto() != CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS) {
+					|| !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS.equals(posicionBuscada != null ? posicionBuscada.getConcepto():null)) {
 				Posicion posicion = new Posicion();
 				posicion.setCantidad(request.getCantidadPorAcreditar());
 				posicion.setEsEfectivo(true);
