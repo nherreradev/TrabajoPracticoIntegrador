@@ -22,6 +22,7 @@ import com.unlam.tpi.core.interfaces.PosicionRepositorio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.CargaCreditoConstantes;
 import com.unlam.tpi.core.modelo.HistoricoRendimientos;
+import com.unlam.tpi.core.modelo.HistoricoRendimientosResponse;
 import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.OrdenConstantes;
 import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
@@ -330,9 +331,9 @@ public class PosicionServicioImpl implements PosicionServicio {
 							rendimientoObtenido.getCostoTotalDeLasComprasDelDia().add(costoTotalDeLasCompras));
 					mapaRendimientos.put(key, rendimientoObtenido);
 
-					rendimientoObtenido.setTotalPorcentajeDelDia(
-							(rendimientoObtenido.getTotalGananciaDelDia().divide(rendimientoObtenido.getCostoTotalDeLasComprasDelDia(),
-									2, RoundingMode.HALF_UP)).multiply(new BigDecimal(100)));
+					rendimientoObtenido.setTotalPorcentajeDelDia((rendimientoObtenido.getTotalGananciaDelDia()
+							.divide(rendimientoObtenido.getCostoTotalDeLasComprasDelDia(), 2, RoundingMode.HALF_UP))
+							.multiply(new BigDecimal(100)));
 
 					costoTotalDeLasCompras = BigDecimal.ZERO;
 					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
@@ -359,9 +360,14 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	}
 
-	private void completarRendimiento(BigDecimal costoTotalDeLasCompras,
-			BigDecimal gananciaTotalOPerdidaMonto, BigDecimal gananciaTotalOPerdidaPorcentaje, Posicion posicion2,
-			RendimientoResponse rendimientoResponse) {
+	@Override
+	public List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String token,
+			String simboloInstrumento) {
+		return historicoRendimientoServicio.obtenerRendimientosHistoricosPorSimbolo(token, simboloInstrumento);
+	}
+
+	private void completarRendimiento(BigDecimal costoTotalDeLasCompras, BigDecimal gananciaTotalOPerdidaMonto,
+			BigDecimal gananciaTotalOPerdidaPorcentaje, Posicion posicion2, RendimientoResponse rendimientoResponse) {
 		rendimientoResponse.setSimbolo(posicion2.getSimboloInstrumento());
 		rendimientoResponse.setTotalGananciaDelDia(gananciaTotalOPerdidaMonto);
 		rendimientoResponse.setTotalPorcentajeDelDia(gananciaTotalOPerdidaPorcentaje);
@@ -385,10 +391,8 @@ public class PosicionServicioImpl implements PosicionServicio {
 				RendimientoResponse rendimientoResponse = entry.getValue();
 				HistoricoRendimientos historicoRendimientos = new HistoricoRendimientos();
 				historicoRendimientos.setSimbolo(rendimientoResponse.getSimbolo());
-				historicoRendimientos
-						.setTotalGananciaDelDia(rendimientoResponse.getTotalGananciaDelDia());
-				historicoRendimientos
-						.setTotalPorcentajeDelDia(rendimientoResponse.getTotalPorcentajeDelDia());
+				historicoRendimientos.setTotalGananciaDelDia(rendimientoResponse.getTotalGananciaDelDia());
+				historicoRendimientos.setTotalPorcentajeDelDia(rendimientoResponse.getTotalPorcentajeDelDia());
 				historicoRendimientos.setFecha(rendimientoResponse.getFecha());
 
 				historicoRendimientoServicio.guardar(historicoRendimientos);
@@ -424,4 +428,5 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 		return posicionesConCantidadesPositivas;
 	}
+
 }

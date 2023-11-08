@@ -1,6 +1,6 @@
 package com.unlam.tpi.core.modelo;
 
-public class RequestPorcentaje {
+public class RendimientoRequest {
 
 	String simboloInstrumento;
 

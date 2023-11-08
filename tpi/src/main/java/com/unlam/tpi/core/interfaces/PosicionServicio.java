@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.unlam.tpi.core.modelo.HistoricoRendimientosResponse;
 import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
@@ -36,5 +37,9 @@ public interface PosicionServicio {
 
 	@Transactional
 	public RendimientoActualResponse calcularRendimientoActual(String token);
+
+	@Transactional
+	List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String token,
+			String simboloInstrumento);
 
 }
