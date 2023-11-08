@@ -4,11 +4,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.unlam.tpi.core.modelo.RequestPorcentaje;
-import com.unlam.tpi.core.modelo.ResponseTotalPorInstrumentoYPorDia;
+import com.unlam.tpi.core.modelo.RendimientoActualResponse;
 
 public interface RendimientoControlador {
 
-	public ResponseEntity<ResponseTotalPorInstrumentoYPorDia> calcularPorcentajeGananciaPerdidaDeTodosLosInstrumentosEnCartera(
+	public ResponseEntity<RendimientoActualResponse> calcularRendimientoInstrumentosEnCarteraDiaDeHoy(
 			@RequestBody RequestPorcentaje request);
 
 }

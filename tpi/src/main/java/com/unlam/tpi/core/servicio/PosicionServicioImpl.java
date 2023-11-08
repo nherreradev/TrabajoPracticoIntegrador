@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,11 +17,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.unlam.tpi.core.interfaces.HistoricoDeGananciaPerdidaDiariaServicio;
+import com.unlam.tpi.core.interfaces.HistoricoRendimientoServicio;
 import com.unlam.tpi.core.interfaces.PosicionRepositorio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.CargaCreditoConstantes;
-import com.unlam.tpi.core.modelo.HistoricoDeGananciaPerdidaDiaria;
+import com.unlam.tpi.core.modelo.HistoricoRendimientos;
 import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.OrdenConstantes;
 import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
@@ -28,9 +29,9 @@ import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
-import com.unlam.tpi.core.modelo.ResponsePorcentajeDiario;
+import com.unlam.tpi.core.modelo.RendimientoResponse;
 import com.unlam.tpi.core.modelo.ResponsePorcentajeUnificado;
-import com.unlam.tpi.core.modelo.ResponseTotalPorInstrumentoYPorDia;
+import com.unlam.tpi.core.modelo.RendimientoActualResponse;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 import com.unlam.tpi.infraestructura.helpers.CalculosHabituales;
@@ -42,7 +43,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 	PosicionRepositorio posicionRepositorio;
 
 	@Autowired
-	HistoricoDeGananciaPerdidaDiariaServicio historicoDeGananciaPerdidaDiariaServicio;
+	HistoricoRendimientoServicio historicoRendimientoServicio;
 
 	@Override
 	public ValuacionTotalRespuesta getValuacionTotal() {
@@ -281,18 +282,11 @@ public class PosicionServicioImpl implements PosicionServicio {
 	}
 
 	@Override
-	public ResponseTotalPorInstrumentoYPorDia calcularPorcentajeGananciaPerdida(String token) {
-		/*
-		 * Deberia traerme Cantidad y precio original de compra por instrumento recibido
-		 * por usuario
-		 */
+	public RendimientoActualResponse calcularRendimientoActual(String token) {
 
-		ResponseTotalPorInstrumentoYPorDia ResponseTotalPorInstrumentoYPorDia = new ResponseTotalPorInstrumentoYPorDia();
-
-		Map<String, ResponsePorcentajeDiario> instrumentosTotalesPorDia = new HashMap<>();
-
+		RendimientoActualResponse rendimientoActualResponse = new RendimientoActualResponse();
+		Map<String, RendimientoResponse> mapaRendimientos = new HashMap<>();
 		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos();
-
 		List<Posicion> posicionEnCartera = obtenerSoloPosicionesEnCartera(posicion);
 
 		if (posicionEnCartera != null && !posicionEnCartera.isEmpty()) {
@@ -305,50 +299,39 @@ public class PosicionServicioImpl implements PosicionServicio {
 			BigDecimal gananciaTotalOPerdidaMonto = new BigDecimal(0);
 			BigDecimal gananciaTotalOPerdidaPorcentaje = new BigDecimal(0);
 
-			/* Calcular el total gastado basandome en el precio original */
-
 			for (Posicion posicion2 : posicionEnCartera) {
-
 				String simbolo = posicion2.getSimboloInstrumento();
-
 				if (simboloActual == null) {
 					simboloActual = simbolo;
 				}
 
-				ResponsePorcentajeDiario responsePorcentaje = new ResponsePorcentajeDiario();
+				RendimientoResponse rendimientoResponse = new RendimientoResponse();
 
 				costoTotalDeLasCompras = costoTotalDeLasCompras
 						.add(posicion2.getPrecioAlMomentoDeCompra().multiply(posicion2.getCantidad()));
 				cantidadTotalDeInstrumentosQueTengo = cantidadTotalDeInstrumentosQueTengo.add(posicion2.getCantidad());
-
 				valorActualDeLaInversion = cantidadTotalDeInstrumentosQueTengo.multiply(precioActualDelInstrumento);
-
 				gananciaTotalOPerdidaMonto = valorActualDeLaInversion.subtract(costoTotalDeLasCompras);
-
 				gananciaTotalOPerdidaPorcentaje = (gananciaTotalOPerdidaMonto.divide(costoTotalDeLasCompras, 2,
 						RoundingMode.HALF_UP)).multiply(new BigDecimal(100));
 
-				responsePorcentaje.setSimbolo(posicion2.getSimboloInstrumento());
-				responsePorcentaje.setTotalGananciaDelDia(gananciaTotalOPerdidaMonto);
-				responsePorcentaje.setTotalPorcentajeDelDia(gananciaTotalOPerdidaPorcentaje);
-				responsePorcentaje.setSimbolo(posicion2.getSimboloInstrumento());
-				responsePorcentaje.setCostoTotalDeLasComprasDelDia(costoTotalDeLasCompras);
-				responsePorcentaje.setFecha(posicion2.getFecha_posicion());
+				completarRendimiento(costoTotalDeLasCompras, gananciaTotalOPerdidaMonto,
+						gananciaTotalOPerdidaPorcentaje, posicion2, rendimientoResponse);
 
 				String key = posicion2.getSimboloInstrumento() + "+" + posicion2.getFecha_posicion();
 
-				if (instrumentosTotalesPorDia.containsKey(key)) {
-					ResponsePorcentajeDiario responseMap = instrumentosTotalesPorDia.get(key);
+				if (mapaRendimientos.containsKey(key)) {
+					RendimientoResponse rendimientoObtenido = mapaRendimientos.get(key);
 
-					responseMap.setTotalGananciaDelDia(
-							responseMap.getTotalGananciaDelDia().add(gananciaTotalOPerdidaMonto));
+					rendimientoObtenido.setTotalGananciaDelDia(
+							rendimientoObtenido.getTotalGananciaDelDia().add(gananciaTotalOPerdidaMonto));
 
-					responseMap.setCostoTotalDeLasComprasDelDia(
-							responseMap.getCostoTotalDeLasComprasDelDia().add(costoTotalDeLasCompras));
-					instrumentosTotalesPorDia.put(key, responseMap);
+					rendimientoObtenido.setCostoTotalDeLasComprasDelDia(
+							rendimientoObtenido.getCostoTotalDeLasComprasDelDia().add(costoTotalDeLasCompras));
+					mapaRendimientos.put(key, rendimientoObtenido);
 
-					responseMap.setTotalPorcentajeDelDia(
-							(responseMap.getTotalGananciaDelDia().divide(responseMap.getCostoTotalDeLasComprasDelDia(),
+					rendimientoObtenido.setTotalPorcentajeDelDia(
+							(rendimientoObtenido.getTotalGananciaDelDia().divide(rendimientoObtenido.getCostoTotalDeLasComprasDelDia(),
 									2, RoundingMode.HALF_UP)).multiply(new BigDecimal(100)));
 
 					costoTotalDeLasCompras = BigDecimal.ZERO;
@@ -358,7 +341,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
 
 				} else {
-					instrumentosTotalesPorDia.put(key, responsePorcentaje);
+					mapaRendimientos.put(key, rendimientoResponse);
 					costoTotalDeLasCompras = BigDecimal.ZERO;
 					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
 					valorActualDeLaInversion = BigDecimal.ZERO;
@@ -368,71 +351,56 @@ public class PosicionServicioImpl implements PosicionServicio {
 			}
 		}
 
-		Map<String, ResponsePorcentajeUnificado> instrumentosUnificados = totalesPorInstrumento(
-				instrumentosTotalesPorDia);
+		Map<String, RendimientoResponse> listaSoloRendimientosFechaActual = guardarCierresDiarios(mapaRendimientos);
 
-		ResponseTotalPorInstrumentoYPorDia.setInstrumentosDiarios(instrumentosTotalesPorDia);
-		ResponseTotalPorInstrumentoYPorDia.setInstrumentosDiariosUnificados(instrumentosUnificados);
+		rendimientoActualResponse.setInstrumentosDiarios(listaSoloRendimientosFechaActual);
 
-		guardarCierresDiarios(instrumentosTotalesPorDia);
-
-		return ResponseTotalPorInstrumentoYPorDia;
+		return rendimientoActualResponse;
 
 	}
 
-	private void guardarCierresDiarios(Map<String, ResponsePorcentajeDiario> instrumentosTotalesPorDia) {
+	private void completarRendimiento(BigDecimal costoTotalDeLasCompras,
+			BigDecimal gananciaTotalOPerdidaMonto, BigDecimal gananciaTotalOPerdidaPorcentaje, Posicion posicion2,
+			RendimientoResponse rendimientoResponse) {
+		rendimientoResponse.setSimbolo(posicion2.getSimboloInstrumento());
+		rendimientoResponse.setTotalGananciaDelDia(gananciaTotalOPerdidaMonto);
+		rendimientoResponse.setTotalPorcentajeDelDia(gananciaTotalOPerdidaPorcentaje);
+		rendimientoResponse.setSimbolo(posicion2.getSimboloInstrumento());
+		rendimientoResponse.setCostoTotalDeLasComprasDelDia(costoTotalDeLasCompras);
+		rendimientoResponse.setFecha(posicion2.getFecha_posicion());
+	}
+
+	private Map<String, RendimientoResponse> guardarCierresDiarios(
+			Map<String, RendimientoResponse> instrumentosTotalesPorDia) {
+
+		Map<String, RendimientoResponse> instrumentosSoloDelDiaDeHoy = new HashMap<>();
+
 		String fechaHoy = LocalDate.now().toString();
 
-		for (Map.Entry<String, ResponsePorcentajeDiario> entry : instrumentosTotalesPorDia.entrySet()) {
+		for (Map.Entry<String, RendimientoResponse> entry : instrumentosTotalesPorDia.entrySet()) {
 			String fechaObjeto = entry.getKey().split("\\+")[1];
 
 			if (!fechaObjeto.equals(fechaHoy)) {
 
-				ResponsePorcentajeDiario responsePorcentajeDiario = entry.getValue();
-				HistoricoDeGananciaPerdidaDiaria historicoDeGananciaPerdidaDiaria = new HistoricoDeGananciaPerdidaDiaria();
-				historicoDeGananciaPerdidaDiaria.setSimbolo(responsePorcentajeDiario.getSimbolo());
-				historicoDeGananciaPerdidaDiaria
-						.setTotalGananciaDelDia(responsePorcentajeDiario.getTotalGananciaDelDia());
-				historicoDeGananciaPerdidaDiaria
-						.setTotalPorcentajeDelDia(responsePorcentajeDiario.getTotalPorcentajeDelDia());
-				historicoDeGananciaPerdidaDiaria.setFecha(responsePorcentajeDiario.getFecha());
+				RendimientoResponse rendimientoResponse = entry.getValue();
+				HistoricoRendimientos historicoRendimientos = new HistoricoRendimientos();
+				historicoRendimientos.setSimbolo(rendimientoResponse.getSimbolo());
+				historicoRendimientos
+						.setTotalGananciaDelDia(rendimientoResponse.getTotalGananciaDelDia());
+				historicoRendimientos
+						.setTotalPorcentajeDelDia(rendimientoResponse.getTotalPorcentajeDelDia());
+				historicoRendimientos.setFecha(rendimientoResponse.getFecha());
 
-				historicoDeGananciaPerdidaDiariaServicio.guardar(historicoDeGananciaPerdidaDiaria);
+				historicoRendimientoServicio.guardar(historicoRendimientos);
 
-			}
-
-		}
-	}
-
-	private Map<String, ResponsePorcentajeUnificado> totalesPorInstrumento(
-			Map<String, ResponsePorcentajeDiario> responseMapaDeTotales) {
-
-		Map<String, ResponsePorcentajeUnificado> totalGananciaPorInstrumentoUnificado = new HashMap<>();
-
-		for (String key : responseMapaDeTotales.keySet()) {
-			ResponsePorcentajeDiario responsePorcentajeDiario = responseMapaDeTotales.get(key);
-			String simbolo = responsePorcentajeDiario.getSimbolo();
-			BigDecimal totalGananciaDelDia = responsePorcentajeDiario.getTotalGananciaDelDia();
-			BigDecimal costoTotalDeCompra = responsePorcentajeDiario.getCostoTotalDeLasComprasDelDia();
-
-			ResponsePorcentajeUnificado responsePorcentajeUnificado = new ResponsePorcentajeUnificado();
-			responsePorcentajeUnificado.setTotalGananciaUnificado(totalGananciaDelDia);
-			responsePorcentajeUnificado.setSimbolo(simbolo);
-
-			if (totalGananciaPorInstrumentoUnificado.containsKey(simbolo)) {
-				BigDecimal totalGananciaUnificado = totalGananciaPorInstrumentoUnificado.get(simbolo)
-						.getTotalGananciaUnificado();
-				totalGananciaUnificado = totalGananciaUnificado.add(totalGananciaDelDia);
-				responsePorcentajeUnificado.setTotalGananciaUnificado(totalGananciaUnificado);
-				totalGananciaPorInstrumentoUnificado.put(simbolo, responsePorcentajeUnificado);
 			} else {
-				totalGananciaPorInstrumentoUnificado.put(simbolo, responsePorcentajeUnificado);
+				RendimientoResponse responsePorcentajeDiario = entry.getValue();
+				instrumentosSoloDelDiaDeHoy.put(responsePorcentajeDiario.getSimbolo(), responsePorcentajeDiario);
 			}
 
 		}
 
-		return totalGananciaPorInstrumentoUnificado;
-
+		return instrumentosSoloDelDiaDeHoy;
 	}
 
 	private List<Posicion> obtenerSoloPosicionesEnCartera(List<Posicion> todasLasPosiciones) {

@@ -10,8 +10,8 @@ import javax.persistence.Table;
 import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 
 @Entity
-@Table(name = "HISTORICO_GANANCIA_PERDIDA_DIARIA")
-public class HistoricoDeGananciaPerdidaDiaria extends ObjetoPersistente{
+@Table(name = "HISTORICO_RENDIMIENTOS")
+public class HistoricoRendimientos extends ObjetoPersistente{
 
 	@Column(name = "SIMBOLO")
 	String simbolo;

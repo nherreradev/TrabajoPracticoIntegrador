@@ -3,7 +3,7 @@ package com.unlam.tpi.core.modelo;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class ResponsePorcentajeDiario {
+public class RendimientoResponse {
 
 	String simbolo;
 	BigDecimal totalGananciaDelDia;

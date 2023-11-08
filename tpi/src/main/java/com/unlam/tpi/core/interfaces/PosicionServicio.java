@@ -10,8 +10,8 @@ import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
-import com.unlam.tpi.core.modelo.ResponsePorcentajeDiario;
-import com.unlam.tpi.core.modelo.ResponseTotalPorInstrumentoYPorDia;
+import com.unlam.tpi.core.modelo.RendimientoResponse;
+import com.unlam.tpi.core.modelo.RendimientoActualResponse;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 
 public interface PosicionServicio {
@@ -35,6 +35,6 @@ public interface PosicionServicio {
 	void actualizarPosicion(Posicion posicion);
 
 	@Transactional
-	public ResponseTotalPorInstrumentoYPorDia calcularPorcentajeGananciaPerdida(String token);
+	public RendimientoActualResponse calcularRendimientoActual(String token);
 
 }
