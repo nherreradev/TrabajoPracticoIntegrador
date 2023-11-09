@@ -125,7 +125,8 @@ class PanelesServicioTest {
 		instrumentoViejo.setSimbolo("AGRO");
 		instrumentoViejo.setPuntas(puntasViejas);
 		panelAnterior.put("AGRO", instrumentoViejo);
-		PanelesServicioImpl.listaInstrumentosAux.add(instrumentoViejo);
+		List<Instrumento> listaInstrumentosAccionesAux = new ArrayList<>();
+		listaInstrumentosAccionesAux.add(instrumentoViejo);
 
 		/*----------------- PANEL NUEVO -----------------*/
 		Puntas puntasNuevas = new Puntas();
@@ -137,7 +138,7 @@ class PanelesServicioTest {
 		List<Instrumento> listaInstrumentosNuevos = new ArrayList<>();
 		listaInstrumentosNuevos.add(instrumentoNuevo);
 
-		panelesServicio.determinarFlashDeCompraVenta(panelAnterior, listaInstrumentosNuevos);
+		panelesServicio.determinarFlashDeCompraVenta(panelAnterior, listaInstrumentosNuevos, listaInstrumentosAccionesAux);
 
 		assertEquals((-1), instrumentoNuevo.getFlashCompra()); /* Precio compra bajo (-1) */
 		assertEquals(1, instrumentoNuevo.getFlashVenta()); /* Precio venta subio (1) */
