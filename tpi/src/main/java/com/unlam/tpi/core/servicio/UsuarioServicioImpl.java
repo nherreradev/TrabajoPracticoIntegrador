@@ -1,6 +1,7 @@
 package com.unlam.tpi.core.servicio;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.core.interfaces.MailServicio;
+import com.unlam.tpi.core.interfaces.PrediccionPrecioApi;
 import com.unlam.tpi.delivery.dto.JWTRestDTO;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	@Autowired
 	UsuarioRepositorio usuarioRepositorio;
 	@Autowired
-	AutenticacionService autenticacionService;
+	PrediccionPrecioApi.AutenticacionService autenticacionService;
 	@Autowired
 	MailServicio mailServicio;
 	@Override
