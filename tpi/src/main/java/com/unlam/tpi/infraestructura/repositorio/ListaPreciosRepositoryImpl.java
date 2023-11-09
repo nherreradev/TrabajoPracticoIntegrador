@@ -17,13 +17,13 @@ public class ListaPreciosRepositoryImpl implements ListaPreciosRepository{
         this.mongoTemplate = mongoTemplate;
     }
     @Override
-    public void GuardarResponseTransaccion(String json, String collection) {
+    public void guardarResponseTransaccion(String json, String collection) {
         Document document = Document.parse(json);
         mongoTemplate.save(document, collection);
     }
 
     @Override
-    public List<String> GetAllWithoutID(String instrumento) {
+    public List<String> getAllWithoutID(String instrumento) {
         List<Document> documents = mongoTemplate.findAll(Document.class, instrumento);
         for (Document doc : documents) {
             doc.remove("_id");
