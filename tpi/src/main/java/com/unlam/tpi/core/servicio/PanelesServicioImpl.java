@@ -132,6 +132,9 @@ public class PanelesServicioImpl implements PanelesServicio {
 	@Override
 	public List<Instrumento> convertirListaDeJsonAListaDeIntrumentos(String responseEntity) {
 		List<Instrumento> listaInstrumentos = new ArrayList<>();
+		if (responseEntity == null) {
+			return listaInstrumentos;
+		}
 		Gson gson = new Gson();
 		String json = responseEntity;
 		// String json = Mock.jsonMock;
