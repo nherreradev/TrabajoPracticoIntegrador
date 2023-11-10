@@ -11,6 +11,10 @@ import java.security.spec.InvalidKeySpecException;
 
 public interface AutenticacionService {
     String GenerarTokenValidacionCuenta(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException;
+
     String GenerarTokenLoginUsuario(Usuario usuario) throws NoSuchAlgorithmException, InvalidKeySpecException;
+
     JWTRestDTO ObtenerClaimsToken(String token) throws JsonProcessingException;
+
     UsuarioDTO obtenerDatosUsuarioByToken(String token) throws JsonProcessingException;
+}
