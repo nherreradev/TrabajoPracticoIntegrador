@@ -81,4 +81,21 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 		}
 	}
 
+	@Override
+	public List<Posicion> getPosicionByUsuarioOid(Long oidUsuario) {
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
+			Root<Posicion> root = criteriaQuery.from(Posicion.class);
+
+			Predicate filtroUsuario = criteriaBuilder.equal(root.get("usuarioOid"), oidUsuario);
+			
+			criteriaQuery.where(filtroUsuario);
+
+			return entityManager.createQuery(criteriaQuery).getResultList();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 }

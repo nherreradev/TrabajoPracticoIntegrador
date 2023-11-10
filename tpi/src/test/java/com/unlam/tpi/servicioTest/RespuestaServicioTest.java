@@ -27,7 +27,9 @@ import com.unlam.tpi.core.modelo.Respuesta;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.servicio.RespuestaServicioImpl;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
+import com.unlam.tpi.delivery.dto.PreguntaMapper;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
+import com.unlam.tpi.delivery.dto.RespuestaMapper;
 import com.unlam.tpi.delivery.dto.TipoComponente;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,9 +76,9 @@ public class RespuestaServicioTest {
 		List<RespuestaDTO> dtoRespuestas = new ArrayList<>();
 		dtoRespuestas.add(respuesta);
 		when(respuestaRepositorio.findByNombreAndInstrumento("R1", "A"))
-				.thenReturn(RespuestaDTO.dTOaEntidad(respuesta));
-		when(preguntaServicio.getPreguntaPorEnunciado("A1")).thenReturn(PreguntaDTO.dTOaEntidad(crearPreguntaDTO()));
-		when(respuestaRepositorio.findAll()).thenReturn(RespuestaDTO.traductorDeListaDTOaEntidad(dtoRespuestas));
+				.thenReturn(RespuestaMapper.dTOaEntidad(respuesta));
+		when(preguntaServicio.getPreguntaPorEnunciado("A1")).thenReturn(PreguntaMapper.dTOaEntidad(crearPreguntaDTO()));
+		when(respuestaRepositorio.findAll()).thenReturn(RespuestaMapper.traductorDeListaDTOaEntidad(dtoRespuestas));
 		getRespuestaServicio().cargaDesdeExcel(excelFile);
 		assertNotNull(getRespuestaServicio().listar());
 	}

@@ -26,6 +26,7 @@ import com.unlam.tpi.core.modelo.Categoria;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.servicio.CategoriaServicioImpl;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
+import com.unlam.tpi.delivery.dto.CategoriaMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoriaServicioTest {
@@ -64,7 +65,7 @@ public class CategoriaServicioTest {
 		categoriaDTO.setDescripcion("Esto es un test");
 		List<CategoriaDTO> dtoCategorias = new ArrayList<>();
 		dtoCategorias.add(categoriaDTO);
-		List<Categoria> categorias = CategoriaDTO.traductorDeListaDTOaEntidad(dtoCategorias);
+		List<Categoria> categorias = CategoriaMapper.traductorDeListaDTOaEntidad(dtoCategorias);
 	    when(categoriaRepositorio.findAll()).thenReturn(categorias);
 		getCategoriaServicio().cargaDesdeExcel(excelFile);
 		assertNotNull(getCategoriaServicio().listar());
@@ -90,7 +91,7 @@ public class CategoriaServicioTest {
 		categoria.setNombre("CategoriaPrueba");
 		categoria.setDescripcion("Esto es un test");
 		getCategoriaServicio().guardar(categoria);
-		when(categoriaRepositorio.findByNombre("CategoriaPrueba")).thenReturn(CategoriaDTO.dTOaEntidad(categoria));
+		when(categoriaRepositorio.findByNombre("CategoriaPrueba")).thenReturn(CategoriaMapper.dTOaEntidad(categoria));
 		assertNotNull(getCategoriaServicio().getCategoriaDTOPorNombre("CategoriaPrueba"));
 	}
 	

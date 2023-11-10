@@ -24,6 +24,7 @@ import com.unlam.tpi.core.modelo.Pregunta;
 import com.unlam.tpi.core.modelo.Seccion;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
+import com.unlam.tpi.delivery.dto.PreguntaMapper;
 import com.unlam.tpi.delivery.dto.TipoComponente;
 
 @Service
@@ -55,7 +56,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	@Override
 	public void guardar(PreguntaDTO pregunta) {
 		try {
-			Pregunta persistente = PreguntaDTO.dTOaEntidad(pregunta);
+			Pregunta persistente = PreguntaMapper.dTOaEntidad(pregunta);
 			getPreguntaRepositorio().save(persistente);
 		} catch (ServiceException e) {
 			throw e;
@@ -241,7 +242,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 			if (pregunta == null) {
 				throw new ServiceException("Error al obtener la pregunta");
 			}
-			return PreguntaDTO.entidadADTO(pregunta);
+			return PreguntaMapper.entidadADTO(pregunta);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -256,7 +257,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 			if (pregunta == null) {
 				throw new ServiceException("Error al obtener la pregunta: " + nombre);
 			}
-			return PreguntaDTO.entidadADTO(pregunta);
+			return PreguntaMapper.entidadADTO(pregunta);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -293,7 +294,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	@Override
 	public List<PreguntaDTO> listar() {
 		try {
-			return PreguntaDTO.entidadDTOLista(getPreguntaRepositorio().findAll());
+			return PreguntaMapper.entidadDTOLista(getPreguntaRepositorio().findAll());
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -304,7 +305,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	@Override
 	public List<PreguntaDTO> listarPorCategoria(String categoria) {
 		try {
-			return PreguntaDTO.entidadDTOLista(getPreguntaRepositorio().findByCategoria_Nombre(categoria));
+			return PreguntaMapper.entidadDTOLista(getPreguntaRepositorio().findByCategoria_Nombre(categoria));
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {

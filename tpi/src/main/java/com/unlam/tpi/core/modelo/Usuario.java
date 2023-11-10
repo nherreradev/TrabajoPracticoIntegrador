@@ -5,40 +5,51 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario extends ObjetoPersistente{
+public class Usuario extends ObjetoPersistente {
+
 	private static final long serialVersionUID = 1L;
+
 	@Column(name = "NOMBRE_USUARIO")
 	@JsonProperty("username")
 	private String nombreUsuario;
+
 	@Column(name = "NOMBRE")
 	@JsonProperty("nombre")
 	private String nombre;
+
 	@Column(name = "APELLIDO")
 	@JsonProperty("apellido")
 	private String apellido;
+
 	@Column(name = "EMAIL")
 	@JsonProperty("email")
 	private String email;
+
 	@Column(name = "PASSWORD")
 	@JsonProperty("pass")
 	private String pass;
+
 	@Column(name = "CUENTA_CONFIRMADA")
 	private Boolean cuentaConfirmada;
+
 	@Column(name = "ESTA_ACTIVO")
 	private Boolean activo;
+
 	@Column(name = "PREMIUM")
 	private Boolean premium;
+
 	@Column(name = "HASH_VALIDACION")
 	private String tokenValidacion;
 
-	public Usuario(){}
+	public Usuario() {
+	}
 
-	public Usuario(String nombreUsuario, String nombre, String apellido, String email, String pass, Boolean cuentaConfirmada, Boolean activo, String tokenValidacion ){
+	public Usuario(String nombreUsuario, String nombre, String apellido, String email, String pass,
+			Boolean cuentaConfirmada, Boolean activo, String tokenValidacion) {
 		this.nombreUsuario = nombreUsuario;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -49,11 +60,22 @@ public class Usuario extends ObjetoPersistente{
 		this.tokenValidacion = tokenValidacion;
 	}
 
-	public Boolean getPremium() { return premium; }
-	public void setPremium(Boolean premium) { this.premium = premium; }
-	public String getTokenValidacion() { return tokenValidacion; }
+	public Boolean getPremium() {
+		return premium;
+	}
 
-	public void setTokenValidacion(String hashValidacion) { this.tokenValidacion = hashValidacion; }
+	public void setPremium(Boolean premium) {
+		this.premium = premium;
+	}
+
+	public String getTokenValidacion() {
+		return tokenValidacion;
+	}
+
+	public void setTokenValidacion(String hashValidacion) {
+		this.tokenValidacion = hashValidacion;
+	}
+
 	public String getNombreUsuario() {
 		return nombreUsuario;
 	}
@@ -109,7 +131,5 @@ public class Usuario extends ObjetoPersistente{
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	}
-
-
 
 }
