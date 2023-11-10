@@ -364,16 +364,10 @@ public class PosicionServicioImpl implements PosicionServicio {
 				if (mapaRendimientos.containsKey(key)) {
 					RendimientoResponse rendimientoObtenido = mapaRendimientos.get(key);
 
-					rendimientoObtenido.setTotalGananciaDelDia(
-							rendimientoObtenido.getTotalGananciaDelDia().add(gananciaTotalOPerdidaMonto));
-
-					rendimientoObtenido.setCostoTotalDeLasComprasDelDia(
-							rendimientoObtenido.getCostoTotalDeLasComprasDelDia().add(costoTotalDeLasCompras));
+					rendimientoObtenido.setRendimientoTotal(
+							rendimientoObtenido.getRendimientoTotal().add(gananciaTotalOPerdidaMonto));
+					
 					mapaRendimientos.put(key, rendimientoObtenido);
-
-					rendimientoObtenido.setTotalPorcentajeDelDia((rendimientoObtenido.getTotalGananciaDelDia()
-							.divide(rendimientoObtenido.getCostoTotalDeLasComprasDelDia(), 2, RoundingMode.HALF_UP))
-							.multiply(new BigDecimal(100)));
 
 					costoTotalDeLasCompras = BigDecimal.ZERO;
 					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
@@ -392,9 +386,6 @@ public class PosicionServicioImpl implements PosicionServicio {
 			}
 		}
 
-		// Map<String, RendimientoResponse> listaSoloRendimientosFechaActual =
-		// guardarCierresDiarios(mapaRendimientos);
-
 		rendimientoActualResponse.setRendimientosActuales(mapaRendimientos);
 
 		return rendimientoActualResponse;
@@ -410,10 +401,9 @@ public class PosicionServicioImpl implements PosicionServicio {
 	private void completarRendimiento(BigDecimal costoTotalDeLasCompras, BigDecimal gananciaTotalOPerdidaMonto,
 			BigDecimal gananciaTotalOPerdidaPorcentaje, Posicion posicion2, RendimientoResponse rendimientoResponse) {
 		rendimientoResponse.setSimbolo(posicion2.getSimboloInstrumento());
-		rendimientoResponse.setTotalGananciaDelDia(gananciaTotalOPerdidaMonto);
-		rendimientoResponse.setTotalPorcentajeDelDia(gananciaTotalOPerdidaPorcentaje);
+		rendimientoResponse.setRendimientoTotal(gananciaTotalOPerdidaMonto);
+		rendimientoResponse.setRendimientoTotalPorcentaje(gananciaTotalOPerdidaPorcentaje);
 		rendimientoResponse.setSimbolo(posicion2.getSimboloInstrumento());
-		rendimientoResponse.setCostoTotalDeLasComprasDelDia(costoTotalDeLasCompras);
 		rendimientoResponse.setFecha(posicion2.getFecha_posicion());
 	}
 
@@ -431,8 +421,8 @@ public class PosicionServicioImpl implements PosicionServicio {
 				RendimientoResponse rendimientoResponse = entry.getValue();
 				HistoricoRendimientos historicoRendimientos = new HistoricoRendimientos();
 				historicoRendimientos.setSimbolo(rendimientoResponse.getSimbolo());
-				historicoRendimientos.setTotalGananciaDelDia(rendimientoResponse.getTotalGananciaDelDia());
-				historicoRendimientos.setTotalPorcentajeDelDia(rendimientoResponse.getTotalPorcentajeDelDia());
+				historicoRendimientos.setTotalGananciaDelDia(rendimientoResponse.getRendimientoTotal());
+				historicoRendimientos.setTotalPorcentajeDelDia(rendimientoResponse.getRendimientoTotalPorcentaje());
 				historicoRendimientos.setFecha(rendimientoResponse.getFecha());
 
 				historicoRendimientoServicio.guardar(historicoRendimientos);

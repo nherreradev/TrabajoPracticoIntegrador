@@ -7,10 +7,9 @@ import java.time.LocalDateTime;
 public class RendimientoResponse {
 
 	String simbolo;
-	BigDecimal totalGananciaDelDia;
-	BigDecimal totalPorcentajeDelDia;
+	BigDecimal rendimientoTotal;
+	BigDecimal rendimientoTotalPorcentaje;
 	LocalDateTime fecha;
-	BigDecimal costoTotalDeLasComprasDelDia;
 
 	public String getSimbolo() {
 		return simbolo;
@@ -20,20 +19,20 @@ public class RendimientoResponse {
 		this.simbolo = simbolo;
 	}
 
-	public BigDecimal getTotalGananciaDelDia() {
-		return totalGananciaDelDia;
+	public BigDecimal getRendimientoTotal() {
+		return rendimientoTotal;
 	}
 
-	public void setTotalGananciaDelDia(BigDecimal totalGananciaDelDia) {
-		this.totalGananciaDelDia = totalGananciaDelDia;
+	public void setRendimientoTotal(BigDecimal totalGananciaDelDia) {
+		this.rendimientoTotal = totalGananciaDelDia;
 	}
 
-	public BigDecimal getTotalPorcentajeDelDia() {
-		return totalPorcentajeDelDia;
+	public BigDecimal getRendimientoTotalPorcentaje() {
+		return rendimientoTotalPorcentaje;
 	}
 
-	public void setTotalPorcentajeDelDia(BigDecimal totalPorcentajeDelDia) {
-		this.totalPorcentajeDelDia = totalPorcentajeDelDia;
+	public void setRendimientoTotalPorcentaje(BigDecimal totalPorcentajeDelDia) {
+		this.rendimientoTotalPorcentaje = totalPorcentajeDelDia;
 	}
 
 	public LocalDateTime getFecha() {
@@ -42,14 +41,6 @@ public class RendimientoResponse {
 
 	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
-	}
-
-	public BigDecimal getCostoTotalDeLasComprasDelDia() {
-		return costoTotalDeLasComprasDelDia;
-	}
-
-	public void setCostoTotalDeLasComprasDelDia(BigDecimal costoTotalDeLasComprasDelDia) {
-		this.costoTotalDeLasComprasDelDia = costoTotalDeLasComprasDelDia;
 	}
 
 }
