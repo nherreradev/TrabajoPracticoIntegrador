@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 import com.unlam.tpi.core.interfaces.AutenticacionService;
+import com.unlam.tpi.core.modelo.UsuarioLogin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,6 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	private Usuario CrearUsuario(UsuarioRestDTO usuarioRestDTO, String token) {
 		Usuario usuario = UsuarioMapper.UsuarioRest2UsuarioModel(usuarioRestDTO);
 		usuario.setTokenValidacion(token);
-		// usuario.setNombreUsuario(usuario.g);
 		usuario.setCuentaConfirmada(Boolean.FALSE);
 		usuario.setActivo(Boolean.TRUE);
 		usuario.setPremium(Boolean.FALSE);
@@ -62,8 +62,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	@Override
 	public Usuario ObtenerUsuarioPorEmail(String email) {
 		try {
-			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(email);
-			return buscado;
+			return this.usuarioRepositorio.getUsuarioByEmail(email);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -117,6 +116,12 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
+	public Boolean ElUsuarioFueYaEstaValidado(UsuarioLogin usuarioLogin) {
+		Usuario buscado = usuarioRepositorio.getUsuarioByEmail(usuarioLogin.getMail());
+		return buscado.getActivo();
+	}
+
+	@Override
 	public ResponseAPI ModificarUsuario(Usuario usuario) {
 		try {
 			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
@@ -158,20 +163,6 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	public void ConfirmarCuenta(Usuario usuario) {
 		usuario.setCuentaConfirmada(Boolean.TRUE);
 		this.usuarioRepositorio.save(usuario);
-	}
-
-	@Override
-	public String getTokenLoginUsuario(String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		Usuario usuarioObtain = this.usuarioRepositorio.findByEmailAndPass(email, password);
-
-		try {
-			String token = this.autenticacionService.GenerarTokenLoginUsuario(usuarioObtain);
-			return token;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
-
 	}
 
 }

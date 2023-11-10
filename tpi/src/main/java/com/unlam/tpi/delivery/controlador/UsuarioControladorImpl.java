@@ -3,6 +3,8 @@ package com.unlam.tpi.delivery.controlador;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.unlam.tpi.core.interfaces.AutenticacionService;
+import com.unlam.tpi.delivery.dto.JWTRestDTO;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 
 import java.security.NoSuchAlgorithmException;
@@ -25,6 +27,8 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	ResponseAPI response = new ResponseAPI();
 	@Autowired
 	private UsuarioServicio usuarioServicio;
+	@Autowired
+	private AutenticacionService autenticacionService;
 
 	@Value("${dolar.prediccion.url}")
 	private String url_python;
@@ -72,23 +76,21 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	@Override
 	@PostMapping("/activar-cuenta")
 	public ResponseEntity<ResponseAPI> ActivarCuenta(@RequestBody String token) throws JsonProcessingException {
+		//TODO: terminar token, buscar por mail y verificar si ya fue activada la cuenta
+		if(usuarioServicio.ElUsuarioFueYaEstaValidado(token)){
+
+		}
+		if(jwtRestDTO.getEstaValidado()){
+			return new ResponseEntity<>(response.RecursoYaExistente(),
+					response.RecursoYaExistente().getStatus());
+		}
 		if (!this.usuarioServicio.UsuarioValidado(token)) {
 			return new ResponseEntity<>(response.MensajeDeErrorEnRequest(),
 					response.MensajeDeErrorEnRequest().getStatus());
 		}
-		// TODO: VALIDAR SI YA ESTA ACTIVADA LA CUENTA
-		return null;
+		return new ResponseEntity<>(response.MensajeDeExito(),
+				response.MensajeDeExito().getStatus());
 	}
 
-	@Override
-	@PostMapping("/login")
-	public ResponseEntity<String> Login(@RequestBody Usuario usuario) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		String token = this.usuarioServicio.getTokenLoginUsuario(usuario.getEmail(), usuario.getPass());
-        String jsonString = "{\"token\":"+token+"}";
-
-        JsonObject json = new Gson().fromJson(jsonString, JsonObject.class);
-		
-		return ResponseEntity.ok(json.toString());
-	}
 
 }

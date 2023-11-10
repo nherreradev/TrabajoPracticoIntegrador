@@ -17,6 +17,5 @@ public interface UsuarioControlador {
 	public ResponseEntity<ResponseAPI> ModificarUsuario(Usuario usuario);
 	ResponseEntity<Usuario> ObtenerDatosUsuarioPorEmail(String email);
 	ResponseEntity<ResponseAPI> DarUsuarioDeBaja(Usuario usuario);
-	ResponseEntity<String> Login(Usuario usuario) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException;
 	ResponseEntity<ResponseAPI> ActivarCuenta(String token) throws JsonProcessingException;
 }
