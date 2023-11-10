@@ -33,7 +33,7 @@ public class PerfilInversorControladorImpl implements PerfilInversorControlador 
 	@Override
 	@PostMapping(value = "/resultado-perfil-subjetivo")
 	public PerfilInversorDTO resultadoPerfilSubjetivo(@RequestBody PerfilInversorDTO perfilInversorDTO) {
-		return getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
+		return getPerfilInversorServicio().crearPerfilSubjetivo(perfilInversorDTO);
 	}
 
 	@Override

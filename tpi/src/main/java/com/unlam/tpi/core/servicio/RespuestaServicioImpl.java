@@ -22,6 +22,7 @@ import com.unlam.tpi.core.modelo.Pregunta;
 import com.unlam.tpi.core.modelo.Respuesta;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
+import com.unlam.tpi.delivery.dto.RespuestaMapper;
 
 @Service
 public class RespuestaServicioImpl implements RespuestaServicio {
@@ -43,7 +44,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	@Override
 	public void guardar(RespuestaDTO respuesta) {
 		try {
-			Respuesta persistente = RespuestaDTO.dTOaEntidad(respuesta);
+			Respuesta persistente = RespuestaMapper.dTOaEntidad(respuesta);
 			getRespuestaRepositorio().save(persistente);
 		} catch (ServiceException e) {
 			throw e;
@@ -214,7 +215,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 			if (respuesta == null) {
 				throw new ServiceException("Error al obtener la respuesta: " + nombre);
 			}
-			return RespuestaDTO.entidadADTO(respuesta);
+			return RespuestaMapper.entidadADTO(respuesta);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -244,7 +245,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 			if (respuesta == null) {
 				throw new ServiceException("Error al obtener la respuesta");
 			}
-			return RespuestaDTO.entidadADTO(respuesta);
+			return RespuestaMapper.entidadADTO(respuesta);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -266,7 +267,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	@Override
 	public List<RespuestaDTO> listar() {
 		try {
-			return RespuestaDTO.entidadDTOLista(getRespuestaRepositorio().findAll());
+			return RespuestaMapper.entidadDTOLista(getRespuestaRepositorio().findAll());
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {

@@ -10,8 +10,6 @@ import com.unlam.tpi.core.modelo.Usuario;
 
 public class UsuarioDTO {
 
-	private static ModelMapper mapper = new ModelMapper();
-	
 	private Long oid;
 	private Integer version;
 	private Boolean deleted = false;
@@ -23,9 +21,11 @@ public class UsuarioDTO {
 	private Boolean cuentaConfirmada;
 	private Boolean activo;
 
-	public UsuarioDTO(){}
+	public UsuarioDTO() {
+	}
 
-	public UsuarioDTO(String nombreUsuario, String nombre, String apellido, String email, String pass, Boolean cuentaConfirmada, Boolean activo ){
+	public UsuarioDTO(String nombreUsuario, String nombre, String apellido, String email, String pass,
+			Boolean cuentaConfirmada, Boolean activo) {
 		this.nombreUsuario = nombreUsuario;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -34,7 +34,7 @@ public class UsuarioDTO {
 		this.cuentaConfirmada = cuentaConfirmada;
 		this.activo = activo;
 	}
-	
+
 	public String getNombreUsuario() {
 		return nombreUsuario;
 	}
@@ -113,31 +113,6 @@ public class UsuarioDTO {
 
 	public void setActivo(Boolean activo) {
 		this.activo = activo;
-	}
-	
-	public static Usuario dTOaEntidad(UsuarioDTO usuario) {
-		try {
-			return mapper.map(usuario, Usuario.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir UsuarioDTO a usuario", e);
-		}
-	}
-	
-	public static UsuarioDTO entidadADTO(Usuario usuario) {
-		try {
-			return mapper.map(usuario, UsuarioDTO.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir usuario a UsuarioDTO", e);
-		}
-	}
-	
-	public static List<CategoriaDTO> entidadDTOLista(List<UsuarioDTO> usuarios) {
-		try {
-			return usuarios.stream().map(usuario -> mapper.map(usuario, CategoriaDTO.class))
-				.collect(Collectors.toList());
-		}catch (Exception e) {
-			throw new ServiceException("Error en convertir una lista usuario a lista UsuarioDTO", e);
-		}
 	}
 
 }
