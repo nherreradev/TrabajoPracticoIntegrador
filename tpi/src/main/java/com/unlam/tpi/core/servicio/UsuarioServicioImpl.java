@@ -159,4 +159,18 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		this.usuarioRepositorio.save(usuario);
 	}
 
+	@Override
+	public String getTokenLoginUsuario(String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		Usuario usuarioObtain = this.usuarioRepositorio.findByEmailAndPass(email, password);
+		
+		try {
+			String token = this.autenticacionService.GenerarTokenLoginUsuario(usuarioObtain);
+			return token;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+
 }

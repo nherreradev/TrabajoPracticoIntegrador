@@ -20,6 +20,7 @@ public class UsuarioDTO {
 	private String pass;
 	private Boolean cuentaConfirmada;
 	private Boolean activo;
+	private Boolean premium;
 
 	public UsuarioDTO() {
 	}
@@ -113,6 +114,14 @@ public class UsuarioDTO {
 
 	public void setActivo(Boolean activo) {
 		this.activo = activo;
+	}
+
+	public Boolean getPremium() {
+		return premium;
+	}
+
+	public void setPremium(Boolean premium) {
+		this.premium = premium;
 	}
 
 }

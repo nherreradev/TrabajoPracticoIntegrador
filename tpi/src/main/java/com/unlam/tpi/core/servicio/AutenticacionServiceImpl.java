@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.JWTRestDTO;
+import com.unlam.tpi.delivery.dto.UsuarioDTO;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -30,6 +31,20 @@ public class AutenticacionServiceImpl implements AutenticacionService{
                 .setSubject("usuario")
                 .claim("accion", "tokenValidacionCuenta")
                 .claim("mail", usuarioRestDTO.getEmail())
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+        return jwt;
+    }
+    @Override
+    public String GenerarTokenLoginUsuario(Usuario usuario) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        String jwt = Jwts.builder()
+                .setSubject("usuario")
+                .claim("nombreUsuario", usuario.getNombreUsuario())
+                .claim("nombre", usuario.getNombre())
+                .claim("apellido", usuario.getEmail())
+                .claim("premium", usuario.getPremium())
+                .claim("email", usuario.getEmail())
+                .claim("oid", usuario.getOid())
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
         return jwt;
@@ -77,6 +92,28 @@ public class AutenticacionServiceImpl implements AutenticacionService{
         JsonNode jsonNode = objectMapper.readTree(token);
         return jsonNode.get("token").asText();
     }
+	@Override
+	public UsuarioDTO obtenerDatosUsuarioByToken(String token) throws JsonProcessingException {
+		UsuarioDTO usuario = new UsuarioDTO();
+        
+        try {
+            Claims claims = Jwts.parser()
+            		.setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            usuario.setOid(claims.get("oid", Long.class));
+            usuario.setEmail(claims.get("email", String.class));
+            usuario.setNombreUsuario(claims.get("nombreUsuario", String.class));
+            usuario.setNombre(claims.get("nombre", String.class));
+            usuario.setApellido(claims.get("apellido", String.class));
+            usuario.setPremium(claims.get("premium", Boolean.class));
+           
+            return usuario;
+        } catch (Exception e) {
+            return null;
+        }
+	}
 
 
 }
