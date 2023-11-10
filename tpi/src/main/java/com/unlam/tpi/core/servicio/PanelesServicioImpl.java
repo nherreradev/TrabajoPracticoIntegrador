@@ -25,6 +25,7 @@ import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
 import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.ServiceException;
+import com.unlam.tpi.delivery.dto.InstrumentoMapper;
 
 @Service
 public class PanelesServicioImpl implements PanelesServicio {
@@ -68,7 +69,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
 			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.ACCIONES);
-			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
+			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
 			}
@@ -90,7 +91,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
 			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.BONOS);
-			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
+			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.BONOS);
 			}
@@ -112,7 +113,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
 			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.CEDEARS);
-			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
+			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.CEDEARS);
 			}
@@ -127,29 +128,6 @@ public class PanelesServicioImpl implements PanelesServicio {
 		} catch (Exception e) {
 			throw new ServiceException("Error al obtener panel de cedears", e);
 		}
-	}
-
-	@Override
-	public List<Instrumento> convertirListaDeJsonAListaDeIntrumentos(String responseEntity) {
-		List<Instrumento> listaInstrumentos = new ArrayList<>();
-		Gson gson = new Gson();
-		String json = responseEntity;
-		// String json = Mock.jsonMock;
-		JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-		JsonArray titulos = jsonObject.getAsJsonArray(PanelesDePreciosConstantes.TITULOS);
-		for (int i = 0; i < titulos.size(); i++) {
-			JsonObject jsonInstrumento = titulos.get(i).getAsJsonObject();
-			Instrumento instrumento = gson.fromJson(jsonInstrumento, Instrumento.class);
-			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
-			listaInstrumentos.add(instrumento);
-		}
-		return listaInstrumentos;
-	}
-
-	@Override
-	public ResponseEntity<String> postApiAcciones() {
-		String url = "https://api.mercadojunior.com.ar/list/precios/acciones";
-		return getInstrumentos(url);
 	}
 
 	private void recalcularPosicionTotalSegunVariacionDePrecios(List<Instrumento> listaInstrumentos) {
@@ -168,16 +146,6 @@ public class PanelesServicioImpl implements PanelesServicio {
 				}
 			}
 		}
-	}
-
-	private ResponseEntity<String> postApiBonos() {
-		String url = "https://api.mercadojunior.com.ar/list/precios/bonos";
-		return getInstrumentos(url);
-	}
-
-	private ResponseEntity<String> postApiCedears() {
-		String url = "http://localhost:8080/list/precios/cedears";
-		return getInstrumentos(url);
 	}
 
 	public ResponseEntity<String> getInstrumentos(String url) {

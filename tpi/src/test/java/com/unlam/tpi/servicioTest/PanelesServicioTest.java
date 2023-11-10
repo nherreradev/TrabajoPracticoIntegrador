@@ -15,14 +15,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
+import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.core.interfaces.PanelPrecios;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
 import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.core.servicio.PanelesServicioImpl;
@@ -44,6 +44,9 @@ class PanelesServicioTest {
 
 	@Mock
 	PosicionServicio posicionServicio;
+	
+	@Mock
+	ListaPreciosServicio listaPreciosServicio;
 
 	@Test
 	void testPuedoConvertirListaDeJsonAListaDeIntrumentos() {
@@ -95,7 +98,6 @@ class PanelesServicioTest {
 				+ "            \"descripcion\": \"Agrometal\",\r\n" + "            \"plazo\": \"T2\",\r\n"
 				+ "            \"laminaMinima\": 1,\r\n" + "            \"lote\": 1\r\n" + "        }\r\n" + "    ]\r\n"
 				+ "}";
-		ResponseEntity<String> panelAcciones = new ResponseEntity<String>(jsonBody, HttpStatus.OK);
 		List<Instrumento> listaInstrumentos = new ArrayList<>();
 		Posicion posicion = new Posicion();
 		posicion.setCantidad(new BigDecimal(2000));
@@ -103,8 +105,8 @@ class PanelesServicioTest {
 		posicion.setMonedaOid(1L);
 		List<Posicion> listaPosicion = new ArrayList<>();
 		listaPosicion.add(posicion);
-		when(restTemplate.getForEntity("https://api.mercadojunior.com.ar/list/precios/acciones", String.class))
-				.thenReturn(panelAcciones);
+		when(listaPreciosServicio.getListaPrecioMongo(PanelesDePreciosConstantes.ACCIONES))
+				.thenReturn(jsonBody);
 		doNothing().when(instrumentoServicio).persistirInstrumentos(listaInstrumentos);
 		doNothing().when(panelPrecios).agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 		panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);

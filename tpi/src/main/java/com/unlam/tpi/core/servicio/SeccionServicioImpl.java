@@ -20,6 +20,7 @@ import com.unlam.tpi.core.interfaces.SeccionServicio;
 import com.unlam.tpi.core.modelo.Seccion;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.SeccionDTO;
+import com.unlam.tpi.delivery.dto.SeccionMapper;
 
 @Service
 public class SeccionServicioImpl implements SeccionServicio {
@@ -35,7 +36,7 @@ public class SeccionServicioImpl implements SeccionServicio {
 	@Override
 	public void guardar(SeccionDTO seccion) {
 		try {
-			Seccion persistente = SeccionDTO.dTOaEntidad(seccion);
+			Seccion persistente = SeccionMapper.dTOaEntidad(seccion);
 			getSeccionRepositorio().save(persistente);
 		} catch (ServiceException e) {
 			throw e;
@@ -158,7 +159,7 @@ public class SeccionServicioImpl implements SeccionServicio {
 			if (seccion == null) {
 				throw new ServiceException("Error al obtener la seccion");
 			}
-			return SeccionDTO.entidadADTO(seccion);
+			return SeccionMapper.entidadADTO(seccion);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -170,7 +171,7 @@ public class SeccionServicioImpl implements SeccionServicio {
 	public SeccionDTO getSeccionDTOPorNombre(String nombre) {
 		try {
 			Seccion seccion = getSeccionPorNombre(nombre);
-			return SeccionDTO.entidadADTO(seccion);
+			return SeccionMapper.entidadADTO(seccion);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -211,7 +212,7 @@ public class SeccionServicioImpl implements SeccionServicio {
 			if (seccionList == null || seccionList.size() == 0) {
 				throw new ServiceException("Error al obtener la lista de secciones");
 			}
-			return SeccionDTO.entidadDTOLista(seccionList);
+			return SeccionMapper.entidadDTOLista(seccionList);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {

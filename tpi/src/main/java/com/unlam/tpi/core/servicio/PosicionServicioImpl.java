@@ -33,9 +33,9 @@ public class PosicionServicioImpl implements PosicionServicio {
 	PosicionRepositorio posicionRepositorio;
 
 	@Override
-	public ValuacionTotalRespuesta getValuacionTotal() {
+	public ValuacionTotalRespuesta getValuacionTotal(Long oidUsuario) {
 		ValuacionTotalRespuesta valuacionTotalRespuesta = new ValuacionTotalRespuesta();
-		List<Posicion> posicionTotal = posicionRepositorio.findAll();
+		List<Posicion> posicionTotal = posicionRepositorio.getPosicionByUsuarioOid(oidUsuario);
 
 		BigDecimal totalCartera = BigDecimal.ZERO;
 

@@ -26,16 +26,17 @@ import com.unlam.tpi.core.modelo.Seccion;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.servicio.SeccionServicioImpl;
 import com.unlam.tpi.delivery.dto.SeccionDTO;
+import com.unlam.tpi.delivery.dto.SeccionMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class SeccionServicioTest {
 
 	@InjectMocks
 	private SeccionServicioImpl seccionServicio;
-	
+
 	@Mock
 	private SeccionRepositorio seccionRepositorio;
-	
+
 	@Test
 	public void testQuePuedaGuardarSeccion() {
 		SeccionDTO seccion = new SeccionDTO();
@@ -43,7 +44,7 @@ public class SeccionServicioTest {
 		seccion.setDescripcion("Esto es un test");
 		verify(seccionRepositorio, never()).save(any(Seccion.class));
 	}
-	
+
 	@Test
 	public void testQuePuedaGuardarSeccionDevuelvaUnaServiceException() {
 		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
@@ -54,9 +55,9 @@ public class SeccionServicioTest {
 		String actualMessage = serviceException.getMessage();
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
-	
+
 	@Test
-    public void testQuePuedaCargarLasSeccionesDesdeExcelYLasListe() throws IOException {
+	public void testQuePuedaCargarLasSeccionesDesdeExcelYLasListe() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelSeccion", "pregunta.xls", "application/x-xlsx",
 				new ClassPathResource("pregunta.xlsx").getInputStream());
 		SeccionDTO seccionDTO = new SeccionDTO();
@@ -64,12 +65,12 @@ public class SeccionServicioTest {
 		seccionDTO.setDescripcion("Esto es un test");
 		List<SeccionDTO> dtoSecciones = new ArrayList<>();
 		dtoSecciones.add(seccionDTO);
-		List<Seccion> categorias = SeccionDTO.traductorDeListaDTOaEntidad(dtoSecciones);
-	    when(seccionRepositorio.findAll()).thenReturn(categorias);
-	    getSeccionServicio().cargaDesdeExcel(excelFile);
+		List<Seccion> categorias = SeccionMapper.traductorDeListaDTOaEntidad(dtoSecciones);
+		when(seccionRepositorio.findAll()).thenReturn(categorias);
+		getSeccionServicio().cargaDesdeExcel(excelFile);
 		assertNotNull(getSeccionServicio().listar());
-    }
-	
+	}
+
 	@Test
 	public void testQueAlCargarLasSeccionesDesdeExcelFallePorqueNoExisteLaHojaSeccion() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelSeccion", "pregunta_sin_hojas.xls",
@@ -79,7 +80,7 @@ public class SeccionServicioTest {
 		});
 		String expectedMessage = "Error al importar excel verifique que exista la hoja seccion";
 		String actualMessage = serviceException.getMessage();
- 		assertTrue(actualMessage.contains(expectedMessage));
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
 	@Test
@@ -89,19 +90,19 @@ public class SeccionServicioTest {
 		});
 		String expectedMessage = "Error al obtener la seccion por nombre";
 		String actualMessage = serviceException.getMessage();
- 		assertTrue(actualMessage.contains(expectedMessage));
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
-	
+
 	@Test
 	public void testQuePuedaObtenerUnaSeccionPorNombre() {
 		SeccionDTO seccion = new SeccionDTO();
 		seccion.setNombre("SeccionPrueba");
 		seccion.setDescripcion("Esto es un test");
 		getSeccionServicio().guardar(seccion);
-		when(seccionRepositorio.findByNombre("SeccionPrueba")).thenReturn(SeccionDTO.dTOaEntidad(seccion));
+		when(seccionRepositorio.findByNombre("SeccionPrueba")).thenReturn(SeccionMapper.dTOaEntidad(seccion));
 		assertNotNull(getSeccionServicio().getSeccionPorNombre("SeccionPrueba"));
 	}
-	
+
 	public SeccionServicio getSeccionServicio() {
 		return seccionServicio;
 	}

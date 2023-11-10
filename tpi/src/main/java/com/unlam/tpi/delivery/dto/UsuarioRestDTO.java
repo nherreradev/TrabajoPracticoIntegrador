@@ -7,7 +7,6 @@ import org.modelmapper.ModelMapper;
 
 public class UsuarioRestDTO {
 
-    private static ModelMapper mapper = new ModelMapper();
     @JsonProperty("nombre")
     private String nombre;
     @JsonProperty("apellido")
@@ -59,11 +58,4 @@ public class UsuarioRestDTO {
         this.pass = pass;
     }
 
-    public static Usuario UsuarioRest2UsuarioModel(UsuarioRestDTO usuarioRestDTO){
-        try {
-            return mapper.map(usuarioRestDTO, Usuario.class);
-        }catch (Exception e) {
-            throw new ServiceException("Error en convertir UsuarioDTO a usuario", e);
-        }
-    }
 }

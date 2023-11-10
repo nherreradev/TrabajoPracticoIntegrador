@@ -1,6 +1,6 @@
 package com.unlam.tpi.core.servicio;
 
-import com.unlam.tpi.core.interfaces.PrediccionPrecioApi;
+import com.unlam.tpi.core.interfaces.AutenticacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -16,7 +16,7 @@ public class MailServicioImpl implements MailServicio{
 	private static String EMAIL_MERCADOJR = "grupo.4.tpi.unlam@gmail.com";
    
     @Autowired
-    PrediccionPrecioApi.AutenticacionService autenticacionService;
+    AutenticacionService autenticacionService;
     
     @Autowired
     private JavaMailSender emailSender;
