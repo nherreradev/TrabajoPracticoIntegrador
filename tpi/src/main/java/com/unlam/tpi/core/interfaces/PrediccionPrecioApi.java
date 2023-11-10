@@ -4,6 +4,6 @@ import com.unlam.tpi.delivery.dto.PrediccionPrecioDTO;
 
 public interface PrediccionPrecioApi {
 
-	public PrediccionPrecioDTO obtenerPrecio();
+    public PrediccionPrecioDTO obtenerPrecio();
 
 }

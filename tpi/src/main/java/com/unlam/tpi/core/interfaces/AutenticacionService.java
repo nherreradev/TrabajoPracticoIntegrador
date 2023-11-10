@@ -1,4 +1,4 @@
-package com.unlam.tpi.core.servicio;
+package com.unlam.tpi.core.interfaces;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.core.modelo.Usuario;
@@ -14,5 +14,3 @@ public interface AutenticacionService {
     String GenerarTokenLoginUsuario(Usuario usuario) throws NoSuchAlgorithmException, InvalidKeySpecException;
     JWTRestDTO ObtenerClaimsToken(String token) throws JsonProcessingException;
     UsuarioDTO obtenerDatosUsuarioByToken(String token) throws JsonProcessingException;
-
-}

@@ -3,6 +3,7 @@ package com.unlam.tpi.core.servicio;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+import com.unlam.tpi.core.interfaces.AutenticacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -162,7 +163,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	@Override
 	public String getTokenLoginUsuario(String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Usuario usuarioObtain = this.usuarioRepositorio.findByEmailAndPass(email, password);
-		
+
 		try {
 			String token = this.autenticacionService.GenerarTokenLoginUsuario(usuarioObtain);
 			return token;

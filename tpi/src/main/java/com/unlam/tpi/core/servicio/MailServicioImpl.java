@@ -1,5 +1,6 @@
 package com.unlam.tpi.core.servicio;
 
+import com.unlam.tpi.core.interfaces.AutenticacionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

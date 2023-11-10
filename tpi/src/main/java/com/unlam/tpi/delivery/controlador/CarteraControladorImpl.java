@@ -1,9 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +14,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.core.interfaces.CarteraControlador;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
-import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
-import com.unlam.tpi.core.servicio.AutenticacionService;
+import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
 
 @CrossOrigin

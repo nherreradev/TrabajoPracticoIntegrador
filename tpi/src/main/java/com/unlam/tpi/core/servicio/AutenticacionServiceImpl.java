@@ -3,6 +3,7 @@ package com.unlam.tpi.core.servicio;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.JWTRestDTO;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
@@ -12,17 +13,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
 
 @Service
-public class AutenticacionServiceImpl implements AutenticacionService{
+public class AutenticacionServiceImpl implements AutenticacionService {
     //Fd/sUclIKu1QgBgPkrMdeuoBppm+3tK8cSH97SI0rp0=
     private static String SECRET_KEY = "Fd/sUclIKu1QgBgPkrMdeuoBppm+3tK8cSH97SI0rp0=";
     @Override
@@ -95,7 +94,7 @@ public class AutenticacionServiceImpl implements AutenticacionService{
 	@Override
 	public UsuarioDTO obtenerDatosUsuarioByToken(String token) throws JsonProcessingException {
 		UsuarioDTO usuario = new UsuarioDTO();
-        
+
         try {
             Claims claims = Jwts.parser()
             		.setSigningKey(SECRET_KEY)
@@ -108,7 +107,7 @@ public class AutenticacionServiceImpl implements AutenticacionService{
             usuario.setNombre(claims.get("nombre", String.class));
             usuario.setApellido(claims.get("apellido", String.class));
             usuario.setPremium(claims.get("premium", Boolean.class));
-           
+
             return usuario;
         } catch (Exception e) {
             return null;
