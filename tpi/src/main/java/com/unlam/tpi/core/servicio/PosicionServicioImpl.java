@@ -6,10 +6,12 @@ import static com.unlam.tpi.infraestructura.helpers.CalculosHabituales.esMasGran
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -86,7 +88,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			} else {
 				puedeOperarResultado.setPuedeOperar(true);
 				Posicion posicionTitulos = new Posicion();
-				completarPosicionDeTitulos(orden, posicionTitulos);
+				completarPosicionDeTitulos(orden, posicionTitulos, null);
 				posicionRepositorio.save(posicionTitulos);
 
 				Posicion posicionDinero = new Posicion();
@@ -101,15 +103,18 @@ public class PosicionServicioImpl implements PosicionServicio {
 			Map<String, BigDecimal> instrumentosPorCantidad = obtenerCantidadPorInstrumento(titulosEnPosicionLista);
 			BigDecimal cantidadTitulosAVender = orden.getCantidad();
 			BigDecimal totalTitulosEnPosicion = instrumentosPorCantidad.get(orden.getSimboloInstrumento());
+			BigDecimal titulosQueMeQuedarianEnCartera = cantidadTitulosAVender.subtract(totalTitulosEnPosicion);
+
 			if (instrumentosPorCantidad.containsKey(orden.getSimboloInstrumento())) {
 				if (CalculosHabituales.esMasGrandeQue(cantidadTitulosAVender, totalTitulosEnPosicion)) {
 					puedeOperarResultado.setPuedeOperar(false);
 					puedeOperarResultado.setDisponible(totalTitulosEnPosicion);
 				} else {
-					puedeOperarResultado.setPuedeOperar(true);
 
+					puedeOperarResultado.setPuedeOperar(true);
 					Posicion posicionDinero = new Posicion();
-					completarPosicionDeTitulos(orden, posicionDinero);
+
+					completarPosicionDeTitulos(orden, posicionDinero, titulosQueMeQuedarianEnCartera);
 					posicionRepositorio.save(posicionDinero);
 
 					Posicion posiciontitulos = new Posicion();
@@ -126,8 +131,8 @@ public class PosicionServicioImpl implements PosicionServicio {
 	public void acreditarDinero(RequestCargaDeDinero request) {
 		try {
 			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
-			if (posicionBuscada == null
-					|| !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS.equals(posicionBuscada != null ? posicionBuscada.getConcepto():null)) {
+			if (posicionBuscada == null || !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS
+					.equals(posicionBuscada != null ? posicionBuscada.getConcepto() : null)) {
 				Posicion posicion = new Posicion();
 				posicion.setCantidad(request.getCantidadPorAcreditar());
 				posicion.setEsEfectivo(true);
@@ -150,7 +155,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		if (esCompra) {
 			posicionDinero.setCantidad(orden.getCantidad().multiply(orden.getPrecio()).multiply(new BigDecimal(-1)));
 			posicionDinero.setEsEfectivo(true);
-			posicionDinero.setFecha_posicion(LocalDate.now());
+			posicionDinero.setFecha_posicion(LocalDateTime.now());
 			posicionDinero.setMonedaOid(orden.getMonedaOid());
 			posicionDinero.setPrecioActualDeVenta(null);
 			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
@@ -159,7 +164,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		} else {
 			posicionDinero.setCantidad(orden.getCantidad().multiply(orden.getPrecio()));
 			posicionDinero.setEsEfectivo(true);
-			posicionDinero.setFecha_posicion(LocalDate.now());
+			posicionDinero.setFecha_posicion(LocalDateTime.now());
 			posicionDinero.setMonedaOid(orden.getMonedaOid());
 			posicionDinero.setPrecioActualDeVenta(null);
 			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
@@ -169,11 +174,14 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	}
 
-	private void completarPosicionDeTitulos(Orden orden, Posicion posicion) {
+	private void completarPosicionDeTitulos(Orden orden, Posicion posicion, BigDecimal titulosQueMeQuedarianEnCartera) {
 
 		boolean esCompra = orden.getSentido().equals(OrdenConstantes.COMPRA) ? true : false;
 
 		if (!esCompra) {
+			if (titulosQueMeQuedarianEnCartera.compareTo(BigDecimal.ZERO) <= 0) {
+				posicion.setLiquidoExistenciaDelSimbolo(true);
+			}
 			posicion.setCantidad(orden.getCantidad().multiply(new BigDecimal(-1)));
 			posicion.setConcepto("TITULOS-ORIG");
 		} else {
@@ -182,7 +190,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 
 		posicion.setEsEfectivo(false);
-		posicion.setFecha_posicion(LocalDate.now());
+		posicion.setFecha_posicion(LocalDateTime.now());
 		posicion.setMonedaOid(orden.getMonedaOid());
 		posicion.setPrecioActualDeVenta(orden.getPrecio());
 		posicion.setPrecioAlMomentoDeCompra(orden.getPrecio());
@@ -196,15 +204,16 @@ public class PosicionServicioImpl implements PosicionServicio {
 			if (PanelPreciosImpl.panelAcciones.containsKey(orden.getSimboloInstrumento())) {
 				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
 					Puntas puntas = PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas();
-					BigDecimal precioCompra = puntas != null && puntas.getPrecioCompra() != null
+					BigDecimal precioVenta = puntas != null && puntas.getPrecioCompra() != null
+							? puntas.getPrecioVenta()
+							: null;
+					orden.setPrecio(precioVenta);
+				} else {
+					Puntas puntas = PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioCompra = puntas != null && puntas.getPrecioVenta() != null
 							? puntas.getPrecioCompra()
 							: null;
 					orden.setPrecio(precioCompra);
-				} else {
-					Puntas puntas = PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas();
-					BigDecimal precioVenta = puntas != null && puntas.getPrecioVenta() != null ? puntas.getPrecioVenta()
-							: null;
-					orden.setPrecio(precioVenta);
 				}
 			} else {
 				throw new ServiceException(
@@ -271,7 +280,8 @@ public class PosicionServicioImpl implements PosicionServicio {
 		BigDecimal totalInstrumentos = BigDecimal.ZERO;
 		for (Posicion posicion : posicionTotal) {
 			if (!posicion.getEsEfectivo()) {
-				totalInstrumentos = totalInstrumentos.add(posicion.getPrecioActualDeVenta().multiply(posicion.getCantidad()));
+				totalInstrumentos = totalInstrumentos
+						.add(posicion.getPrecioActualDeVenta().multiply(posicion.getCantidad()));
 			}
 		}
 		return totalInstrumentos;
@@ -349,7 +359,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 				completarRendimiento(costoTotalDeLasCompras, gananciaTotalOPerdidaMonto,
 						gananciaTotalOPerdidaPorcentaje, posicion2, rendimientoResponse);
 
-				String key = posicion2.getSimboloInstrumento() + "+" + posicion2.getFecha_posicion();
+				String key = posicion2.getSimboloInstrumento();
 
 				if (mapaRendimientos.containsKey(key)) {
 					RendimientoResponse rendimientoObtenido = mapaRendimientos.get(key);
@@ -439,27 +449,44 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	private List<Posicion> obtenerSoloPosicionesEnCartera(List<Posicion> todasLasPosiciones) {
 
-		Map<String, BigDecimal> cantidadesPorSimbolo = new HashMap<>();
+		List<Posicion> listaFiltrada = new ArrayList<>();
 
-		LocalDate fechaHoy = LocalDate.now();
+		Map<String, List<Posicion>> posicionesPorSimbolo = new LinkedHashMap<>();
 
 		for (Posicion posicion2 : todasLasPosiciones) {
-			String simbolo = posicion2.getSimboloInstrumento();
-			BigDecimal cantidad = posicion2.getCantidad();
-
-			BigDecimal cantidadAcumulada = cantidadesPorSimbolo.getOrDefault(simbolo, BigDecimal.ZERO);
-			cantidadAcumulada = cantidadAcumulada.add(cantidad);
-			cantidadesPorSimbolo.put(simbolo, cantidadAcumulada);
+			if (!posicionesPorSimbolo.containsKey(posicion2.getSimboloInstrumento())) {
+				posicionesPorSimbolo.put(posicion2.getSimboloInstrumento(), new ArrayList<Posicion>());
+				posicionesPorSimbolo.get(posicion2.getSimboloInstrumento()).add(0, posicion2);
+			} else {
+				posicionesPorSimbolo.get(posicion2.getSimboloInstrumento()).add(0, posicion2);
+			}
 		}
 
-		List<Posicion> posicionesConCantidadesPositivas = todasLasPosiciones.stream().filter(
-				posicion -> cantidadesPorSimbolo.get(posicion.getSimboloInstrumento()).compareTo(BigDecimal.ZERO) > 0)
-				.filter(posicion -> posicion.getFecha_posicion().isEqual(fechaHoy))
-				.sorted(Comparator.comparing(Posicion::getFecha_posicion)
-						.thenComparing(Posicion::getSimboloInstrumento))
-				.collect(Collectors.toList());
+		for (Map.Entry<String, List<Posicion>> entry : posicionesPorSimbolo.entrySet()) {
+			List<Posicion> posiciones = entry.getValue();
 
-		return posicionesConCantidadesPositivas;
+			for (Posicion posicion : posiciones) {
+
+				if (!Boolean.TRUE.equals(posicion.liquidoExistenciaDelSimbolo())) {
+					listaFiltrada.add(posicion);
+				} else {
+					break;
+				}
+
+			}
+		}
+
+		/*
+		 * List<Posicion> posicionesConCantidadesPositivas =
+		 * todasLasPosiciones.stream().filter( posicion ->
+		 * posicionesPorSimbolo.get(posicion.getSimboloInstrumento()).compareTo(
+		 * BigDecimal.ZERO) > 0)
+		 * .sorted(Comparator.comparing(Posicion::getFecha_posicion).reversed()
+		 * .thenComparing(Posicion::getSimboloInstrumento))
+		 * .collect(Collectors.toList());
+		 */
+
+		return listaFiltrada;
 	}
 
 }

@@ -2,6 +2,7 @@ package com.unlam.tpi.core.modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class HistoricoRendimientosResponse {
 
@@ -11,7 +12,7 @@ public class HistoricoRendimientosResponse {
 
 	BigDecimal totalPorcentajeDelDia;
 
-	LocalDate fecha;
+	LocalDateTime fecha;
 
 	public String getSimbolo() {
 		return simbolo;
@@ -37,11 +38,11 @@ public class HistoricoRendimientosResponse {
 		this.totalPorcentajeDelDia = totalPorcentajeDelDia;
 	}
 
-	public LocalDate getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 

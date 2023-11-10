@@ -2,6 +2,7 @@ package com.unlam.tpi.core.modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +24,7 @@ public class HistoricoRendimientos extends ObjetoPersistente{
 	BigDecimal totalPorcentajeDelDia;
 	
 	@Column(name = "FECHA")
-	LocalDate fecha;
+	LocalDateTime fecha;
 
 	public String getSimbolo() {
 		return simbolo;
@@ -49,11 +50,11 @@ public class HistoricoRendimientos extends ObjetoPersistente{
 		this.totalPorcentajeDelDia = totalPorcentajeDelDia;
 	}
 
-	public LocalDate getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 

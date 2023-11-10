@@ -1,6 +1,6 @@
 package com.unlam.tpi.infraestructura.repositorio;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,8 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import com.unlam.tpi.core.interfaces.HistoricoRendimientoRepositorioCustomizado;
 import com.unlam.tpi.core.modelo.HistoricoRendimientos;
-import com.unlam.tpi.core.modelo.HistoricoRendimientosResponse;
-import com.unlam.tpi.core.modelo.Posicion;
 
 @Repository
 public class HistoricoRendimientoRepositorioImpl implements HistoricoRendimientoRepositorioCustomizado {
@@ -24,7 +22,7 @@ public class HistoricoRendimientoRepositorioImpl implements HistoricoRendimiento
 	private EntityManager entityManager;
 
 	@Override
-	public List<HistoricoRendimientos> buscarPorSimboloYFecha(String simbolo, LocalDate fecha) {
+	public List<HistoricoRendimientos> buscarPorSimboloYFecha(String simbolo, LocalDateTime fecha) {
 
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
