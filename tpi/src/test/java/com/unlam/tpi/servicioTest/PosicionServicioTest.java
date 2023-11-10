@@ -218,7 +218,7 @@ class PosicionServicioTest {
 
 		when(posicionRepositorio.findAll()).thenReturn(listaPosiciones);
 
-		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal();
+		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal(1L);
 
 		assertEquals(totalMonedas, valuacionTotalRespuesta.getTotalMonedas());
 		assertEquals(totalInstrumentos, valuacionTotalRespuesta.getTotalInstrumentos());
