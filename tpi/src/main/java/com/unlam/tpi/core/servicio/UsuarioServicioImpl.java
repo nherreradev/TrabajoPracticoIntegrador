@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 import com.unlam.tpi.core.interfaces.AutenticacionService;
+import com.unlam.tpi.core.modelo.UsuarioLogin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,6 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	private Usuario CrearUsuario(UsuarioRestDTO usuarioRestDTO, String token) {
 		Usuario usuario = UsuarioMapper.UsuarioRest2UsuarioModel(usuarioRestDTO);
 		usuario.setTokenValidacion(token);
-		// usuario.setNombreUsuario(usuario.g);
 		usuario.setCuentaConfirmada(Boolean.FALSE);
 		usuario.setActivo(Boolean.TRUE);
 		usuario.setPremium(Boolean.FALSE);
@@ -62,8 +62,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	@Override
 	public Usuario ObtenerUsuarioPorEmail(String email) {
 		try {
-			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(email);
-			return buscado;
+			return this.usuarioRepositorio.getUsuarioByEmail(email);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -99,7 +98,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public boolean UsuarioValidado(String token) throws JsonProcessingException {
+	public boolean UsuarioValidadoPorPrimeraVez(String token) throws JsonProcessingException {
 		JWTRestDTO res = this.autenticacionService.ObtenerClaimsToken(token);
 		try {
 			if (res != null) {
@@ -114,6 +113,13 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			return false;
 		}
 		return false;
+	}
+
+	@Override
+	public Boolean ElUsuarioFueYaEstaValidado(String token) throws JsonProcessingException {
+		JWTRestDTO UsuarioToken = autenticacionService.ObtenerClaimsToken(token);
+		Usuario usuario = usuarioRepositorio.getUsuarioByEmail(UsuarioToken.getEmailUsuario());
+		return usuario.getActivo();
 	}
 
 	@Override
@@ -158,20 +164,6 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	public void ConfirmarCuenta(Usuario usuario) {
 		usuario.setCuentaConfirmada(Boolean.TRUE);
 		this.usuarioRepositorio.save(usuario);
-	}
-
-	@Override
-	public String getTokenLoginUsuario(String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		Usuario usuarioObtain = this.usuarioRepositorio.findByEmailAndPass(email, password);
-
-		try {
-			String token = this.autenticacionService.GenerarTokenLoginUsuario(usuarioObtain);
-			return token;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
-
 	}
 
 }
