@@ -1,14 +1,8 @@
 package com.unlam.tpi.delivery.controlador;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.unlam.tpi.core.interfaces.AutenticacionService;
-import com.unlam.tpi.delivery.dto.JWTRestDTO;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -78,13 +72,11 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	public ResponseEntity<ResponseAPI> ActivarCuenta(@RequestBody String token) throws JsonProcessingException {
 		//TODO: terminar token, buscar por mail y verificar si ya fue activada la cuenta
 		if(usuarioServicio.ElUsuarioFueYaEstaValidado(token)){
-
-		}
-		if(jwtRestDTO.getEstaValidado()){
 			return new ResponseEntity<>(response.RecursoYaExistente(),
 					response.RecursoYaExistente().getStatus());
 		}
-		if (!this.usuarioServicio.UsuarioValidado(token)) {
+
+		if (!this.usuarioServicio.UsuarioValidadoPorPrimeraVez(token)) {
 			return new ResponseEntity<>(response.MensajeDeErrorEnRequest(),
 					response.MensajeDeErrorEnRequest().getStatus());
 		}

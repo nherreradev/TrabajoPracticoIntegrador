@@ -98,7 +98,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public boolean UsuarioValidado(String token) throws JsonProcessingException {
+	public boolean UsuarioValidadoPorPrimeraVez(String token) throws JsonProcessingException {
 		JWTRestDTO res = this.autenticacionService.ObtenerClaimsToken(token);
 		try {
 			if (res != null) {
@@ -116,9 +116,10 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public Boolean ElUsuarioFueYaEstaValidado(UsuarioLogin usuarioLogin) {
-		Usuario buscado = usuarioRepositorio.getUsuarioByEmail(usuarioLogin.getMail());
-		return buscado.getActivo();
+	public Boolean ElUsuarioFueYaEstaValidado(String token) throws JsonProcessingException {
+		JWTRestDTO UsuarioToken = autenticacionService.ObtenerClaimsToken(token);
+		Usuario usuario = usuarioRepositorio.getUsuarioByEmail(UsuarioToken.getEmailUsuario());
+		return usuario.getActivo();
 	}
 
 	@Override
