@@ -17,4 +17,6 @@ public interface InstrumentoServicio {
 
 	Instrumento obtenerInstrumentoPorTipoPerfil(String tipoPerfil);
 
+	Instrumento obtenerInstrumentoPorSimbolo(String simboloInstrumento);
+
 }

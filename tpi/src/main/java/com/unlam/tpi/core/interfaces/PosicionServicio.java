@@ -6,11 +6,13 @@ import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.unlam.tpi.core.modelo.HistoricoRendimientosResponse;
 import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
-import com.unlam.tpi.core.modelo.ResponsePorcentaje;
+import com.unlam.tpi.core.modelo.RendimientoResponse;
+import com.unlam.tpi.core.modelo.RendimientoActualResponse;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 
 public interface PosicionServicio {
@@ -34,6 +36,13 @@ public interface PosicionServicio {
 	void actualizarPosicion(Posicion posicion);
 
 	@Transactional
-	public Map<String, ResponsePorcentaje> calcularPorcentajeGananciaPerdida(String token);
+	public RendimientoActualResponse calcularRendimientoActual(String token);
+
+	@Transactional
+	List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String token,
+			String simboloInstrumento);
+	
+	@Transactional
+	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos);
 
 }

@@ -207,7 +207,7 @@ class PosicionServicioTest {
 
 		Posicion posicionTitulos = new Posicion();
 		posicionTitulos.setCantidad(new BigDecimal(2));
-		posicionTitulos.setPrecio(new BigDecimal(10));
+		posicionTitulos.setPrecioActualDeVenta(new BigDecimal(10));
 		posicionTitulos.setSimboloInstrumento("AGRO");
 		posicionTitulos.setEsEfectivo(false);
 		posicionTitulos.setMonedaOid(1L);

@@ -1,7 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.interfaces.RendimientoControlador;
-import com.unlam.tpi.core.modelo.RequestPorcentaje;
-import com.unlam.tpi.core.modelo.ResponsePorcentaje;
+import com.unlam.tpi.core.modelo.RendimientoRequest;
+import com.unlam.tpi.core.modelo.HistoricoRendimientos;
+import com.unlam.tpi.core.modelo.HistoricoRendimientosResponse;
+import com.unlam.tpi.core.modelo.RendimientoActualResponse;
 
 @CrossOrigin
 @RestController
@@ -25,12 +26,31 @@ public class RendimientoControladorImpl implements RendimientoControlador {
 	PosicionServicio posicionServicio;
 
 	@Override
-	@PostMapping("/calcular/porcentaje")
-	public ResponseEntity<Map<String, ResponsePorcentaje>> calcularPorcentajeGananciaPerdidaDeTodosLosInstrumentosEnCartera(
-			@RequestBody RequestPorcentaje request) {
-		Map<String, ResponsePorcentaje> responsePorcentaje = posicionServicio
-				.calcularPorcentajeGananciaPerdida(request.getToken());
-		return ResponseEntity.ok(responsePorcentaje);
+	@PostMapping("/instrumentos/actual")
+	public ResponseEntity<RendimientoActualResponse> calcularRendimientoInstrumentosEnCarteraDiaDeHoy(
+			@RequestBody RendimientoRequest request) {
+		RendimientoActualResponse rendimientoActualResponse = posicionServicio
+				.calcularRendimientoActual(request.getToken());
+		return ResponseEntity.ok(rendimientoActualResponse);
 	}
+	
+	@Override
+	@PostMapping("/instrumentos/historico")
+	public ResponseEntity<List<HistoricoRendimientosResponse>> calcularRendimientoInstrumentosHistorico(
+			@RequestBody RendimientoRequest request) {
+		List<HistoricoRendimientosResponse> listaDeRendimientosHistoricos = posicionServicio.obtenerRendimientosHistoricosPorSimbolo(request.getToken(), request.getSimboloInstrumento());
+		return ResponseEntity.ok(listaDeRendimientosHistoricos);
+	}
+	
+	@Override
+	@PostMapping("/dia/guardar")
+	public ResponseEntity<String> guardarRendimientoDiario(
+			@RequestBody RendimientoRequest request) {
+		RendimientoActualResponse rendimientoActualResponse = posicionServicio.calcularRendimientoActual(request.getToken());
+		posicionServicio.guardarCierresDiarios(rendimientoActualResponse.getRendimientosActuales());
+		return ResponseEntity.ok("Rendimiento guardado correctamente");
+	}
+	
+	
 
 }
