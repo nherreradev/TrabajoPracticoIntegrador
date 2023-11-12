@@ -9,6 +9,5 @@ public interface HistoricoRendimientoRepositorioCustomizado {
 
 	List<HistoricoRendimientos> buscarPorSimboloYFecha(String simbolo, LocalDateTime fecha);
 
-	List<HistoricoRendimientos> obtenerRendimientosHistoricosPorSimbolo(String token,
-			String simboloInstrumento);
+	List<HistoricoRendimientos> obtenerRendimientosHistoricosPorSimbolo(String simboloInstrumento, Long usuarioOid);
 }

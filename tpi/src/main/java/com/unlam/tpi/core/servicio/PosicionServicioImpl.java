@@ -5,7 +5,6 @@ import static com.unlam.tpi.infraestructura.helpers.CalculosHabituales.esMasGran
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,9 +49,9 @@ public class PosicionServicioImpl implements PosicionServicio {
 	InstrumentoServicio instrumentoServicio;
 
 	@Override
-	public ValuacionTotalRespuesta getValuacionTotal() {
+	public ValuacionTotalRespuesta getValuacionTotal(Long oidUsuario) {
 		ValuacionTotalRespuesta valuacionTotalRespuesta = new ValuacionTotalRespuesta();
-		List<Posicion> posicionTotal = posicionRepositorio.findAll();
+		List<Posicion> posicionTotal = posicionRepositorio.getPosicionByUsuarioOid(oidUsuario);
 
 		BigDecimal totalCartera = BigDecimal.ZERO;
 
@@ -126,14 +125,15 @@ public class PosicionServicioImpl implements PosicionServicio {
 	@Override
 	public void acreditarDinero(RequestCargaDeDinero request) {
 		try {
-			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
+			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConceptoYUsuario(request.getConcepto(),
+					request.getUsuarioOid());
 			if (posicionBuscada == null || !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS
 					.equals(posicionBuscada != null ? posicionBuscada.getConcepto() : null)) {
 				Posicion posicion = new Posicion();
 				posicion.setCantidad(request.getCantidadPorAcreditar());
 				posicion.setEsEfectivo(true);
 				posicion.setMonedaOid(1L);
-				posicion.setUsuarioOid(1L);
+				posicion.setUsuarioOid(request.getUsuarioOid());
 				posicion.setConcepto(request.getConcepto());
 				posicionRepositorio.save(posicion);
 			}
@@ -154,7 +154,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			posicionDinero.setFecha_posicion(LocalDateTime.now());
 			posicionDinero.setMonedaOid(orden.getMonedaOid());
 			posicionDinero.setPrecioActualDeVenta(null);
-			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+			posicionDinero.setUsuarioOid(orden.getUsuarioOid());
 			posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
 			posicionDinero.setConcepto("DINERO-COMPLE");
 		} else {
@@ -163,7 +163,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			posicionDinero.setFecha_posicion(LocalDateTime.now());
 			posicionDinero.setMonedaOid(orden.getMonedaOid());
 			posicionDinero.setPrecioActualDeVenta(null);
-			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+			posicionDinero.setUsuarioOid(orden.getUsuarioOid());
 			posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
 			posicionDinero.setConcepto("DINERO-COMPLE");
 		}
@@ -190,7 +190,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		posicion.setMonedaOid(orden.getMonedaOid());
 		posicion.setPrecioActualDeVenta(orden.getPrecio());
 		posicion.setPrecioAlMomentoDeCompra(orden.getPrecio());
-		posicion.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+		posicion.setUsuarioOid(orden.getUsuarioOid());
 		posicion.setSimboloInstrumento(orden.getSimboloInstrumento());
 	}
 
@@ -294,11 +294,11 @@ public class PosicionServicioImpl implements PosicionServicio {
 	}
 
 	@Override
-	public RendimientoActualResponse calcularRendimientoActual(String token) {
-
+	public RendimientoActualResponse calcularRendimientoActual(Long usuarioOid) {
+		
 		RendimientoActualResponse rendimientoActualResponse = new RendimientoActualResponse();
 		Map<String, RendimientoResponse> mapaRendimientos = new HashMap<>();
-		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos();
+		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos(usuarioOid);
 		List<Posicion> posicionEnCartera = obtenerSoloPosicionesEnCartera(posicion);
 
 		if (posicionEnCartera != null && !posicionEnCartera.isEmpty()) {
@@ -384,9 +384,9 @@ public class PosicionServicioImpl implements PosicionServicio {
 	}
 
 	@Override
-	public List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String token,
-			String simboloInstrumento) {
-		return historicoRendimientoServicio.obtenerRendimientosHistoricosPorSimbolo(token, simboloInstrumento);
+	public List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String simboloInstrumento,
+			Long usuarioOid) {
+		return historicoRendimientoServicio.obtenerRendimientosHistoricosPorSimbolo(simboloInstrumento, usuarioOid);
 	}
 
 	private void completarRendimiento(BigDecimal costoTotalDeLasCompras, BigDecimal gananciaTotalOPerdidaMonto,
@@ -400,7 +400,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		rendimientoResponse.setFecha(posicion2.getFecha_posicion());
 	}
 
-	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos) {
+	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos, Long usuarioOid) {
 
 		for (Map.Entry<String, RendimientoResponse> entry : mapaRendimientos.entrySet()) {
 
@@ -412,6 +412,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			historicoRendimientos.setFecha(rendimientoResponse.getFecha());
 			historicoRendimientos.setCantidadDeTitulos(rendimientoResponse.getCantidadDeTitulos());
 			historicoRendimientos.setValorInversion(rendimientoResponse.getValorActualDeLaInversion());
+			historicoRendimientos.setUsuarioOid(usuarioOid);
 
 			historicoRendimientoServicio.guardar(historicoRendimientos);
 

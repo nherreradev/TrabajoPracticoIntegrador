@@ -33,20 +33,21 @@ public class HistoricoRendimientoServicioImpl implements HistoricoRendimientoSer
 	}
 
 	@Override
-	public List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String token,
-			String simboloInstrumento) {
+	public List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String simboloInstrumento,
+			Long usuarioOid) {
 
 		List<HistoricoRendimientosResponse> listaHistoricoRendimientosResponse = new ArrayList<>();
 
 		List<HistoricoRendimientos> listaHistoricoRendimientos = historicoRendimientoRepositorio
-				.obtenerRendimientosHistoricosPorSimbolo(token, simboloInstrumento);
+				.obtenerRendimientosHistoricosPorSimbolo(simboloInstrumento, usuarioOid);
 
 		if (listaHistoricoRendimientos != null && !listaHistoricoRendimientos.isEmpty()) {
 			for (HistoricoRendimientos historicoRendimientos : listaHistoricoRendimientos) {
 				HistoricoRendimientosResponse historicoRendimientosResponse = new HistoricoRendimientosResponse();
 				historicoRendimientosResponse.setSimbolo(historicoRendimientos.getSimbolo());
 				historicoRendimientosResponse.setRendimientoTotal(historicoRendimientos.getRendimientoTotal());
-				historicoRendimientosResponse.setRendimientoTotalPorcentaje(historicoRendimientos.getRendimientoTotalPorcentaje());
+				historicoRendimientosResponse
+						.setRendimientoTotalPorcentaje(historicoRendimientos.getRendimientoTotalPorcentaje());
 				historicoRendimientosResponse.setFecha(historicoRendimientos.getFecha());
 				historicoRendimientosResponse.setCantidadDeTitulos(historicoRendimientos.getCantidadDeTitulos());
 				historicoRendimientosResponse.setValorInversion(historicoRendimientos.getValorInversion());

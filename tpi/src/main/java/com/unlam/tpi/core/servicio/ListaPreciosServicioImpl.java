@@ -1,34 +1,41 @@
 package com.unlam.tpi.core.servicio;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.unlam.tpi.core.interfaces.ListaPreciosRepository;
 import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 @Service
 public class ListaPreciosServicioImpl implements ListaPreciosServicio {
-    Integer INDEX = 0;
+    private static final String CEDEARS_KEY = "cedears";
+	private static final String BONOS_KEY = "bonos";
+	private static final String ACCIONES_KEY = "acciones";
+	Integer INDEX = 0;
     @Autowired
     private ListaPreciosRepository listaPreciosRepository;
     private final RestTemplate restTemplate;
     String ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
     String BONOS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=titulosPublicos&cotizacionInstrumentoModel.pais=argentina";
-
-    @Autowired
+    String CEDEARS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=cedears&cotizacionInstrumentoModel.pais=argentina";
+    
     public ListaPreciosServicioImpl(RestTemplate restTemplate){
         this.restTemplate = restTemplate;
     }
 
     @Override
-    public ResponseEntity<String> SavePriceList(String titulo, String token) {
+    public ResponseEntity<String> guardarListaPrecios(String titulo, String token) {
         Map<String, Boolean> ResponseOK = new HashMap<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
@@ -38,15 +45,20 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
 
         try{
             switch (titulo) {
-                case "bonos":
+                case BONOS_KEY:
                     requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(BONOS));
                     responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.ValidateResponse(responseEntity, "bonos");
+                    ResponseOK = this.validateResponse(responseEntity, BONOS_KEY);
                     break;
-                case "acciones":
+                case ACCIONES_KEY:
                     requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(ACCIONES));
                     responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.ValidateResponse(responseEntity, "acciones");
+                    ResponseOK = this.validateResponse(responseEntity, ACCIONES_KEY);
+                    break;
+                case CEDEARS_KEY:
+                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(CEDEARS));
+                    responseEntity = restTemplate.exchange(requestEntity, String.class);
+                    ResponseOK = this.validateResponse(responseEntity, CEDEARS_KEY);
                     break;
                 default:
                     break;
@@ -56,33 +68,35 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
             e.printStackTrace();
             return null;
         }
-        SaveMongoTransaction(ResponseOK, responseEntity);
+        saveMongoTransaction(ResponseOK, responseEntity);
         return responseEntity;
     }
 
-    private void SaveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) {
+    private void saveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) {
         int IndexLlaveAbertura = responseEntity.toString().indexOf('{');
         int IndexLlaveCierre = responseEntity.toString().lastIndexOf('}');
         if (IndexLlaveAbertura != -1 && IndexLlaveCierre != -1 && IndexLlaveAbertura < IndexLlaveCierre) {
             String jsonToSave = responseEntity.toString().substring(IndexLlaveAbertura, IndexLlaveCierre + 1);
-            String collection = GetMapKey(responseOK);
-            this.listaPreciosRepository.GuardarResponseTransaccion(jsonToSave, collection);
+            String collection = getMapKey(responseOK);
+            if(collection!=null) {
+            	this.listaPreciosRepository.guardarResponseTransaccion(jsonToSave, collection);
+            }
         }
     }
 
     @Override
-    public Map<String, Boolean> ValidateResponse(ResponseEntity<String> responseEntity, String instrumento) {
+    public Map<String, Boolean> validateResponse(ResponseEntity<String> responseEntity, String instrumento) {
         Map<String, Boolean> ResponseOk = new HashMap<>();
-        ResponseOk.put(instrumento, IsStatusCodeOk(responseEntity) ? true : false);
+        ResponseOk.put(instrumento, isStatusCodeOk(responseEntity) ? true : false);
         return ResponseOk;
     }
 
     @Override
-    public String GetPriceListMongo(String instrumento) {
+    public String getListaPrecioMongo(String instrumento) {
         String resultadoFinalJSON = null;
         List <String> res = null;;
         try{
-            res = this.listaPreciosRepository.GetAllWithoutID(instrumento);
+            res = this.listaPreciosRepository.getAllWithoutID(instrumento);
             if(INDEX < res.size()){
                 resultadoFinalJSON = res.get(INDEX);
                 INDEX++;
@@ -98,8 +112,25 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         return resultadoFinalJSON;
     }
 
-    private String GetMapKey(Map<String, Boolean> responseOK) { return responseOK.containsKey("acciones") ? "acciones" : "bonos"; }
-    private boolean IsStatusCodeOk(ResponseEntity<String> responseEntity) { return responseEntity.getStatusCode() == HttpStatus.OK; }
-    private Integer DeterminarIndexRandomDelArray(List<String> res) { return 0; }
+	private String getMapKey(Map<String, Boolean> responseOK) {
+		if(responseOK.containsKey(ACCIONES_KEY)) {
+			return ACCIONES_KEY;
+		}
+		if(responseOK.containsKey(BONOS_KEY)) {
+			return BONOS_KEY;
+		}
+		if(responseOK.containsKey(CEDEARS_KEY)) {
+			return CEDEARS_KEY;
+		}
+		return null;
+	}
+
+	private boolean isStatusCodeOk(ResponseEntity<String> responseEntity) {
+		return responseEntity.getStatusCode() == HttpStatus.OK;
+	}
+
+	private Integer determinarIndexRandomDelArray(List<String> res) {
+		return 0;
+	}
 
 }

@@ -18,7 +18,7 @@ import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 public interface PosicionServicio {
 
 	@Transactional
-	ValuacionTotalRespuesta getValuacionTotal();
+	ValuacionTotalRespuesta getValuacionTotal(Long oidUsuario);
 
 	@Transactional
 	PuedeOperarResultado puedeOperar(Orden orden);
@@ -36,13 +36,13 @@ public interface PosicionServicio {
 	void actualizarPosicion(Posicion posicion);
 
 	@Transactional
-	public RendimientoActualResponse calcularRendimientoActual(String token);
+	public RendimientoActualResponse calcularRendimientoActual(Long usuarioOid);
 
 	@Transactional
-	List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String token,
-			String simboloInstrumento);
+	List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String simboloInstrumento,
+			Long usuarioOid);
 	
 	@Transactional
-	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos);
+	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos, Long userOid);
 
 }

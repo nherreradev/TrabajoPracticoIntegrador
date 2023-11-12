@@ -4,19 +4,22 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.unlam.tpi.core.modelo.RendimientoRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.core.modelo.HistoricoRendimientosResponse;
 import com.unlam.tpi.core.modelo.RendimientoActualResponse;
 
 public interface RendimientoControlador {
 
 	public ResponseEntity<RendimientoActualResponse> calcularRendimientoInstrumentosEnCarteraDiaDeHoy(
-			@RequestBody RendimientoRequest request);
+			@RequestBody RendimientoRequest request, 
+			@RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException;
 
 	public ResponseEntity<List<HistoricoRendimientosResponse>> calcularRendimientoInstrumentosHistorico(
-			@RequestBody RendimientoRequest request);
+			@RequestBody RendimientoRequest request, @RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException;
 
-	public ResponseEntity<String> guardarRendimientoDiario(@RequestBody RendimientoRequest request);
+	public ResponseEntity<String> guardarRendimientoDiario(@RequestBody RendimientoRequest request, @RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException;
 
 }

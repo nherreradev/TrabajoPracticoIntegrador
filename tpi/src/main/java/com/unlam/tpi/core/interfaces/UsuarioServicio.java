@@ -13,11 +13,13 @@ public interface UsuarioServicio {
 
 	void GuardarUsuario(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException;
 	void ConfirmarCuenta(Usuario usuario);
-	Boolean ExisteUsuario(String email);
+	Boolean ExisteEmail(String email);
+	Boolean ExisteNombreUsuario(String nombreUsuario);
 	Usuario ObtenerUsuarioPorEmail(String email);
 	ResponseAPI ModificarUsuario(Usuario usuario);
 	ResponseAPI DarDeBajaUsuario(Usuario usuario);
 	public Usuario ObtenerUsuarioPorNombreUsuario(String nombreUsuario);
 	public UsuarioDTO ObtenerUsuarioDTOPorNombreUsuario(String nombreUsuario);
-	boolean UsuarioValidado(String token) throws JsonProcessingException;
+	boolean UsuarioValidadoPorPrimeraVez(String token) throws JsonProcessingException;
+	Boolean ElUsuarioFueYaEstaValidado(String token) throws JsonProcessingException;
 }

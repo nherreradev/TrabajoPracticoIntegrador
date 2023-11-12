@@ -16,6 +16,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
+import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.core.interfaces.PanelPrecios;
 import com.unlam.tpi.core.interfaces.PanelesServicio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
@@ -24,6 +25,7 @@ import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
 import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.ServiceException;
+import com.unlam.tpi.delivery.dto.InstrumentoMapper;
 
 @Service
 public class PanelesServicioImpl implements PanelesServicio {
@@ -40,7 +42,12 @@ public class PanelesServicioImpl implements PanelesServicio {
 	@Autowired
 	PuntasServicio puntasServicio;
 
-	public static List<Instrumento> listaInstrumentosAux = new ArrayList<>();
+	@Autowired
+	private ListaPreciosServicio listaPrecioServicio;
+
+	public static List<Instrumento> listaInstrumentosAccionesAux = new ArrayList<>();
+	public static List<Instrumento> listaInstrumentosBonosAux = new ArrayList<>();
+	public static List<Instrumento> listaInstrumentosCedearsAux = new ArrayList<>();
 
 	private final RestTemplate restTemplate;
 
@@ -59,70 +66,68 @@ public class PanelesServicioImpl implements PanelesServicio {
 
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
-		ResponseEntity<String> respuestaJson = postApiAcciones();
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
+			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.ACCIONES);
+			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
 			}
-			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
+			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosAccionesAux);
 			recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
-			listaInstrumentosAux.addAll(listaInstrumentos);
+			listaInstrumentosAccionesAux.addAll(listaInstrumentos);
 			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
 			instrumentoServicio.persistirInstrumentos(listaInstrumentos);
 			return PanelPreciosImpl.panelAcciones;
 		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
-			throw new ServiceException("Error al obtener panel de acciones");
+			throw new ServiceException("Error al obtener panel de acciones", e);
 		}
 	}
 
 	@Override
 	public Map<String, Instrumento> getPanelDeBonos() {
-		ResponseEntity<String> respuestaJson = postApiBonos();
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			List<Instrumento> listaInstrumentos = convertirListaDeJsonAListaDeIntrumentos(respuestaJson);
-
+			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.BONOS);
+			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.BONOS);
 			}
-
-			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos);
+			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosBonosAux);
 			recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
+			listaInstrumentosBonosAux.addAll(listaInstrumentos);
 			panelPrecios.agregarInstrumentosAlPanelDeBonos(listaInstrumentos);
+			instrumentoServicio.persistirInstrumentos(listaInstrumentos);
 			return PanelPreciosImpl.panelBonos;
 		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
-			throw new ServiceException("Error al obtener panel de bonos");
+			throw new ServiceException("Error al obtener panel de bonos", e);
 		}
 	}
 
 	@Override
-	public List<Instrumento> convertirListaDeJsonAListaDeIntrumentos(ResponseEntity<String> responseEntity) {
-		List<Instrumento> listaInstrumentos = new ArrayList<>();
-		Gson gson = new Gson();
-		String json = responseEntity.getBody();
-		// String json = Mock.jsonMock;
-		JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-		JsonArray titulos = jsonObject.getAsJsonArray(PanelesDePreciosConstantes.TITULOS);
-
-		for (int i = 0; i < titulos.size(); i++) {
-			JsonObject jsonInstrumento = titulos.get(i).getAsJsonObject();
-			Instrumento instrumento = gson.fromJson(jsonInstrumento, Instrumento.class);
-			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
-			listaInstrumentos.add(instrumento);
+	public Map<String, Instrumento> getPanelDeCedears() {
+		try {
+			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
+			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.CEDEARS);
+			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
+			for (Instrumento instrumento : listaInstrumentos) {
+				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.CEDEARS);
+			}
+			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosCedearsAux);
+			recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
+			listaInstrumentosCedearsAux.addAll(listaInstrumentos);
+			panelPrecios.agregarInstrumentosAlPanelDeCedears(listaInstrumentos);
+			instrumentoServicio.persistirInstrumentos(listaInstrumentos);
+			return PanelPreciosImpl.panelCedears;
+		} catch (ServiceException se) {
+			throw se;
+		} catch (Exception e) {
+			throw new ServiceException("Error al obtener panel de cedears", e);
 		}
-		return listaInstrumentos;
-	}
-
-	@Override
-	public ResponseEntity<String> postApiAcciones() {
-		String url = "https://api.mercadojunior.com.ar/list/precios/acciones";
-		return getInstrumentos(url);
 	}
 
 	private void recalcularPosicionTotalSegunVariacionDePrecios(List<Instrumento> listaInstrumentos) {
@@ -143,11 +148,6 @@ public class PanelesServicioImpl implements PanelesServicio {
 		}
 	}
 
-	private ResponseEntity<String> postApiBonos() {
-		String url = "https://api.mercadojunior.com.ar/list/precios/bonos";
-		return getInstrumentos(url);
-	}
-
 	public ResponseEntity<String> getInstrumentos(String url) {
 		try {
 			ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
@@ -161,7 +161,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	}
 
 	public void determinarFlashDeCompraVenta(Map<String, Instrumento> mapaInstrumentosAux,
-			List<Instrumento> listaInstrumentos) {
+			List<Instrumento> listaInstrumentos, List<Instrumento> listaInstrumentosAux) {
 		if (listaInstrumentosAux != null && !listaInstrumentosAux.isEmpty()) {
 			for (Instrumento instrumento : listaInstrumentosAux) {
 				mapaInstrumentosAux.put(instrumento.getSimbolo(), instrumento);
@@ -215,4 +215,13 @@ public class PanelesServicioImpl implements PanelesServicio {
 			}
 		}
 	}
+
+	public ListaPreciosServicio getListaPrecioServicio() {
+		return listaPrecioServicio;
+	}
+
+	public void setListaPrecioServicio(ListaPreciosServicio listaPrecioServicio) {
+		this.listaPrecioServicio = listaPrecioServicio;
+	}
+
 }

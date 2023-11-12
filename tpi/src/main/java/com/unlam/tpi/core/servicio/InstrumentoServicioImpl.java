@@ -107,7 +107,7 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 		} catch (ServiceException se) {
 			throw se;
 		} catch (Exception e) {
-			throw new ServiceException("Error al persistir instrumentos");
+			throw new ServiceException("Error al persistir instrumentos", e);
 		}
 	}
 

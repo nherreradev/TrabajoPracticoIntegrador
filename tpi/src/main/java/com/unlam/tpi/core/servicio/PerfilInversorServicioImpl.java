@@ -19,9 +19,10 @@ import com.unlam.tpi.core.modelo.PerfilInversor;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
+import com.unlam.tpi.delivery.dto.PerfilInversorMapper;
 import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;
 import com.unlam.tpi.delivery.dto.TipoPerfilInversor;
-import com.unlam.tpi.delivery.dto.UsuarioDTO;
+import com.unlam.tpi.delivery.dto.UsuarioMapper;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -48,7 +49,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 			TipoPerfilInversor tipoPerfilInversor = calcularPerfilInversor(perfilInversorDTO.getHorizonteTemporal(),
 					perfilInversorDTO.getToleranciaRiesgo());
 			PerfilInversor perfilInversor = crearPerfilInversorSubjetivo(perfilInversorDTO, tipoPerfilInversor);
-			return PerfilInversorDTO.entidadADTO(guardar(perfilInversor));
+			return PerfilInversorMapper.entidadADTO(perfilInversor);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -128,7 +129,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 			TipoNivelConocimiento tipoNivelConocimiento = obtenerNivelConocimiento(perfilInversorDTO);
 			PerfilInversor perfilInversor = crearPerfilInversorObjetivo(perfilInversorDTO, tipoPerfilInversor,
 					tipoNivelConocimiento);
-			return PerfilInversorDTO.entidadADTO(guardar(perfilInversor));
+			return PerfilInversorMapper.entidadADTO(perfilInversor);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -147,6 +148,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 			TipoPerfilInversor tipoPerfilInversor) {
 		PerfilInversor perfilInversor = crearPerfilInversor(perfilInversorDTO, tipoPerfilInversor);
 		perfilInversor.setTipoPerfilSubjetivo(tipoPerfilInversor);
+		perfilInversor = guardar(perfilInversor);
 		return perfilInversor;
 	}
 
@@ -155,6 +157,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 		PerfilInversor perfilInversor = crearPerfilInversor(perfilInversorDTO, tipoPerfilInversor);
 		perfilInversor.setNivelConocimiento(perfilInversorDTO.getNivelConocimiento());
 		perfilInversor.setTipoNivelConocimiento(tipoNivelConocimiento);
+		perfilInversor = guardar(perfilInversor);
 		return perfilInversor;
 	}
 
@@ -187,7 +190,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public void guardar(PerfilInversorDTO perfilInversorDTO) {
 		try {
-			PerfilInversor persistente = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+			PerfilInversor persistente = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 			getPerfilInversorRepositorio().save(persistente);
 		} catch (ServiceException e) {
 			throw e;
@@ -236,7 +239,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public PerfilInversorDTO obtener(Long id) {
 		try {
-			return PerfilInversorDTO.entidadADTO(getPerfilInversorRepositorio().getReferenceById(id));
+			return PerfilInversorMapper.entidadADTO(getPerfilInversorRepositorio().getReferenceById(id));
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -250,8 +253,8 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 			if (perfilInversor == null) {
 				throw new ServiceException("Error al obtener el perfil inversor para el usuario: " + nombreUsuario);
 			}
-			PerfilInversorDTO perfilInversordto = PerfilInversorDTO.entidadADTO(perfilInversor);
-			perfilInversordto.setUsuarioDTO(UsuarioDTO.entidadADTO(perfilInversor.getUsuario()));
+			PerfilInversorDTO perfilInversordto = PerfilInversorMapper.entidadADTO(perfilInversor);
+			perfilInversordto.setUsuarioDTO(UsuarioMapper.entidadADTO(perfilInversor.getUsuario()));
 			return perfilInversordto;
 		} catch (ServiceException e) {
 			throw e;
@@ -274,7 +277,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	@Override
 	public List<PerfilInversorDTO> listar() {
 		try {
-			return PerfilInversorDTO.entidadDTOLista(getPerfilInversorRepositorio().findAll());
+			return PerfilInversorMapper.entidadDTOLista(getPerfilInversorRepositorio().findAll());
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -306,9 +309,12 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 
 	@Override
 	public PerfilInversorDTO listarporUsuario(Long id) {
-		// TODO Auto-generated method stub
 		try {
-			return PerfilInversorDTO.entidadADTO(getPerfilInversorRepositorio().findByUsuario_Oid(id));
+			PerfilInversor perfilInversor = getPerfilInversorRepositorio().findByUsuario_Oid(id);
+			if (perfilInversor == null) {
+				return null;
+			}
+			return PerfilInversorMapper.entidadADTO(perfilInversor);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {

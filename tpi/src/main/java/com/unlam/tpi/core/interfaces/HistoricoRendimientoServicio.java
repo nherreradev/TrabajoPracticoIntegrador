@@ -9,7 +9,7 @@ public interface HistoricoRendimientoServicio {
 
 	void guardar(HistoricoRendimientos historicoRendimiento);
 
-	List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String token,
-			String simboloInstrumento);
+	List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String simboloInstrumento,
+			Long usuarioOid);
 
 }
