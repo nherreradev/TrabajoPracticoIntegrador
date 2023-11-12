@@ -448,16 +448,6 @@ public class PosicionServicioImpl implements PosicionServicio {
 			}
 		}
 
-		/*
-		 * List<Posicion> posicionesConCantidadesPositivas =
-		 * todasLasPosiciones.stream().filter( posicion ->
-		 * posicionesPorSimbolo.get(posicion.getSimboloInstrumento()).compareTo(
-		 * BigDecimal.ZERO) > 0)
-		 * .sorted(Comparator.comparing(Posicion::getFecha_posicion).reversed()
-		 * .thenComparing(Posicion::getSimboloInstrumento))
-		 * .collect(Collectors.toList());
-		 */
-
 		return listaFiltrada;
 	}
 
