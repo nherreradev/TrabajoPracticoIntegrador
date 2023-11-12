@@ -43,8 +43,8 @@ public class HistoricoRendimientoRepositorioImpl implements HistoricoRendimiento
 	}
 
 	@Override
-	public List<HistoricoRendimientos> obtenerRendimientosHistoricosPorSimbolo(String token,
-			String simboloInstrumento) {
+	public List<HistoricoRendimientos> obtenerRendimientosHistoricosPorSimbolo(String simboloInstrumento,
+			Long usuarioOid) {
 
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -54,8 +54,9 @@ public class HistoricoRendimientoRepositorioImpl implements HistoricoRendimiento
 
 			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 			Predicate simboloPredicado = criteriaBuilder.equal(root.get("simbolo"), simboloInstrumento);
+			Predicate usuarioPredicado = criteriaBuilder.equal(root.get("usuarioOid"), usuarioOid);
 
-			criteriaQuery.where(deletedPredicado, simboloPredicado);
+			criteriaQuery.where(deletedPredicado, simboloPredicado, usuarioPredicado);
 
 			return entityManager.createQuery(criteriaQuery).getResultList();
 		} catch (Exception e) {

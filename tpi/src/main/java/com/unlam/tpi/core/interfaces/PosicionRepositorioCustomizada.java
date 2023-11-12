@@ -14,5 +14,5 @@ public interface PosicionRepositorioCustomizada {
 	
 	Posicion obtenerPosicionPorConceptoYUsuario(String concepto, Long oidUsuario);
 	
-	List<Posicion> obtenerTodosLosTitulos();
+	List<Posicion> obtenerTodosLosTitulos(Long usuarioOid);
 }

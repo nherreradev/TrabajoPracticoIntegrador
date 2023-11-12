@@ -84,7 +84,7 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 	}
 
 	@Override
-	public List<Posicion> obtenerTodosLosTitulos() {
+	public List<Posicion> obtenerTodosLosTitulos(Long usuarioOid) {
 
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -93,8 +93,9 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 
 			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 			Predicate noEsEfectivoPredicado = criteriaBuilder.equal(root.get("esEfectivo"), false);
+			Predicate usuarioPredicado = criteriaBuilder.equal(root.get("usuarioOid"), usuarioOid);
 
-			criteriaQuery.where(deletedPredicado, noEsEfectivoPredicado);
+			criteriaQuery.where(deletedPredicado, noEsEfectivoPredicado, usuarioPredicado);
 
 			return entityManager.createQuery(criteriaQuery).getResultList();
 		} catch (Exception e) {

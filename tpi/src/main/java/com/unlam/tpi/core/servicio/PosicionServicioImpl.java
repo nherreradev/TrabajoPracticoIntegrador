@@ -5,7 +5,6 @@ import static com.unlam.tpi.infraestructura.helpers.CalculosHabituales.esMasGran
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -190,6 +189,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		posicion.setFecha_posicion(LocalDateTime.now());
 		posicion.setMonedaOid(orden.getMonedaOid());
 		posicion.setPrecioActualDeVenta(orden.getPrecio());
+		posicion.setPrecioAlMomentoDeCompra(orden.getPrecio());
 		posicion.setUsuarioOid(orden.getUsuarioOid());
 		posicion.setSimboloInstrumento(orden.getSimboloInstrumento());
 	}
@@ -294,11 +294,11 @@ public class PosicionServicioImpl implements PosicionServicio {
 	}
 
 	@Override
-	public RendimientoActualResponse calcularRendimientoActual(String token) {
-
+	public RendimientoActualResponse calcularRendimientoActual(Long usuarioOid) {
+		
 		RendimientoActualResponse rendimientoActualResponse = new RendimientoActualResponse();
 		Map<String, RendimientoResponse> mapaRendimientos = new HashMap<>();
-		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos();
+		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos(usuarioOid);
 		List<Posicion> posicionEnCartera = obtenerSoloPosicionesEnCartera(posicion);
 
 		if (posicionEnCartera != null && !posicionEnCartera.isEmpty()) {
@@ -384,9 +384,9 @@ public class PosicionServicioImpl implements PosicionServicio {
 	}
 
 	@Override
-	public List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String token,
-			String simboloInstrumento) {
-		return historicoRendimientoServicio.obtenerRendimientosHistoricosPorSimbolo(token, simboloInstrumento);
+	public List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String simboloInstrumento,
+			Long usuarioOid) {
+		return historicoRendimientoServicio.obtenerRendimientosHistoricosPorSimbolo(simboloInstrumento, usuarioOid);
 	}
 
 	private void completarRendimiento(BigDecimal costoTotalDeLasCompras, BigDecimal gananciaTotalOPerdidaMonto,
@@ -400,7 +400,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		rendimientoResponse.setFecha(posicion2.getFecha_posicion());
 	}
 
-	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos) {
+	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos, Long usuarioOid) {
 
 		for (Map.Entry<String, RendimientoResponse> entry : mapaRendimientos.entrySet()) {
 
@@ -412,6 +412,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			historicoRendimientos.setFecha(rendimientoResponse.getFecha());
 			historicoRendimientos.setCantidadDeTitulos(rendimientoResponse.getCantidadDeTitulos());
 			historicoRendimientos.setValorInversion(rendimientoResponse.getValorActualDeLaInversion());
+			historicoRendimientos.setUsuarioOid(usuarioOid);
 
 			historicoRendimientoServicio.guardar(historicoRendimientos);
 

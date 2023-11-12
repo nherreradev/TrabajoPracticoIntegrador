@@ -14,24 +14,26 @@ import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 @Table(name = "HISTORICO_RENDIMIENTOS")
 public class HistoricoRendimientos extends ObjetoPersistente {
 
-	
 	@Column(name = "SIMBOLO")
 	String simbolo;
-	
+
 	@Column(name = "RENDIMIENTO_TOTAL")
 	BigDecimal rendimientoTotal;
-	
+
 	@Column(name = "RENDIMIENTO_TOTAL_PORCENTAJE")
 	BigDecimal rendimientoTotalPorcentaje;
-	
+
 	@Column(name = "FECHA")
 	LocalDateTime fecha;
-	
+
 	@Column(name = "CANTIDAD_TITULOS")
 	BigDecimal cantidadDeTitulos;
-	
+
 	@Column(name = "VALOR_INVERSION")
 	BigDecimal valorInversion;
+
+	@Column(name = "USUARIO_OID")
+	Long usuarioOid;
 
 	public String getSimbolo() {
 		return simbolo;
@@ -79,6 +81,14 @@ public class HistoricoRendimientos extends ObjetoPersistente {
 
 	public void setValorInversion(BigDecimal valorInversion) {
 		this.valorInversion = valorInversion;
+	}
+
+	public Long getUsuarioOid() {
+		return usuarioOid;
+	}
+
+	public void setUsuarioOid(Long usuarioOid) {
+		this.usuarioOid = usuarioOid;
 	}
 
 }
