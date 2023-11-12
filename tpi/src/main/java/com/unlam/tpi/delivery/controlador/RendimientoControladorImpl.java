@@ -42,6 +42,15 @@ public class RendimientoControladorImpl implements RendimientoControlador {
 		return ResponseEntity.ok(listaDeRendimientosHistoricos);
 	}
 	
+	@Override
+	@PostMapping("/dia/guardar")
+	public ResponseEntity<String> guardarRendimientoDiario(
+			@RequestBody RendimientoRequest request) {
+		RendimientoActualResponse rendimientoActualResponse = posicionServicio.calcularRendimientoActual(request.getToken());
+		posicionServicio.guardarCierresDiarios(rendimientoActualResponse.getRendimientosActuales());
+		return ResponseEntity.ok("Rendimiento guardado correctamente");
+	}
+	
 	
 
 }

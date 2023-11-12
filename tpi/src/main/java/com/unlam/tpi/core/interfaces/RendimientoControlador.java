@@ -13,8 +13,10 @@ public interface RendimientoControlador {
 
 	public ResponseEntity<RendimientoActualResponse> calcularRendimientoInstrumentosEnCarteraDiaDeHoy(
 			@RequestBody RendimientoRequest request);
-	
+
 	public ResponseEntity<List<HistoricoRendimientosResponse>> calcularRendimientoInstrumentosHistorico(
 			@RequestBody RendimientoRequest request);
+
+	public ResponseEntity<String> guardarRendimientoDiario(@RequestBody RendimientoRequest request);
 
 }

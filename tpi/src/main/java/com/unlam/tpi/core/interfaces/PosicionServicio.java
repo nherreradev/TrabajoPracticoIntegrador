@@ -41,5 +41,8 @@ public interface PosicionServicio {
 	@Transactional
 	List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String token,
 			String simboloInstrumento);
+	
+	@Transactional
+	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos);
 
 }

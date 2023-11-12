@@ -4,15 +4,16 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
+
 public class HistoricoRendimientosResponse {
 
 	String simbolo;
-
-	BigDecimal totalGananciaDelDia;
-
-	BigDecimal totalPorcentajeDelDia;
-
+	BigDecimal rendimientoTotal;
+	BigDecimal rendimientoTotalPorcentaje;
 	LocalDateTime fecha;
+	BigDecimal cantidadDeTitulos;
+	BigDecimal valorInversion;
 
 	public String getSimbolo() {
 		return simbolo;
@@ -22,20 +23,20 @@ public class HistoricoRendimientosResponse {
 		this.simbolo = simbolo;
 	}
 
-	public BigDecimal getTotalGananciaDelDia() {
-		return totalGananciaDelDia;
+	public BigDecimal getRendimientoTotal() {
+		return rendimientoTotal;
 	}
 
-	public void setTotalGananciaDelDia(BigDecimal totalGananciaDelDia) {
-		this.totalGananciaDelDia = totalGananciaDelDia;
+	public void setRendimientoTotal(BigDecimal rendimientoTotal) {
+		this.rendimientoTotal = rendimientoTotal;
 	}
 
-	public BigDecimal getTotalPorcentajeDelDia() {
-		return totalPorcentajeDelDia;
+	public BigDecimal getRendimientoTotalPorcentaje() {
+		return rendimientoTotalPorcentaje;
 	}
 
-	public void setTotalPorcentajeDelDia(BigDecimal totalPorcentajeDelDia) {
-		this.totalPorcentajeDelDia = totalPorcentajeDelDia;
+	public void setRendimientoTotalPorcentaje(BigDecimal rendimientoTotalPorcentaje) {
+		this.rendimientoTotalPorcentaje = rendimientoTotalPorcentaje;
 	}
 
 	public LocalDateTime getFecha() {
@@ -44,6 +45,22 @@ public class HistoricoRendimientosResponse {
 
 	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
+	}
+
+	public BigDecimal getCantidadDeTitulos() {
+		return cantidadDeTitulos;
+	}
+
+	public void setCantidadDeTitulos(BigDecimal cantidadDeTitulos) {
+		this.cantidadDeTitulos = cantidadDeTitulos;
+	}
+
+	public BigDecimal getValorInversion() {
+		return valorInversion;
+	}
+
+	public void setValorInversion(BigDecimal valorInversion) {
+		this.valorInversion = valorInversion;
 	}
 
 }

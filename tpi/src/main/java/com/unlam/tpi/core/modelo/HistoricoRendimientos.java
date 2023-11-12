@@ -12,19 +12,26 @@ import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 
 @Entity
 @Table(name = "HISTORICO_RENDIMIENTOS")
-public class HistoricoRendimientos extends ObjetoPersistente{
+public class HistoricoRendimientos extends ObjetoPersistente {
 
+	
 	@Column(name = "SIMBOLO")
 	String simbolo;
 	
-	@Column(name = "TOTAL_GANANCIA_DEL_DIA")
-	BigDecimal totalGananciaDelDia;
+	@Column(name = "RENDIMIENTO_TOTAL")
+	BigDecimal rendimientoTotal;
 	
-	@Column(name = "TOTAL_PORCENTAJE_DEL_DIA")
-	BigDecimal totalPorcentajeDelDia;
+	@Column(name = "RENDIMIENTO_TOTAL_PORCENTAJE")
+	BigDecimal rendimientoTotalPorcentaje;
 	
 	@Column(name = "FECHA")
 	LocalDateTime fecha;
+	
+	@Column(name = "CANTIDAD_TITULOS")
+	BigDecimal cantidadDeTitulos;
+	
+	@Column(name = "VALOR_INVERSION")
+	BigDecimal valorInversion;
 
 	public String getSimbolo() {
 		return simbolo;
@@ -34,20 +41,20 @@ public class HistoricoRendimientos extends ObjetoPersistente{
 		this.simbolo = simbolo;
 	}
 
-	public BigDecimal getTotalGananciaDelDia() {
-		return totalGananciaDelDia;
+	public BigDecimal getRendimientoTotal() {
+		return rendimientoTotal;
 	}
 
-	public void setTotalGananciaDelDia(BigDecimal totalGananciaDelDia) {
-		this.totalGananciaDelDia = totalGananciaDelDia;
+	public void setRendimientoTotal(BigDecimal rendimientoTotal) {
+		this.rendimientoTotal = rendimientoTotal;
 	}
 
-	public BigDecimal getTotalPorcentajeDelDia() {
-		return totalPorcentajeDelDia;
+	public BigDecimal getRendimientoTotalPorcentaje() {
+		return rendimientoTotalPorcentaje;
 	}
 
-	public void setTotalPorcentajeDelDia(BigDecimal totalPorcentajeDelDia) {
-		this.totalPorcentajeDelDia = totalPorcentajeDelDia;
+	public void setRendimientoTotalPorcentaje(BigDecimal rendimientoTotalPorcentaje) {
+		this.rendimientoTotalPorcentaje = rendimientoTotalPorcentaje;
 	}
 
 	public LocalDateTime getFecha() {
@@ -56,6 +63,22 @@ public class HistoricoRendimientos extends ObjetoPersistente{
 
 	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
+	}
+
+	public BigDecimal getCantidadDeTitulos() {
+		return cantidadDeTitulos;
+	}
+
+	public void setCantidadDeTitulos(BigDecimal cantidadDeTitulos) {
+		this.cantidadDeTitulos = cantidadDeTitulos;
+	}
+
+	public BigDecimal getValorInversion() {
+		return valorInversion;
+	}
+
+	public void setValorInversion(BigDecimal valorInversion) {
+		this.valorInversion = valorInversion;
 	}
 
 }

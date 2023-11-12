@@ -45,10 +45,11 @@ public class HistoricoRendimientoServicioImpl implements HistoricoRendimientoSer
 			for (HistoricoRendimientos historicoRendimientos : listaHistoricoRendimientos) {
 				HistoricoRendimientosResponse historicoRendimientosResponse = new HistoricoRendimientosResponse();
 				historicoRendimientosResponse.setSimbolo(historicoRendimientos.getSimbolo());
-				historicoRendimientosResponse.setTotalGananciaDelDia(historicoRendimientos.getTotalGananciaDelDia());
-				historicoRendimientosResponse
-						.setTotalPorcentajeDelDia(historicoRendimientos.getTotalPorcentajeDelDia());
+				historicoRendimientosResponse.setRendimientoTotal(historicoRendimientos.getRendimientoTotal());
+				historicoRendimientosResponse.setRendimientoTotalPorcentaje(historicoRendimientos.getRendimientoTotalPorcentaje());
 				historicoRendimientosResponse.setFecha(historicoRendimientos.getFecha());
+				historicoRendimientosResponse.setCantidadDeTitulos(historicoRendimientos.getCantidadDeTitulos());
+				historicoRendimientosResponse.setValorInversion(historicoRendimientos.getValorInversion());
 
 				listaHistoricoRendimientosResponse.add(historicoRendimientosResponse);
 			}
