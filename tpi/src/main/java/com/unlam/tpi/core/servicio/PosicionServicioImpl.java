@@ -115,7 +115,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 				posicion.setCantidad(request.getCantidadPorAcreditar());
 				posicion.setEsEfectivo(true);
 				posicion.setMonedaOid(1L);
-				posicion.setUsuarioOid(1L);
+				posicion.setUsuarioOid(request.getUsuarioOid());
 				posicion.setConcepto(request.getConcepto());
 				posicionRepositorio.save(posicion);
 			}
@@ -136,7 +136,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			posicionDinero.setFecha_posicion(LocalDate.now());
 			posicionDinero.setMonedaOid(orden.getMonedaOid());
 			posicionDinero.setPrecio(null);
-			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+			posicionDinero.setUsuarioOid(orden.getUsuarioOid());
 			posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
 			posicionDinero.setConcepto("DINERO-COMPLE");
 		} else {
@@ -145,7 +145,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			posicionDinero.setFecha_posicion(LocalDate.now());
 			posicionDinero.setMonedaOid(orden.getMonedaOid());
 			posicionDinero.setPrecio(null);
-			posicionDinero.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+			posicionDinero.setUsuarioOid(orden.getUsuarioOid());
 			posicionDinero.setSimboloInstrumento(orden.getSimboloInstrumento());
 			posicionDinero.setConcepto("DINERO-COMPLE");
 		}
@@ -168,7 +168,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		posicion.setFecha_posicion(LocalDate.now());
 		posicion.setMonedaOid(orden.getMonedaOid());
 		posicion.setPrecio(orden.getPrecio());
-		posicion.setUsuarioOid(1L);/* A futuro aca hay que sacar el usuario del contexto */
+		posicion.setUsuarioOid(orden.getUsuarioOid());
 		posicion.setSimboloInstrumento(orden.getSimboloInstrumento());
 	}
 
