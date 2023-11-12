@@ -38,7 +38,7 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	@Override
 	@PostMapping("/guardar-usuario")
 	public ResponseEntity<ResponseAPI> RegistrarUsuario(@RequestBody UsuarioRestDTO usuarioRegistro) throws Exception {
-		if (this.usuarioServicio.ExisteUsuario(usuarioRegistro.getEmail()))
+		if (this.usuarioServicio.ExisteEmail(usuarioRegistro.getEmail()) || this.usuarioServicio.ExisteNombreUsuario(usuarioRegistro.getNombreUsuario()))
 			return new ResponseEntity<>(response.RecursoYaExistente(), response.RecursoYaExistente().getStatus());
 		else
 			this.usuarioServicio.GuardarUsuario(usuarioRegistro);

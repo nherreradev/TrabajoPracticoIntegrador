@@ -13,7 +13,8 @@ public interface UsuarioServicio {
 
 	void GuardarUsuario(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException;
 	void ConfirmarCuenta(Usuario usuario);
-	Boolean ExisteUsuario(String email);
+	Boolean ExisteEmail(String email);
+	Boolean ExisteNombreUsuario(String nombreUsuario);
 	Usuario ObtenerUsuarioPorEmail(String email);
 	ResponseAPI ModificarUsuario(Usuario usuario);
 	ResponseAPI DarDeBajaUsuario(Usuario usuario);

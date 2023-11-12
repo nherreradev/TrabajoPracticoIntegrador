@@ -55,8 +55,12 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public Boolean ExisteUsuario(String email) {
+	public Boolean ExisteEmail(String email) {
 		return this.usuarioRepositorio.existsByEmail(email);
+	}
+	@Override
+	public Boolean ExisteNombreUsuario(String nombreUsuario) {
+		return this.usuarioRepositorio.existsByNombreUsuario(nombreUsuario);
 	}
 
 	@Override
@@ -119,7 +123,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	public Boolean ElUsuarioFueYaEstaValidado(String token) throws JsonProcessingException {
 		JWTRestDTO UsuarioToken = autenticacionService.ObtenerClaimsToken(token);
 		Usuario usuario = usuarioRepositorio.getUsuarioByEmail(UsuarioToken.getEmailUsuario());
-		return usuario.getActivo();
+		return usuario.getCuentaConfirmada();
 	}
 
 	@Override
@@ -142,7 +146,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public ResponseAPI DarDeBajaUsuario(Usuario usuario) {
-		if (!ExisteUsuario(usuario.getEmail()))
+		if (!ExisteEmail(usuario.getEmail()))
 			return responseAPI.MensajeDeErrorRecursoNoEncontrado();
 		try {
 			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());

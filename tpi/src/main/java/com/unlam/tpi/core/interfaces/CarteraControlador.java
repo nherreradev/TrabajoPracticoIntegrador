@@ -11,7 +11,7 @@ public interface CarteraControlador {
 	
 	public ResponseEntity<ValuacionTotalRespuesta> getValuacionTotal(String token) throws JsonProcessingException;
 	
-	public ResponseEntity<String> acreditarDinero(RequestCargaDeDinero request);
+	public ResponseEntity<String> acreditarDinero(String headerAuthorization, RequestCargaDeDinero request) throws JsonProcessingException;
 
 	
 	

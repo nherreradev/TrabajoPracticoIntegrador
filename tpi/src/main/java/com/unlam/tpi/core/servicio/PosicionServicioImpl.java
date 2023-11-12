@@ -106,11 +106,10 @@ public class PosicionServicioImpl implements PosicionServicio {
 	@Override
 	public void acreditarDinero(RequestCargaDeDinero request) {
 		try {
-			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
-			if (
-					posicionBuscada == null
-					|| !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS.equals(posicionBuscada != null ? posicionBuscada.getConcepto():null)
-				) {
+			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConceptoYUsuario(request.getConcepto(),
+					request.getUsuarioOid());
+			if (posicionBuscada == null || !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS
+					.equals(posicionBuscada != null ? posicionBuscada.getConcepto() : null)) {
 				Posicion posicion = new Posicion();
 				posicion.setCantidad(request.getCantidadPorAcreditar());
 				posicion.setEsEfectivo(true);
