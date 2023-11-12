@@ -126,7 +126,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 
     private List<String> ObtenerSimbolosDeInstrumentos(String instrumento) {
         List<String> ArraySimbolos = new ArrayList<>();
-        String JsonMongo = listaPreciosServicio.GetPriceListMongo(instrumento);
+        String JsonMongo = listaPreciosServicio.getListaPrecioMongo(instrumento);
         JsonObject JsonParseado = JsonParser.parseString(JsonMongo).getAsJsonObject();
         JsonArray TituloArray = JsonParseado.getAsJsonArray("titulos");
 

@@ -6,11 +6,13 @@ import com.unlam.tpi.core.modelo.Posicion;
 
 public interface PosicionRepositorioCustomizada {
 
+	List<Posicion> getPosicionByUsuarioOid(Long oidUsuario);
+	
 	List<Posicion> getPosicionEnEfectivo();
 
 	List<Posicion> obtenerTodosLosMovimientosAsociadosAUnSimbolo(String simboloInstrumento);
 	
-	Posicion obtenerPosicionPorConcepto(String concepto);
+	Posicion obtenerPosicionPorConceptoYUsuario(String concepto, Long oidUsuario);
 	
 	List<Posicion> obtenerTodosLosTitulos();
 }

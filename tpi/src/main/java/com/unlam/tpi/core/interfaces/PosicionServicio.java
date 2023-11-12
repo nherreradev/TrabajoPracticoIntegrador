@@ -16,7 +16,7 @@ import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
 public interface PosicionServicio {
 
 	@Transactional
-	ValuacionTotalRespuesta getValuacionTotal();
+	ValuacionTotalRespuesta getValuacionTotal(Long oidUsuario);
 
 	@Transactional
 	PuedeOperarResultado puedeOperar(Orden orden);

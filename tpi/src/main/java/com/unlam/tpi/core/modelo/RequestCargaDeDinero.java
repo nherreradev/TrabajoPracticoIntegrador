@@ -6,6 +6,7 @@ public class RequestCargaDeDinero {
 
 	private BigDecimal cantidadPorAcreditar;
 	private String concepto;
+	private Long usuarioOid;
 
 	public BigDecimal getCantidadPorAcreditar() {
 		return cantidadPorAcreditar;
@@ -21,6 +22,14 @@ public class RequestCargaDeDinero {
 
 	public void setConcepto(String concepto) {
 		this.concepto = concepto;
+	}
+
+	public Long getUsuarioOid() {
+		return usuarioOid;
+	}
+
+	public void setUsuarioOid(Long usuarioOid) {
+		this.usuarioOid = usuarioOid;
 	}
 
 }

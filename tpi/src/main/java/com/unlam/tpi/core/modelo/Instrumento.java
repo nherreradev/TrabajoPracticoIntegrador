@@ -15,6 +15,8 @@ import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 @Table(name = "INSTRUMENTO")
 public class Instrumento extends ObjetoPersistente {
 
+	private static final long serialVersionUID = 1L;
+
 	@Column(name = "SIMBOLO")
 	@SerializedName("simbolo")
 	private String simbolo;

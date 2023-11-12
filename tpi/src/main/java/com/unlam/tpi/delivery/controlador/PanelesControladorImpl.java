@@ -53,5 +53,14 @@ public class PanelesControladorImpl implements PanelesControlador {
 		return ResponseEntity.ok(json);
 
 	}
+	
+	@Override
+	@GetMapping("/cedears")
+	public ResponseEntity<String> getPanelDeCedears() {
+		List<Instrumento> panelBonos = panelesService.getPanelDeCedears().values().stream().collect(Collectors.toList());
+		String json = new Gson().toJson(panelBonos);
+		return ResponseEntity.ok(json);
 
+	}
+	
 }

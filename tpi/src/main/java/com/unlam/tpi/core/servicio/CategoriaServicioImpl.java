@@ -20,6 +20,7 @@ import com.unlam.tpi.core.interfaces.CategoriaServicio;
 import com.unlam.tpi.core.modelo.Categoria;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
+import com.unlam.tpi.delivery.dto.CategoriaMapper;
 
 @Service
 public class CategoriaServicioImpl implements CategoriaServicio {
@@ -35,7 +36,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 	@Override
 	public void guardar(CategoriaDTO categoria) {
 		try {
-			Categoria persistente = CategoriaDTO.dTOaEntidad(categoria);
+			Categoria persistente = CategoriaMapper.dTOaEntidad(categoria);
 			getCategoriaRepositorio().save(persistente);
 		} catch (ServiceException e) {
 			throw e;
@@ -160,7 +161,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 			if (categoria == null) {
 				throw new ServiceException("Error al obtener la categoria");
 			}
-			return CategoriaDTO.entidadADTO(categoria);
+			return CategoriaMapper.entidadADTO(categoria);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -172,7 +173,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 	public CategoriaDTO getCategoriaDTOPorNombre(String nombre) {
 		try {
 			Categoria categoria = getCategoriaPorNombre(nombre);
-			return CategoriaDTO.entidadADTO(categoria);
+			return CategoriaMapper.entidadADTO(categoria);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
@@ -213,7 +214,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 			if (categoriaList == null || categoriaList.size() == 0) {
 				throw new ServiceException("Error al obtener la lista de Categorias");
 			}
-			return CategoriaDTO.entidadDTOLista(categoriaList);
+			return CategoriaMapper.entidadDTOLista(categoriaList);
 		} catch (ServiceException e) {
 			throw e;
 		} catch (Exception e) {
