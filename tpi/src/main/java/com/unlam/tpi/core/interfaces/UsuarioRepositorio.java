@@ -7,7 +7,6 @@ import com.unlam.tpi.core.modelo.Usuario;
 public interface UsuarioRepositorio extends JpaRepository<Usuario, String> {
     Boolean existsByEmail(String email);
     Usuario getUsuarioByEmail(String email);
-    
     public Usuario findByNombreUsuario(String nombreUsuario);
     public Usuario findByEmailAndPass(String email, String password);
 

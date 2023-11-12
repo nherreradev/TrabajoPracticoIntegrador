@@ -19,6 +19,6 @@ public interface UsuarioServicio {
 	ResponseAPI DarDeBajaUsuario(Usuario usuario);
 	public Usuario ObtenerUsuarioPorNombreUsuario(String nombreUsuario);
 	public UsuarioDTO ObtenerUsuarioDTOPorNombreUsuario(String nombreUsuario);
-	boolean UsuarioValidado(String token) throws JsonProcessingException;
-	public String getTokenLoginUsuario(String email, String password) throws NoSuchAlgorithmException, InvalidKeySpecException;
+	boolean UsuarioValidadoPorPrimeraVez(String token) throws JsonProcessingException;
+	Boolean ElUsuarioFueYaEstaValidado(String token) throws JsonProcessingException;
 }

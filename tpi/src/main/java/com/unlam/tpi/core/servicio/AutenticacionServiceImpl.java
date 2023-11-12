@@ -77,9 +77,10 @@ public class AutenticacionServiceImpl implements AutenticacionService {
 
             String accion = claims.get("accion", String.class);
             String mail = claims.get("mail", String.class);
-
+            Boolean estaValidado = claims.get("validado", Boolean.class);
             jwtRestDTO.setAccion(accion);
             jwtRestDTO.setEmailUsuario(mail);
+            jwtRestDTO.setEstaValidado(estaValidado);
             return jwtRestDTO;
         } catch (Exception e) {
             return null;
@@ -107,7 +108,6 @@ public class AutenticacionServiceImpl implements AutenticacionService {
             usuario.setNombre(claims.get("nombre", String.class));
             usuario.setApellido(claims.get("apellido", String.class));
             usuario.setPremium(claims.get("premium", Boolean.class));
-
             return usuario;
         } catch (Exception e) {
             return null;
