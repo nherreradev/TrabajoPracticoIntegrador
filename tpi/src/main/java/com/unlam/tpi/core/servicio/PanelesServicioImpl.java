@@ -43,7 +43,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	PuntasServicio puntasServicio;
 
 	@Autowired
-	private ListaPreciosServicio listaPrecioServicio;
+	ListaPreciosServicio listaPrecioServicio;
 
 	public static List<Instrumento> listaInstrumentosAccionesAux = new ArrayList<>();
 	public static List<Instrumento> listaInstrumentosBonosAux = new ArrayList<>();
@@ -68,7 +68,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	public Map<String, Instrumento> getPanelDeAcciones() {
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.ACCIONES);
+			String listaPreciosJson = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.ACCIONES);
 			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
@@ -90,7 +90,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	public Map<String, Instrumento> getPanelDeBonos() {
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.BONOS);
+			String listaPreciosJson = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.BONOS);
 			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.BONOS);
@@ -112,7 +112,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	public Map<String, Instrumento> getPanelDeCedears() {
 		try {
 			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.CEDEARS);
+			String listaPreciosJson = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.CEDEARS);
 			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
 			for (Instrumento instrumento : listaInstrumentos) {
 				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.CEDEARS);
@@ -214,14 +214,6 @@ public class PanelesServicioImpl implements PanelesServicio {
 				}
 			}
 		}
-	}
-
-	public ListaPreciosServicio getListaPrecioServicio() {
-		return listaPrecioServicio;
-	}
-
-	public void setListaPrecioServicio(ListaPreciosServicio listaPrecioServicio) {
-		this.listaPrecioServicio = listaPrecioServicio;
 	}
 
 }

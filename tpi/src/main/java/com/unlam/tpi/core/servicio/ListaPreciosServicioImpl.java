@@ -19,13 +19,18 @@ import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 
 @Service
 public class ListaPreciosServicioImpl implements ListaPreciosServicio {
-    private static final String CEDEARS_KEY = "cedears";
+   
+	 @Autowired
+	    private ListaPreciosRepository listaPreciosRepository;
+	
+	private static final String CEDEARS_KEY = "cedears";
 	private static final String BONOS_KEY = "bonos";
 	private static final String ACCIONES_KEY = "acciones";
+	
 	Integer INDEX = 0;
-    @Autowired
-    private ListaPreciosRepository listaPreciosRepository;
+   
     private final RestTemplate restTemplate;
+    
     String ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
     String BONOS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=titulosPublicos&cotizacionInstrumentoModel.pais=argentina";
     String CEDEARS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=cedears&cotizacionInstrumentoModel.pais=argentina";
