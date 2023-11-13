@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -33,9 +34,8 @@ public class RendimientoControladorImpl implements RendimientoControlador {
 	AutenticacionService autenticacionServicio;
 
 	@Override
-	@PostMapping("/instrumentos/actual")
-	public ResponseEntity<RendimientoActualResponse> calcularRendimientoInstrumentosEnCarteraDiaDeHoy(
-			@RequestBody RendimientoRequest request, 
+	@GetMapping("/instrumentos/actual")
+	public ResponseEntity<RendimientoActualResponse> calcularRendimientoInstrumentosEnCarteraDiaDeHoy( 
 			@RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException {
 		String token = headerAuthorization.replaceAll("Bearer ", "");
 		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);

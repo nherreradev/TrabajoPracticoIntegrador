@@ -14,7 +14,6 @@ import com.unlam.tpi.core.modelo.RendimientoActualResponse;
 public interface RendimientoControlador {
 
 	public ResponseEntity<RendimientoActualResponse> calcularRendimientoInstrumentosEnCarteraDiaDeHoy(
-			@RequestBody RendimientoRequest request, 
 			@RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException;
 
 	public ResponseEntity<List<HistoricoRendimientosResponse>> calcularRendimientoInstrumentosHistorico(
