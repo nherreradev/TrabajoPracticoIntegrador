@@ -11,11 +11,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.unlam.tpi.core.interfaces.PerfilInversorRepositorio;
 import com.unlam.tpi.core.interfaces.PerfilInversorServicio;
-import com.unlam.tpi.core.interfaces.UsuarioRepositorio;
+import com.unlam.tpi.core.interfaces.UsuarioServicio;
 import com.unlam.tpi.core.modelo.PerfilInversor;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.core.servicio.PerfilInversorServicioImpl;
 import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
+import com.unlam.tpi.delivery.dto.PerfilInversorMapper;
 import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;
 import com.unlam.tpi.delivery.dto.TipoPerfilInversor;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
@@ -32,7 +33,7 @@ public class PerfilInversorServicioTest {
     private PerfilInversorRepositorio perfilInversorRepositorio;
 	
     @Mock
-    private UsuarioRepositorio usuarioRepositorio;
+    private UsuarioServicio usuarioServicio;
 	
     @Test
 	public void testQueMeDefinaUnPerfilSubjetivoConservadorHorizonte0YTolerancia24() {
@@ -40,9 +41,9 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setHorizonteTemporal(0);
 		perfilInversorDTO.setToleranciaRiesgo(24);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
-	    //when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
-	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
+	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
+	    when(perfilInversorRepositorio.save(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
 	}
@@ -53,9 +54,9 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setHorizonteTemporal(1);
 		perfilInversorDTO.setToleranciaRiesgo(24);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
-	   // when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
-	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
+	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
+	    when(perfilInversorRepositorio.save(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
 	}
@@ -66,9 +67,9 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setHorizonteTemporal(2);
 		perfilInversorDTO.setToleranciaRiesgo(24);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
-	    //when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
-	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
+	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
+	    when(perfilInversorRepositorio.save(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
 	}
@@ -80,22 +81,22 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(1);
 		perfilInversorDTO.setNivelConocimiento(37);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
-	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
+	    when(perfilInversorRepositorio.save(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
 	}
 	
 	@Test
-	public void testQueMeDefinaUnPerfilSubjetivoConservador4() {
+	public void testQueMeDefinaUnPerfilSubjetivoConservadorHorizonte18YTolerancia1() {
 		PerfilInversorDTO perfilInversorDTO = new PerfilInversorDTO();
 		perfilInversorDTO.setHorizonteTemporal(18);
 		perfilInversorDTO.setToleranciaRiesgo(1);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
-	    //when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIO.getNombreUsuario())).thenReturn(perfilInversor);
-	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
+	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
+	    when(perfilInversorRepositorio.save(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoPerfilSubjetivo(), TipoPerfilInversor.CONSERVADOR);
 	}
@@ -107,7 +108,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setHorizonteTemporal(12);
 		perfilInversorDTO.setToleranciaRiesgo(26);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
@@ -121,7 +122,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setHorizonteTemporal(1);
 		perfilInversorDTO.setToleranciaRiesgo(25);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
@@ -136,7 +137,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setHorizonteTemporal(15);
 		perfilInversorDTO.setToleranciaRiesgo(35);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoNivelConocimiento(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoNivelConocimiento(), TipoNivelConocimiento.PRINCIPIANTE);
@@ -171,7 +172,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setHorizonteTemporal(15);
 		perfilInversorDTO.setToleranciaRiesgo(35);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoNivelConocimiento(perfilInversorDTO);
 		assertEquals(perfilInversorDTO.getTipoNivelConocimiento(), TipoNivelConocimiento.EXPERTO);
@@ -184,7 +185,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(17);
 		perfilInversorDTO.setNivelConocimiento(6);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilInversor(perfilInversorDTO);
@@ -198,7 +199,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(17);
 		perfilInversorDTO.setNivelConocimiento(25);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilInversor(perfilInversorDTO);
@@ -212,7 +213,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(17);
 		perfilInversorDTO.setNivelConocimiento(35);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilInversor(perfilInversorDTO);
@@ -226,7 +227,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(17);
 		perfilInversorDTO.setNivelConocimiento(36);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 		perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilInversor(perfilInversorDTO);
@@ -240,7 +241,7 @@ public class PerfilInversorServicioTest {
 		perfilInversorDTO.setToleranciaRiesgo(39);
 		perfilInversorDTO.setNivelConocimiento(36);
 		perfilInversorDTO.setUsuarioDTO(USUARIODTO);
-		PerfilInversor perfilInversor = PerfilInversorDTO.dTOaEntidad(perfilInversorDTO);
+		PerfilInversor perfilInversor = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
 	    when(perfilInversorRepositorio.findByUsuario_NombreUsuario(USUARIODTO.getNombreUsuario())).thenReturn(perfilInversor);
 	    when(getPerfilInversorServicio().guardar(perfilInversor)).thenReturn(perfilInversor);
 	    perfilInversorDTO = getPerfilInversorServicio().resultadoPerfilInversor(perfilInversorDTO);

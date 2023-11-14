@@ -13,6 +13,7 @@ import com.unlam.tpi.core.modelo.Instrumento;
 public class PanelPreciosImpl implements PanelPrecios {
 	public static Map<String, Instrumento> panelAcciones = new HashMap<>();
 	public static Map<String, Instrumento> panelBonos = new HashMap<>();
+	public static Map<String, Instrumento> panelCedears = new HashMap<>();
 
 	@Override
 	public void agregarInstrumentosAlPanelDeAcciones(List<Instrumento> instrumentos) {
@@ -26,10 +27,20 @@ public class PanelPreciosImpl implements PanelPrecios {
 	@Override
 	public void agregarInstrumentosAlPanelDeBonos(List<Instrumento> instrumentos) {
 		for (Instrumento instrumento : instrumentos) {
-			if (instrumento.getPuntas().getPrecioCompra() != null && instrumento.getPuntas().getPrecioVenta() != null) {
+			if (instrumento.getPuntas() != null && instrumento.getPuntas().getPrecioCompra() != null
+					&& instrumento.getPuntas().getPrecioVenta() != null) {
 				panelBonos.put(instrumento.getSimbolo(), instrumento);
 			}
 		}
 	}
 
+	@Override
+	public void agregarInstrumentosAlPanelDeCedears(List<Instrumento> instrumentos) {
+		for (Instrumento instrumento : instrumentos) {
+			if (instrumento.getPuntas() != null && instrumento.getPuntas().getPrecioCompra() != null
+					&& instrumento.getPuntas().getPrecioVenta() != null) {
+				panelCedears.put(instrumento.getSimbolo(), instrumento);
+			}
+		}
+	}
 }

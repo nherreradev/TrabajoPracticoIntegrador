@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface ListaPreciosServicio {
-    ResponseEntity<String> SavePriceList(String titulo, String token);
-    Map<String,Boolean> ValidateResponse(ResponseEntity<String> responseEntity, String instrumento);
-    String GetPriceListMongo(String instrumento);
+	
+	public ResponseEntity<String> guardarListaPrecios(String titulo, String token);
+
+	public Map<String, Boolean> validateResponse(ResponseEntity<String> responseEntity, String instrumento);
+
+	public String getListaPrecioMongo(String instrumento);
 }
