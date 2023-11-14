@@ -13,6 +13,8 @@ import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 @Table(name = "ORDEN")
 public class Orden extends ObjetoPersistente {
 
+	private static final long serialVersionUID = 1L;
+
 	@Column(name = "CANTIDAD")
 	private BigDecimal cantidad;
 

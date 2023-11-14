@@ -39,43 +39,36 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         this.restTemplate = restTemplate;
     }
 
-    @Override
-    public ResponseEntity<String> guardarListaPrecios(String titulo, String token) {
-        Map<String, Boolean> ResponseOK = new HashMap<>();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        RequestEntity<?> requestEntity;
-        ResponseEntity<String> responseEntity = null;
-
-        try{
-            switch (titulo) {
-                case BONOS_KEY:
-                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(BONOS));
-                    responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.validateResponse(responseEntity, BONOS_KEY);
-                    break;
-                case ACCIONES_KEY:
-                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(ACCIONES));
-                    responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.validateResponse(responseEntity, ACCIONES_KEY);
-                    break;
-                case CEDEARS_KEY:
-                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(CEDEARS));
-                    responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.validateResponse(responseEntity, CEDEARS_KEY);
-                    break;
-                default:
-                    break;
-            }
-        }catch (Exception e){
-            System.out.println("|HTTP ERROR| "+"Error en la llamada a la API, exception: "+ e);
-            e.printStackTrace();
-            return null;
-        }
-        saveMongoTransaction(ResponseOK, responseEntity);
-        return responseEntity;
-    }
+	@Override
+	public ResponseEntity<String> guardarListaPrecios(String titulo, String token) {
+		Map<String, Boolean> ResponseOK = new HashMap<>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + token);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		RequestEntity<?> requestEntity;
+		ResponseEntity<String> responseEntity = null;
+		switch (titulo) {
+		case BONOS_KEY:
+			requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(BONOS));
+			responseEntity = restTemplate.exchange(requestEntity, String.class);
+			ResponseOK = this.validateResponse(responseEntity, BONOS_KEY);
+			break;
+		case ACCIONES_KEY:
+			requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(ACCIONES));
+			responseEntity = restTemplate.exchange(requestEntity, String.class);
+			ResponseOK = this.validateResponse(responseEntity, ACCIONES_KEY);
+			break;
+		case CEDEARS_KEY:
+			requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(CEDEARS));
+			responseEntity = restTemplate.exchange(requestEntity, String.class);
+			ResponseOK = this.validateResponse(responseEntity, CEDEARS_KEY);
+			break;
+		default:
+			break;
+		}
+		saveMongoTransaction(ResponseOK, responseEntity);
+		return responseEntity;
+	}
 
     private void saveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) {
         int IndexLlaveAbertura = responseEntity.toString().indexOf('{');
@@ -96,26 +89,19 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
         return ResponseOk;
     }
 
-    @Override
-    public String getListaPrecioMongo(String instrumento) {
-        String resultadoFinalJSON = null;
-        List <String> res = null;;
-        try{
-            res = this.listaPreciosRepository.getAllWithoutID(instrumento);
-            if(INDEX < res.size()){
-                resultadoFinalJSON = res.get(INDEX);
-                INDEX++;
-                System.out.println(INDEX);
-            }else{
-                INDEX = 0;
-            }
-        }catch (Exception e){
-            System.out.println("Error al obtener información de mongo"+ e);
-            e.printStackTrace();
-            return null;
-        }
-        return resultadoFinalJSON;
-    }
+	@Override
+	public String getListaPrecioMongo(String instrumento) {
+		String resultadoFinalJSON = null;
+		List<String> res = null;
+		res = this.listaPreciosRepository.getAllWithoutID(instrumento);
+		if (INDEX < res.size()) {
+			resultadoFinalJSON = res.get(INDEX);
+			INDEX++;
+		} else {
+			INDEX = 0;
+		}
+		return resultadoFinalJSON;
+	}
 
 	private String getMapKey(Map<String, Boolean> responseOK) {
 		if(responseOK.containsKey(ACCIONES_KEY)) {
@@ -132,10 +118,6 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
 
 	private boolean isStatusCodeOk(ResponseEntity<String> responseEntity) {
 		return responseEntity.getStatusCode() == HttpStatus.OK;
-	}
-
-	private Integer determinarIndexRandomDelArray(List<String> res) {
-		return 0;
 	}
 
 }

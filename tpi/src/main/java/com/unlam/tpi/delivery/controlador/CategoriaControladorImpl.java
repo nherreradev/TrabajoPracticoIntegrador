@@ -1,5 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class CategoriaControladorImpl implements CategoriaControlador {
 	
 	@Override
 	@RequestMapping(path = "/carga-categoria-excel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public void cargaDesdeExcel(@RequestParam MultipartFile excelCategoria) {
+	public void cargaDesdeExcel(@RequestParam MultipartFile excelCategoria) throws IOException {
 		getCategoriaServicio().cargaDesdeExcel(excelCategoria);
 	}
 
