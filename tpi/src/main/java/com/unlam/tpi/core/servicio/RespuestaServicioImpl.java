@@ -43,42 +43,28 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 
 	@Override
 	public void guardar(RespuestaDTO respuesta) {
-		try {
-			Respuesta persistente = RespuestaMapper.dTOaEntidad(respuesta);
-			getRespuestaRepositorio().save(persistente);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al guardar la respuesta", e);
-		}
+		Respuesta persistente = RespuestaMapper.dTOaEntidad(respuesta);
+		getRespuestaRepositorio().save(persistente);
 	}
 
 	@Override
-	public void cargaDesdeExcel(MultipartFile excelPregunta) {
+	public void cargaDesdeExcel(MultipartFile excelPregunta) throws IOException {
 		List<Respuesta> listaRespuesta = new ArrayList<>();
 		Map<Integer, String> encabezado = new HashedMap<>();
 		Map<String, Pregunta> preguntaMap = new HashedMap<>();
 		XSSFWorkbook libro;
 		Respuesta respuesta;
-		try {
-			libro = new XSSFWorkbook(excelPregunta.getInputStream());
-			XSSFSheet hoja = libro.getSheet(HOJA_RESPUESTA);
-			if (hoja == null) {
-				throw new ServiceException("Error al importar excel verifique que exista la hoja respuesta");
-			}
-			for (Row fila : hoja) {
-				respuesta = new Respuesta();
-				leerColumna(encabezado, preguntaMap, respuesta, fila);
-				agregarRespuestaALista(listaRespuesta, respuesta);
-			}
-			guardarRespuestaLista(listaRespuesta);
-		} catch (IOException e) {
-			throw new ServiceException("Error al guardar la respuesta", e);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al guardar la respuesta", e);
+		libro = new XSSFWorkbook(excelPregunta.getInputStream());
+		XSSFSheet hoja = libro.getSheet(HOJA_RESPUESTA);
+		if (hoja == null) {
+			throw new ServiceException("Error al importar excel verifique que exista la hoja respuesta");
 		}
+		for (Row fila : hoja) {
+			respuesta = new Respuesta();
+			leerColumna(encabezado, preguntaMap, respuesta, fila);
+			agregarRespuestaALista(listaRespuesta, respuesta);
+		}
+		guardarRespuestaLista(listaRespuesta);
 	}
 
 	private void leerColumna(Map<Integer, String> encabezado, Map<String, Pregunta> preguntaMap, Respuesta respuesta,
@@ -210,69 +196,39 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 
 	@Override
 	public RespuestaDTO getRespuestaDTOPorNombre(String nombre) {
-		try {
-			Respuesta respuesta = getRespuestaPorNombre(nombre);
-			if (respuesta == null) {
-				throw new ServiceException("Error al obtener la respuesta: " + nombre);
-			}
-			return RespuestaMapper.entidadADTO(respuesta);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la respuesta: " + nombre, e);
+		Respuesta respuesta = getRespuestaPorNombre(nombre);
+		if (respuesta == null) {
+			throw new ServiceException("Error al obtener la respuesta: " + nombre);
 		}
+		return RespuestaMapper.entidadADTO(respuesta);
 	}
 
 	@Override
 	public Respuesta getRespuestaPorNombre(String nombre) {
-		try {
-			Respuesta respuesta = getRespuestaRepositorio().findByNombre(nombre);
-			if (respuesta == null) {
-				throw new ServiceException("Error al obtener la respuesta: " + nombre);
-			}
-			return respuesta;
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la respuesta: " + nombre, e);
+		Respuesta respuesta = getRespuestaRepositorio().findByNombre(nombre);
+		if (respuesta == null) {
+			throw new ServiceException("Error al obtener la respuesta: " + nombre);
 		}
+		return respuesta;
 	}
 
 	@Override
 	public RespuestaDTO getRespuestaDTOPorID(Long id) {
-		try {
-			Respuesta respuesta = getRespuestaRepositorio().findByOid(id);
-			if (respuesta == null) {
-				throw new ServiceException("Error al obtener la respuesta");
-			}
-			return RespuestaMapper.entidadADTO(respuesta);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la respuesta", e);
+		Respuesta respuesta = getRespuestaRepositorio().findByOid(id);
+		if (respuesta == null) {
+			throw new ServiceException("Error al obtener la respuesta");
 		}
+		return RespuestaMapper.entidadADTO(respuesta);
 	}
 
 	@Override
 	public void borrar(Long id) {
-		try {
-			getRespuestaRepositorio().deleteById(id);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al borrar la respuesta", e);
-		}
+		getRespuestaRepositorio().deleteById(id);
 	}
 
 	@Override
 	public List<RespuestaDTO> listar() {
-		try {
-			return RespuestaMapper.entidadDTOLista(getRespuestaRepositorio().findAll());
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al listar las respuestas", e);
-		}
+		return RespuestaMapper.entidadDTOLista(getRespuestaRepositorio().findAll());
 	}
 
 	public RespuestaRepositorio getRespuestaRepositorio() {

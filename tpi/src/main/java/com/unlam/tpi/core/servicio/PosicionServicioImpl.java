@@ -105,24 +105,16 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	@Override
 	public void acreditarDinero(RequestCargaDeDinero request) {
-		try {
-			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
-			if (
-					posicionBuscada == null
-					|| !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS.equals(posicionBuscada != null ? posicionBuscada.getConcepto():null)
-				) {
-				Posicion posicion = new Posicion();
-				posicion.setCantidad(request.getCantidadPorAcreditar());
-				posicion.setEsEfectivo(true);
-				posicion.setMonedaOid(1L);
-				posicion.setUsuarioOid(1L);
-				posicion.setConcepto(request.getConcepto());
-				posicionRepositorio.save(posicion);
-			}
-		} catch (ServiceException se) {
-			throw se;
-		} catch (Exception e) {
-			throw new ServiceException("Ocurrio un error al acreditar el dinero");
+		Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConcepto(request.getConcepto());
+		if (posicionBuscada == null || !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS
+				.equals(posicionBuscada != null ? posicionBuscada.getConcepto() : null)) {
+			Posicion posicion = new Posicion();
+			posicion.setCantidad(request.getCantidadPorAcreditar());
+			posicion.setEsEfectivo(true);
+			posicion.setMonedaOid(1L);
+			posicion.setUsuarioOid(1L);
+			posicion.setConcepto(request.getConcepto());
+			posicionRepositorio.save(posicion);
 		}
 	}
 

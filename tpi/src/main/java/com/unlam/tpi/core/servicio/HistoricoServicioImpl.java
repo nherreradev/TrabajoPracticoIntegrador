@@ -35,31 +35,25 @@ public class HistoricoServicioImpl implements HistoricoServicio {
     //2 serán 3 meses
     //3 serán 6 meses
     @Override
-    public String GetHistoricoMongo(String rango, String instrumento) {
-        List<String> response = null;
-        Integer index = null;
-        try{
-            switch (rango){
-                case "mensual":
-                    response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("mensual", instrumento);
-                    index = DeterminarIndexRandomDelArray(response);
-                    return response.get(index);
-                case "trimestral":
-                    response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("trimestral", instrumento);
-                    index = DeterminarIndexRandomDelArray(response);
-                    return response.get(index);
-                case "semestral":
-                    response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("semestral", instrumento);
-                    index = DeterminarIndexRandomDelArray(response);
-                    return response.get(index);
-            }
-            return null;
-        }catch (Exception e){
-            System.out.println("Error al obtener información de mongo "+ e);
-            e.printStackTrace();
-            return null;
-        }
-    }
+	public String GetHistoricoMongo(String rango, String instrumento) {
+		List<String> response = null;
+		Integer index = null;
+		switch (rango) {
+		case "mensual":
+			response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("mensual", instrumento);
+			index = DeterminarIndexRandomDelArray(response);
+			return response.get(index);
+		case "trimestral":
+			response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("trimestral", instrumento);
+			index = DeterminarIndexRandomDelArray(response);
+			return response.get(index);
+		case "semestral":
+			response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("semestral", instrumento);
+			index = DeterminarIndexRandomDelArray(response);
+			return response.get(index);
+		}
+		return null;
+	}
 
     private Integer DeterminarIndexRandomDelArray(List<String> response) {
         return null;
@@ -140,24 +134,18 @@ public class HistoricoServicioImpl implements HistoricoServicio {
         return ArraySimbolos;
     }
 
-    private String DeterminarRangoDeFecha(FechaRequestHistorico fechaRequestHistorico) {
-        try {
-            Period period = Period.between(fechaRequestHistorico.getFecha_desde(), fechaRequestHistorico.getMeses_atras());
-            int mesesDiferencia = Math.abs(period.getMonths());
-            switch (mesesDiferencia){
-                case 1:
-                    return "mensual";
-                case 3:
-                    return "trimetral";
-                case 6:
-                    return "semestral";
-                default:
-                    return null;
-            }
-        }catch (Exception e){
-            System.out.println("Error al determinar rango de fechas "+ e);
-            e.printStackTrace();
-            return null;
-        }
-    }
+	private String DeterminarRangoDeFecha(FechaRequestHistorico fechaRequestHistorico) {
+		Period period = Period.between(fechaRequestHistorico.getFecha_desde(), fechaRequestHistorico.getMeses_atras());
+		int mesesDiferencia = Math.abs(period.getMonths());
+		switch (mesesDiferencia) {
+		case 1:
+			return "mensual";
+		case 3:
+			return "trimetral";
+		case 6:
+			return "semestral";
+		default:
+			return null;
+		}
+	}
 }

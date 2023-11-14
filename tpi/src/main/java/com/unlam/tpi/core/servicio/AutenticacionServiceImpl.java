@@ -1,24 +1,24 @@
 package com.unlam.tpi.core.servicio;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unlam.tpi.core.modelo.Usuario;
-import com.unlam.tpi.delivery.dto.JWTRestDTO;
-import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.util.Base64;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unlam.tpi.delivery.dto.JWTRestDTO;
+import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class AutenticacionServiceImpl implements AutenticacionService{
@@ -51,26 +51,19 @@ public class AutenticacionServiceImpl implements AutenticacionService{
         return secretKeyBase64;
     }
 
-    @Override
-    public JWTRestDTO ObtenerClaimsToken(String token) throws JsonProcessingException {
-        JWTRestDTO jwtRestDTO = new JWTRestDTO();
-        String tokenDeserializado = ObtenerBodyToken(token);
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(SECRET_KEY)
-                    .parseClaimsJws(tokenDeserializado)
-                    .getBody();
+	@Override
+	public JWTRestDTO ObtenerClaimsToken(String token) throws JsonProcessingException {
+		JWTRestDTO jwtRestDTO = new JWTRestDTO();
+		String tokenDeserializado = ObtenerBodyToken(token);
+		Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(tokenDeserializado).getBody();
 
-            String accion = claims.get("accion", String.class);
-            String mail = claims.get("mail", String.class);
+		String accion = claims.get("accion", String.class);
+		String mail = claims.get("mail", String.class);
 
-            jwtRestDTO.setAccion(accion);
-            jwtRestDTO.setEmailUsuario(mail);
-            return jwtRestDTO;
-        } catch (Exception e) {
-            return null;
-        }
-    }
+		jwtRestDTO.setAccion(accion);
+		jwtRestDTO.setEmailUsuario(mail);
+		return jwtRestDTO;
+	}
 
     private String ObtenerBodyToken(String token) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();

@@ -4,9 +4,6 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -17,6 +14,8 @@ import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 @Entity
 @Table(name = "PUNTAS")
 public class Puntas extends ObjetoPersistente {
+
+	private static final long serialVersionUID = 1L;
 
 	@OneToOne
 	@JoinColumn(name = "INSTRUMENTO_ID", referencedColumnName = "oid_")

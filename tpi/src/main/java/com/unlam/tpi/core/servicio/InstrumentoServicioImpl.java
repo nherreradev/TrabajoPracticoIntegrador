@@ -72,7 +72,6 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 			historicoInstrumentoRespuesta.setPrecioDeCierre(precioDeCierre);
 
 			listaHistoricoInstrumentoRespuesta.add(historicoInstrumentoRespuesta);
-
 		}
 
 		return listaHistoricoInstrumentoRespuesta;
@@ -80,34 +79,24 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 
 	@Override
 	public void persistirInstrumentos(List<Instrumento> listaInstrumentos) {
-		try {
-			for (Instrumento instrumento : listaInstrumentos) {
-
-				BigDecimal variacion = instrumento.getVariacionPorcentual();
-
-				if (variacion.compareTo(new BigDecimal(-2)) >= 0 && variacion.compareTo(new BigDecimal(2)) <= 0) {
-					instrumento.setCategoriaPerfil("Conservador");
-				} else if (variacion.compareTo(new BigDecimal(-5)) >= 0
-						&& variacion.compareTo(new BigDecimal(5)) <= 0) {
-					instrumento.setCategoriaPerfil("Moderado");
-				} else {
-					instrumento.setCategoriaPerfil("Agresivo");
-				}
-
-				Instrumento instrumentoBuscado = instrumentoRepositorio.encontrarPorSimbolo(instrumento.getSimbolo());
-
-				if (instrumentoBuscado != null) {
-					instrumentoBuscado.setCategoriaPerfil(instrumento.getCategoriaPerfil());
-					instrumentoBuscado.setVariacionPorcentual(instrumento.getVariacionPorcentual());
-					instrumentoRepositorio.save(instrumentoBuscado);
-				} else {
-					instrumentoRepositorio.save(instrumento);
-				}
+		for (Instrumento instrumento : listaInstrumentos) {
+			BigDecimal variacion = instrumento.getVariacionPorcentual();
+			if (variacion.compareTo(new BigDecimal(-2)) >= 0 && variacion.compareTo(new BigDecimal(2)) <= 0) {
+				instrumento.setCategoriaPerfil("Conservador");
+			} else if (variacion.compareTo(new BigDecimal(-5)) >= 0 && variacion.compareTo(new BigDecimal(5)) <= 0) {
+				instrumento.setCategoriaPerfil("Moderado");
+			} else {
+				instrumento.setCategoriaPerfil("Agresivo");
 			}
-		} catch (ServiceException se) {
-			throw se;
-		} catch (Exception e) {
-			throw new ServiceException("Error al persistir instrumentos", e);
+			Instrumento instrumentoBuscado = instrumentoRepositorio.encontrarPorSimbolo(instrumento.getSimbolo());
+
+			if (instrumentoBuscado != null) {
+				instrumentoBuscado.setCategoriaPerfil(instrumento.getCategoriaPerfil());
+				instrumentoBuscado.setVariacionPorcentual(instrumento.getVariacionPorcentual());
+				instrumentoRepositorio.save(instrumentoBuscado);
+			} else {
+				instrumentoRepositorio.save(instrumento);
+			}
 		}
 	}
 
@@ -119,12 +108,12 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 	@Override
 	public Instrumento obtenerInstrumentoPorID(Long coProductoID) {
 		return instrumentoRepositorio.obtenerInstrumentoPorID(coProductoID);
-		
+
 	}
 
 	@Override
 	public Instrumento obtenerInstrumentoPorTipoPerfil(String tipoPerfil) {
 		return instrumentoRepositorio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);
-		
+
 	}
 }

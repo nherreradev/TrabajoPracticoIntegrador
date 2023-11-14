@@ -23,20 +23,13 @@ public class OrdenServicioImpl implements OrdenServicio {
 
 	@Override
 	public void capturarOrden(OrdenDTO ordenDTO) {
-		try {
-			crearOrden(ordenDTO);
-		} catch (ServiceException se) {
-			throw se;
-		} catch (Exception e) {
-			throw new ServiceException("Se genero un error al capturar la orden");
-		}
+		crearOrden(ordenDTO);
 	}
 
 	public Orden crearOrden(OrdenDTO ordenDTO) {
 		ModelMapper modelMapper = new ModelMapper();
 		Orden orden = modelMapper.map(ordenDTO, Orden.class);
 		preCreacion(orden);
-		
 		return ordenRepositorio.save(orden);
 	}
 

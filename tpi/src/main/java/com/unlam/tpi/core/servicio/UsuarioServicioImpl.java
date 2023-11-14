@@ -20,6 +20,7 @@ import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 
 @Service
 public class UsuarioServicioImpl implements UsuarioServicio {
+
 	ResponseAPI responseAPI = new ResponseAPI();
 	@Autowired
 	UsuarioRepositorio usuarioRepositorio;
@@ -30,16 +31,10 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public void GuardarUsuario(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		Usuario nuevo;
-		try {
-			String token = this.autenticacionService.GenerarTokenValidacionCuenta(usuarioRestDTO);
-			nuevo = CrearUsuario(usuarioRestDTO, token);
-			this.usuarioRepositorio.save(nuevo);
-			this.mailServicio.PrepararMailYEnviar(usuarioRestDTO, token);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
+		String token = this.autenticacionService.GenerarTokenValidacionCuenta(usuarioRestDTO);
+		Usuario nuevo = CrearUsuario(usuarioRestDTO, token);
+		this.usuarioRepositorio.save(nuevo);
+		this.mailServicio.PrepararMailYEnviar(usuarioRestDTO, token);
 	}
 
 	// TODO agregar nickname
@@ -60,97 +55,63 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public Usuario ObtenerUsuarioPorEmail(String email) {
-		try {
-			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(email);
-			return buscado;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
+		return this.usuarioRepositorio.getUsuarioByEmail(email);
 	}
 
 	@Override
 	public Usuario ObtenerUsuarioPorNombreUsuario(String nombreUsuario) {
-		try {
-			Usuario usaurio = this.usuarioRepositorio.findByNombreUsuario(nombreUsuario);
-			if (usaurio == null) {
-				throw new ServiceException("Usuario no encontrado: " + nombreUsuario);
-			}
-			return usaurio;
-		} catch (Exception e) {
+		Usuario usaurio = this.usuarioRepositorio.findByNombreUsuario(nombreUsuario);
+		if (usaurio == null) {
 			throw new ServiceException("Usuario no encontrado: " + nombreUsuario);
 		}
+		return usaurio;
 	}
 
 	@Override
 	public UsuarioDTO ObtenerUsuarioDTOPorNombreUsuario(String nombreUsuario) {
-		try {
-			Usuario usaurio = ObtenerUsuarioPorNombreUsuario(nombreUsuario);
-			if (usaurio == null) {
-				return null;
-			}
-			return UsuarioMapper.entidadADTO(usaurio);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
+		Usuario usaurio = ObtenerUsuarioPorNombreUsuario(nombreUsuario);
+		if (usaurio == null) {
 			throw new ServiceException("Error obteniendo el usuario: " + nombreUsuario);
 		}
+		return UsuarioMapper.entidadADTO(usaurio);
 	}
 
 	@Override
 	public boolean UsuarioValidado(String token) throws JsonProcessingException {
 		JWTRestDTO res = this.autenticacionService.ObtenerClaimsToken(token);
-		try {
-			if (res != null) {
-				Usuario buscado = ObtenerUsuarioPorEmail(res.getEmailUsuario());
-				buscado.setCuentaConfirmada(Boolean.TRUE);
-				this.usuarioRepositorio.save(buscado);
-				return true;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("ERROR AL ENCONTRAR USUARIO: " + e);
-			return false;
+		if (res.getEmailUsuario() != null) {
+			Usuario buscado = ObtenerUsuarioPorEmail(res.getEmailUsuario());
+			buscado.setCuentaConfirmada(Boolean.TRUE);
+			this.usuarioRepositorio.save(buscado);
+			return true;
 		}
 		return false;
 	}
 
 	@Override
 	public ResponseAPI ModificarUsuario(Usuario usuario) {
-		try {
-			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
-			if (buscado != null) {
-				buscado.setNombre(usuario.getNombre());
-				buscado.setApellido(usuario.getApellido());
-				this.usuarioRepositorio.save(buscado);
-				return responseAPI.MensajeDeExito();
-			} else
-				return responseAPI.MensajeDeErrorRecursoNoEncontrado();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("ERROR AL MODIFICAR USUARIO: " + e);
-			return responseAPI.MensajeDeErrorRecursoNoEncontrado();
+		Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
+		if (buscado != null) {
+			buscado.setNombre(usuario.getNombre());
+			buscado.setApellido(usuario.getApellido());
+			this.usuarioRepositorio.save(buscado);
+			return responseAPI.MensajeDeExito();
 		}
+		return responseAPI.MensajeDeErrorRecursoNoEncontrado();
 	}
 
 	@Override
 	public ResponseAPI DarDeBajaUsuario(Usuario usuario) {
 		if (!ExisteUsuario(usuario.getEmail()))
 			return responseAPI.MensajeDeErrorRecursoNoEncontrado();
-		try {
-			Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
-			if (buscado != null) {
-				buscado.setActivo(Boolean.FALSE);
-				buscado.setCuentaConfirmada(Boolean.FALSE);
-				this.usuarioRepositorio.save(buscado);
-				return responseAPI.MensajeDeExito();
-			} else
-				return responseAPI.MensajeDeErrorEnRequest();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("ERROR AL DAR DE BAJA USUARIO: " + e);
+		Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
+		if (buscado != null) {
+			buscado.setActivo(Boolean.FALSE);
+			buscado.setCuentaConfirmada(Boolean.FALSE);
+			this.usuarioRepositorio.save(buscado);
+			return responseAPI.MensajeDeExito();
 		}
-		return responseAPI.MensajeDeErrorInterno();
+		return responseAPI.MensajeDeErrorEnRequest();
 	}
 
 	@Override
