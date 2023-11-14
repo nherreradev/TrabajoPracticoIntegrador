@@ -23,8 +23,8 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 
 	@Override
 	public List<Posicion> getPosicionEnEfectivo() {
-		
-		//volar try catch
+
+		// volar try catch
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
@@ -42,7 +42,7 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 	}
 
 	@Override
-	public List<Posicion> getTitulosDisponiblesPorSimbolo(String simboloInstrumento) {
+	public List<Posicion> obtenerTodosLosMovimientosAsociadosAUnSimbolo(String simboloInstrumento) {
 
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -50,7 +50,8 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 			Root<Posicion> root = criteriaQuery.from(Posicion.class);
 
 			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
-			Predicate simboloInstrumentoPredicado = criteriaBuilder.equal(root.get("simboloInstrumento"), simboloInstrumento);
+			Predicate simboloInstrumentoPredicado = criteriaBuilder.equal(root.get("simboloInstrumento"),
+					simboloInstrumento);
 
 			criteriaQuery.where(deletedPredicado, simboloInstrumentoPredicado);
 
@@ -61,7 +62,7 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 	}
 
 	@Override
-	public Posicion obtenerPosicionPorConcepto(String concepto) {
+	public Posicion obtenerPosicionPorConceptoYUsuario(String concepto, Long oidUsuario) {
 
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -69,13 +70,51 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 			Root<Posicion> root = criteriaQuery.from(Posicion.class);
 
 			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+			Predicate usuarioIdPredicado = criteriaBuilder.equal(root.get("usuarioOid"), oidUsuario);
 			Predicate conceptoPredicado = criteriaBuilder.equal(root.get("concepto"), concepto);
 
-			criteriaQuery.where(deletedPredicado, conceptoPredicado);
+			criteriaQuery.where(deletedPredicado, conceptoPredicado, usuarioIdPredicado);
 
 			return entityManager.createQuery(criteriaQuery).getSingleResult();
 		} catch (NoResultException nre) {
 			return null;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<Posicion> obtenerTodosLosTitulos(Long usuarioOid) {
+
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
+			Root<Posicion> root = criteriaQuery.from(Posicion.class);
+
+			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+			Predicate noEsEfectivoPredicado = criteriaBuilder.equal(root.get("esEfectivo"), false);
+			Predicate usuarioPredicado = criteriaBuilder.equal(root.get("usuarioOid"), usuarioOid);
+
+			criteriaQuery.where(deletedPredicado, noEsEfectivoPredicado, usuarioPredicado);
+
+			return entityManager.createQuery(criteriaQuery).getResultList();
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<Posicion> getPosicionByUsuarioOid(Long oidUsuario) {
+		try {
+			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
+			Root<Posicion> root = criteriaQuery.from(Posicion.class);
+
+			Predicate filtroUsuario = criteriaBuilder.equal(root.get("usuarioOid"), oidUsuario);
+
+			criteriaQuery.where(filtroUsuario);
+
+			return entityManager.createQuery(criteriaQuery).getResultList();
 		} catch (Exception e) {
 			throw e;
 		}

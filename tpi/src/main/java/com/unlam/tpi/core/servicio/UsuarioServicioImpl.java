@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.interfaces.MailServicio;
 import com.unlam.tpi.core.interfaces.UsuarioRepositorio;
 import com.unlam.tpi.core.interfaces.UsuarioServicio;
@@ -41,7 +42,6 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	private Usuario CrearUsuario(UsuarioRestDTO usuarioRestDTO, String token) {
 		Usuario usuario = UsuarioMapper.UsuarioRest2UsuarioModel(usuarioRestDTO);
 		usuario.setTokenValidacion(token);
-		// usuario.setNombreUsuario(usuario.g);
 		usuario.setCuentaConfirmada(Boolean.FALSE);
 		usuario.setActivo(Boolean.TRUE);
 		usuario.setPremium(Boolean.FALSE);
@@ -49,8 +49,12 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public Boolean ExisteUsuario(String email) {
+	public Boolean ExisteEmail(String email) {
 		return this.usuarioRepositorio.existsByEmail(email);
+	}
+	@Override
+	public Boolean ExisteNombreUsuario(String nombreUsuario) {
+		return this.usuarioRepositorio.existsByNombreUsuario(nombreUsuario);
 	}
 
 	@Override
@@ -77,7 +81,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public boolean UsuarioValidado(String token) throws JsonProcessingException {
+	public boolean UsuarioValidadoPorPrimeraVez(String token) throws JsonProcessingException {
 		JWTRestDTO res = this.autenticacionService.ObtenerClaimsToken(token);
 		if (res.getEmailUsuario() != null) {
 			Usuario buscado = ObtenerUsuarioPorEmail(res.getEmailUsuario());
@@ -86,6 +90,13 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public Boolean ElUsuarioFueYaEstaValidado(String token) throws JsonProcessingException {
+		JWTRestDTO UsuarioToken = autenticacionService.ObtenerClaimsToken(token);
+		Usuario usuario = usuarioRepositorio.getUsuarioByEmail(UsuarioToken.getEmailUsuario());
+		return usuario.getCuentaConfirmada();
 	}
 
 	@Override
@@ -102,7 +113,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public ResponseAPI DarDeBajaUsuario(Usuario usuario) {
-		if (!ExisteUsuario(usuario.getEmail()))
+		if (!ExisteEmail(usuario.getEmail()))
 			return responseAPI.MensajeDeErrorRecursoNoEncontrado();
 		Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
 		if (buscado != null) {

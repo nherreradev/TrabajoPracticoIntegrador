@@ -60,4 +60,6 @@ public class ResponseAPI {
         return new ResponseAPI("Error interno del servidor", "Se ha producido un error interno en el servidor.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
+
 }

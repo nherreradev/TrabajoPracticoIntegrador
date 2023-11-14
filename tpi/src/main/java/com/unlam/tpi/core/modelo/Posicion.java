@@ -2,6 +2,7 @@ package com.unlam.tpi.core.modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,7 +43,7 @@ public class Posicion extends ObjetoPersistente {
 	 * Fecha de creación de la posición
 	 */
 	@Column(name = "FECHA_POSICION")
-	private LocalDate fecha_posicion;
+	private LocalDateTime fecha_posicion;
 
 	/**
 	 * Cantidad de titulos en posición
@@ -50,11 +51,8 @@ public class Posicion extends ObjetoPersistente {
 	@Column(name = "CANTIDAD")
 	private BigDecimal cantidad;
 
-	/**
-	 * Precio de adquisición
-	 */
-	@Column(name = "PRECIO")
-	private BigDecimal precio;
+	@Column(name = "PRECIO_ACTUAL_DE_VENTA")
+	private BigDecimal precioActualDeVenta;
 
 	/**
 	 * Referencia la OID de la orden
@@ -73,6 +71,12 @@ public class Posicion extends ObjetoPersistente {
 
 	@Column(name = "CONCEPTO")
 	private String concepto;
+
+	@Column(name = "PRECIO_AL_MOMENTO_DE_COMPRA")
+	private BigDecimal precioAlMomentoDeCompra;
+	
+	@Column(name = "LIQUIDO_EXISTENCIA_DEL_SIMBOLO")
+	private Boolean liquidoExistenciaDelSimbolo;
 
 	public Long getUsuarioOid() {
 		return usuarioOid;
@@ -106,11 +110,11 @@ public class Posicion extends ObjetoPersistente {
 		this.monedaOid = monedaOid;
 	}
 
-	public LocalDate getFecha_posicion() {
+	public LocalDateTime getFecha_posicion() {
 		return fecha_posicion;
 	}
 
-	public void setFecha_posicion(LocalDate fecha_posicion) {
+	public void setFecha_posicion(LocalDateTime fecha_posicion) {
 		this.fecha_posicion = fecha_posicion;
 	}
 
@@ -122,12 +126,12 @@ public class Posicion extends ObjetoPersistente {
 		this.cantidad = cantidad;
 	}
 
-	public BigDecimal getPrecio() {
-		return precio;
+	public BigDecimal getPrecioActualDeVenta() {
+		return precioActualDeVenta;
 	}
 
-	public void setPrecio(BigDecimal precio) {
-		this.precio = precio;
+	public void setPrecioActualDeVenta(BigDecimal precioActualDeVenta) {
+		this.precioActualDeVenta = precioActualDeVenta;
 	}
 
 	public Long getOrdenOID() {
@@ -161,5 +165,23 @@ public class Posicion extends ObjetoPersistente {
 	public void setConcepto(String concepto) {
 		this.concepto = concepto;
 	}
+
+	public BigDecimal getPrecioAlMomentoDeCompra() {
+		return precioAlMomentoDeCompra;
+	}
+
+	public void setPrecioAlMomentoDeCompra(BigDecimal precioAlMomentoDeCompra) {
+		this.precioAlMomentoDeCompra = precioAlMomentoDeCompra;
+	}
+
+	public Boolean liquidoExistenciaDelSimbolo() {
+		return liquidoExistenciaDelSimbolo;
+	}
+
+	public void setLiquidoExistenciaDelSimbolo(Boolean liquidoExistenciaDelSimbolo) {
+		this.liquidoExistenciaDelSimbolo = liquidoExistenciaDelSimbolo;
+	}
+	
+	
 
 }

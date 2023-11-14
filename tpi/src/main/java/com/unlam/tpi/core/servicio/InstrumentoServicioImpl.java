@@ -18,7 +18,6 @@ import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PuntasServicio;
 import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
 import com.unlam.tpi.core.modelo.Instrumento;
-import com.unlam.tpi.core.modelo.ServiceException;
 
 @Service
 @Transactional
@@ -115,5 +114,10 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 	public Instrumento obtenerInstrumentoPorTipoPerfil(String tipoPerfil) {
 		return instrumentoRepositorio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);
 
+	}
+
+	@Override
+	public Instrumento obtenerInstrumentoPorSimbolo(String simboloInstrumento) {
+		return instrumentoRepositorio.encontrarPorSimbolo(simboloInstrumento);
 	}
 }

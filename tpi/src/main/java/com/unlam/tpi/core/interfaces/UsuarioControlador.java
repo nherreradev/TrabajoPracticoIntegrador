@@ -2,6 +2,10 @@ package com.unlam.tpi.core.interfaces;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
 import org.springframework.http.ResponseEntity;
 
 import com.unlam.tpi.core.modelo.ResponseAPI;
