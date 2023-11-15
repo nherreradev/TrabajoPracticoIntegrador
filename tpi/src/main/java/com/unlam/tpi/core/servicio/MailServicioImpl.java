@@ -33,6 +33,16 @@ public class MailServicioImpl implements MailServicio {
 		String cuerpoMail = saludo + "\n\n" + mensaje + "\n\n" + validacionUrl + "\n\n";
 		EnviarMail(usuarioRestDTO.getEmail(), asunto, cuerpoMail);
 	}
+	
+	@Override
+	public void envioMailRecuperacionCuenta(String nombre, String email, String token) {
+		String asunto = "Bienvenido a MercadoJR";
+		String saludo = "Hola " + nombre + ",";
+		String mensaje = "Para completar el proceso de recuperacion de cuenta dirigirse al siguiente link:";
+		String validacionUrl = urlMercadoJr + "recuperar-cuenta?token=" + token;
+		String cuerpoMail = saludo + "\n\n" + mensaje + "\n\n" + validacionUrl + "\n\n";
+		EnviarMail(email, asunto, cuerpoMail);
+	}
 
 	@Override
 	public void EnviarMail(String destinatario, String asunto, String CuerpoMail) {

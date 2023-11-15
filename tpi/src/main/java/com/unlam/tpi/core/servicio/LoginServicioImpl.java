@@ -30,7 +30,7 @@ public class LoginServicioImpl implements LoginServicio {
     private String GetTokenLoginUsuario(UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException {
         Usuario buscado = usuarioRepositorio.findByEmailAndPass(usuarioLogin.getMail(), usuarioLogin.getPass());
         try {
-            String token = this.autenticacionService.GenerarTokenLoginUsuario(buscado);
+            String token = this.autenticacionService.generarTokenLoginUsuario(buscado);
             String jsonString = "{\"token\":"+token+"}";
             return new Gson().fromJson(jsonString, JsonObject.class).toString();
         }catch (Exception e){

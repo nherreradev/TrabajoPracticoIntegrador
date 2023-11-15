@@ -15,6 +15,7 @@ import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.JWTRestDTO;
+import com.unlam.tpi.delivery.dto.PasswordDto;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
 import com.unlam.tpi.delivery.dto.UsuarioMapper;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
@@ -32,7 +33,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public void GuardarUsuario(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		String token = this.autenticacionService.GenerarTokenValidacionCuenta(usuarioRestDTO);
+		String token = this.autenticacionService.GenerarTokenValidacionCuenta(usuarioRestDTO.getEmail());
 		Usuario nuevo = CrearUsuario(usuarioRestDTO, token);
 		this.usuarioRepositorio.save(nuevo);
 		this.mailServicio.PrepararMailYEnviar(usuarioRestDTO, token);
@@ -45,6 +46,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		usuario.setCuentaConfirmada(Boolean.FALSE);
 		usuario.setActivo(Boolean.TRUE);
 		usuario.setPremium(Boolean.FALSE);
+		usuario.setEsAdministrador(Boolean.FALSE);
 		return usuario;
 	}
 
@@ -61,6 +63,12 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	public Usuario ObtenerUsuarioPorEmail(String email) {
 		return this.usuarioRepositorio.getUsuarioByEmail(email);
 	}
+	
+	@Override
+	public Usuario ObtenerUsuarioPorToken(String token) {
+		return this.usuarioRepositorio.getUsuarioByTokenValidacion(token);
+	}
+	
 
 	@Override
 	public Usuario ObtenerUsuarioPorNombreUsuario(String nombreUsuario) {
@@ -82,7 +90,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public boolean UsuarioValidadoPorPrimeraVez(String token) throws JsonProcessingException {
-		JWTRestDTO res = this.autenticacionService.ObtenerClaimsToken(token);
+		JWTRestDTO res = this.autenticacionService.obtenerClaimsToken(token);
 		if (res.getEmailUsuario() != null) {
 			Usuario buscado = ObtenerUsuarioPorEmail(res.getEmailUsuario());
 			buscado.setCuentaConfirmada(Boolean.TRUE);
@@ -94,7 +102,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public Boolean ElUsuarioFueYaEstaValidado(String token) throws JsonProcessingException {
-		JWTRestDTO UsuarioToken = autenticacionService.ObtenerClaimsToken(token);
+		JWTRestDTO UsuarioToken = autenticacionService.obtenerClaimsToken(token);
 		Usuario usuario = usuarioRepositorio.getUsuarioByEmail(UsuarioToken.getEmailUsuario());
 		return usuario.getCuentaConfirmada();
 	}
@@ -124,7 +132,38 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		}
 		return responseAPI.MensajeDeErrorEnRequest();
 	}
+	
+	@Override
+	public void recuperarCuenta(Usuario usuario) throws NoSuchAlgorithmException, InvalidKeySpecException {
+		if (!ExisteEmail(usuario.getEmail()))
+			return;
+		Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
+		if (buscado != null) {
+			String token = this.autenticacionService.GenerarSecretJWT();
+			buscado.setActivo(Boolean.FALSE);
+			buscado.setCuentaConfirmada(Boolean.FALSE);
+			buscado.setTokenValidacion(token);
+			this.usuarioRepositorio.save(buscado);
+			this.mailServicio.envioMailRecuperacionCuenta(buscado.getNombre(),buscado.getEmail(), token);
+		}
+	}
 
+	@Override
+	public Boolean cambioPassword(PasswordDto passwordDto) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException {
+		Usuario usuario = ObtenerUsuarioPorToken(passwordDto.getToken());
+		if (usuario == null) {
+			return Boolean.FALSE;
+		}
+		String token = this.autenticacionService.GenerarSecretJWT();
+		usuario.setCuentaConfirmada(Boolean.TRUE);
+		usuario.setActivo(Boolean.TRUE);
+		usuario.setPass(passwordDto.getNewPassword());
+		usuario.setTokenValidacion(token);
+		this.usuarioRepositorio.save(usuario);
+		return Boolean.TRUE;
+	}
+	
+	
 	@Override
 	public void ConfirmarCuenta(Usuario usuario) {
 		usuario.setCuentaConfirmada(Boolean.TRUE);

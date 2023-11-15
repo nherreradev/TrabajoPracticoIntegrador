@@ -44,12 +44,15 @@ public class Usuario extends ObjetoPersistente {
 
 	@Column(name = "HASH_VALIDACION")
 	private String tokenValidacion;
+	
+	@Column(name = "ES_ADMINISTRADOR")
+	private Boolean esAdministrador = false;
 
 	public Usuario() {
 	}
 
 	public Usuario(String nombreUsuario, String nombre, String apellido, String email, String pass,
-			Boolean cuentaConfirmada, Boolean activo, String tokenValidacion) {
+			Boolean cuentaConfirmada, Boolean activo, String tokenValidacion, Boolean esAdministrador) {
 		this.nombreUsuario = nombreUsuario;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -58,6 +61,7 @@ public class Usuario extends ObjetoPersistente {
 		this.cuentaConfirmada = cuentaConfirmada;
 		this.activo = activo;
 		this.tokenValidacion = tokenValidacion;
+		this.esAdministrador = esAdministrador;
 	}
 
 	public Boolean getPremium() {
@@ -130,6 +134,14 @@ public class Usuario extends ObjetoPersistente {
 
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
+	}
+
+	public Boolean getEsAdministrador() {
+		return esAdministrador;
+	}
+
+	public void setEsAdministrador(Boolean esAdministrador) {
+		this.esAdministrador = esAdministrador;
 	}
 
 }
