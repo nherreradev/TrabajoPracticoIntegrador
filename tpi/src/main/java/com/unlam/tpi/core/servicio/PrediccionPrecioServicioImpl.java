@@ -15,9 +15,6 @@ public class PrediccionPrecioServicioImpl implements PrediccionPrecioServicio {
 	
 	@Override
 	public PrediccionPrecioDTO obtenerCotizacionDolar() {
-//		String dolar = getPrediccionPrecioApi().obtenerPrecio();
-//		PrediccionPrecioDTO prediccionPrecioDTO = new PrediccionPrecioDTO();
-//		prediccionPrecioDTO.setSimbolo(dolar);
 		return getPrediccionPrecioApi().obtenerPrecio();
 	}
 	

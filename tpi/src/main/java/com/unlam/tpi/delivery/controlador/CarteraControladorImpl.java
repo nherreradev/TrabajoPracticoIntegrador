@@ -43,7 +43,10 @@ public class CarteraControladorImpl implements CarteraControlador {
 
 	@Override
 	@PostMapping("/acreditar/dinero")
-	public ResponseEntity<String> acreditarDinero(@RequestBody RequestCargaDeDinero request) {
+	public ResponseEntity<String> acreditarDinero(@RequestHeader("Authorization") String headerAuthorization, @RequestBody RequestCargaDeDinero request) throws JsonProcessingException {
+		String token = headerAuthorization.replaceAll("Bearer ", "");
+		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
+		request.setUsuarioOid(usuario.getOid());	
 		posicionServicio.acreditarDinero(request);
 		return ResponseEntity.ok("Dinero acreditado correctamente");
 	}

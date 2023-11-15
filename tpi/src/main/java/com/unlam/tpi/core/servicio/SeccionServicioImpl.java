@@ -35,41 +35,27 @@ public class SeccionServicioImpl implements SeccionServicio {
 
 	@Override
 	public void guardar(SeccionDTO seccion) {
-		try {
-			Seccion persistente = SeccionMapper.dTOaEntidad(seccion);
-			getSeccionRepositorio().save(persistente);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al guardar la pregunta", e);
-		}
+		Seccion persistente = SeccionMapper.dTOaEntidad(seccion);
+		getSeccionRepositorio().save(persistente);
 	}
 
 	@Override
-	public void cargaDesdeExcel(MultipartFile excelPregunta) {
+	public void cargaDesdeExcel(MultipartFile excelPregunta) throws IOException {
 		List<Seccion> listaSeccion = new ArrayList<>();
 		Map<Integer, String> encabezado = new HashedMap<>();
 		XSSFWorkbook libro;
 		Seccion seccion;
-		try {
-			libro = new XSSFWorkbook(excelPregunta.getInputStream());
-			XSSFSheet hoja = libro.getSheet(HOJA_SECCION);
-			if (hoja == null) {
-				throw new ServiceException("Error al importar excel verifique que exista la hoja seccion");
-			}
-			for (Row fila : hoja) {
-				seccion = new Seccion();
-				leerColumna(encabezado, seccion, fila);
-				agregarSeccionALista(listaSeccion, seccion);
-			}
-			guardarSeccionLista(listaSeccion);
-		} catch (IOException e) {
-			throw new ServiceException("Error al guardar la seccion", e);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al guardar la seccion", e);
+		libro = new XSSFWorkbook(excelPregunta.getInputStream());
+		XSSFSheet hoja = libro.getSheet(HOJA_SECCION);
+		if (hoja == null) {
+			throw new ServiceException("Error al importar excel verifique que exista la hoja seccion");
 		}
+		for (Row fila : hoja) {
+			seccion = new Seccion();
+			leerColumna(encabezado, seccion, fila);
+			agregarSeccionALista(listaSeccion, seccion);
+		}
+		guardarSeccionLista(listaSeccion);
 	}
 
 	private void leerColumna(Map<Integer, String> encabezado, Seccion seccion, Row fila) {
@@ -154,70 +140,40 @@ public class SeccionServicioImpl implements SeccionServicio {
 
 	@Override
 	public SeccionDTO getSeccionDTOPorID(Long id) {
-		try {
-			Seccion seccion = getSeccionRepositorio().findByOid(id);
-			if (seccion == null) {
-				throw new ServiceException("Error al obtener la seccion");
-			}
-			return SeccionMapper.entidadADTO(seccion);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la seccion", e);
+		Seccion seccion = getSeccionRepositorio().findByOid(id);
+		if (seccion == null) {
+			throw new ServiceException("Error al obtener la seccion");
 		}
+		return SeccionMapper.entidadADTO(seccion);
 	}
 
 	@Override
 	public SeccionDTO getSeccionDTOPorNombre(String nombre) {
-		try {
-			Seccion seccion = getSeccionPorNombre(nombre);
-			return SeccionMapper.entidadADTO(seccion);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la seccion", e);
-		}
+		Seccion seccion = getSeccionPorNombre(nombre);
+		return SeccionMapper.entidadADTO(seccion);
 	}
 
 	@Override
 	public Seccion getSeccionPorNombre(String nombre) {
-		try {
-			Seccion seccion = getSeccionRepositorio().findByNombre(nombre);
-			if (seccion == null) {
-				throw new ServiceException("Error al obtener la seccion por nombre");
-			}
-			return seccion;
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la seccion", e);
+		Seccion seccion = getSeccionRepositorio().findByNombre(nombre);
+		if (seccion == null) {
+			throw new ServiceException("Error al obtener la seccion por nombre");
 		}
+		return seccion;
 	}
 
 	@Override
 	public void borrar(Long id) {
-		try {
-			getSeccionRepositorio().deleteById(id);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al borrar la seccion", e);
-		}
+		getSeccionRepositorio().deleteById(id);
 	}
 
 	@Override
 	public List<SeccionDTO> listar() {
-		try {
-			List<Seccion> seccionList = getSeccionRepositorio().findAll();
-			if (seccionList == null || seccionList.size() == 0) {
-				throw new ServiceException("Error al obtener la lista de secciones");
-			}
-			return SeccionMapper.entidadDTOLista(seccionList);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al borrar la seccion", e);
+		List<Seccion> seccionList = getSeccionRepositorio().findAll();
+		if (seccionList == null || seccionList.size() == 0) {
+			throw new ServiceException("Error al obtener la lista de secciones");
 		}
+		return SeccionMapper.entidadDTOLista(seccionList);
 	}
 
 	public SeccionRepositorio getSeccionRepositorio() {

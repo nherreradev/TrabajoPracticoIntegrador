@@ -1,6 +1,5 @@
 package com.unlam.tpi.delivery.controlador;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.unlam.tpi.core.interfaces.PerfilInversorControlador;
 import com.unlam.tpi.core.interfaces.PerfilInversorServicio;
 import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
-
-import net.sf.jasperreports.engine.JRException;
 
 @RestController
 @RequestMapping("/api/perfil-inversor")

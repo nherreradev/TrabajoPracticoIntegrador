@@ -1,5 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,14 @@ public class IAControladorImpl implements IAControlador {
 
 	@Override
 	@GetMapping("/txt")
-	public ResponseEntity<String> generarArchivoTXT(String tipoPerfil) {
+	public ResponseEntity<String> generarArchivoTXT(String tipoPerfil) throws IOException {
 		iAServicio.generarTXT(tipoPerfil);
 		return ResponseEntity.ok("OK");
 	}
 
 	@Override
 	@GetMapping("/portafolio/sugerido")
-	public ResponseEntity<String> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) {
+	public ResponseEntity<String> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) throws IOException {
 		if (!tipoPerfil.equals("undefined")) {
 			List<Instrumento> instrumentosRecomendados = iAServicio.obtenerPortafolioSugerido(tipoPerfil, idProducto);
 			String json = new Gson().toJson(instrumentosRecomendados);

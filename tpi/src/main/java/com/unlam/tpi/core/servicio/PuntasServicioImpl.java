@@ -18,7 +18,6 @@ public class PuntasServicioImpl implements PuntasServicio {
 	public void guardarPuntas(Instrumento instrumento) {
 		Puntas puntas = instrumento.getPuntas() != null ? instrumento.getPuntas() : null;
 		if (puntas != null) {
-			//puntas.setInstrumento(instrumento);
 			puntasRepositorio.save(puntas);
 		}
 	}
