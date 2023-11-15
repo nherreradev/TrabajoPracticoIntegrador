@@ -356,7 +356,6 @@ public class PosicionServicioImpl implements PosicionServicio {
 				String key = posicion2.getSimboloInstrumento();
 
 				if (mapaRendimientos.containsKey(key)) {
-					RendimientoResponse rendimientoObtenido = mapaRendimientos.get(key);
 
 					mapaRendimientos.remove(key);
 
