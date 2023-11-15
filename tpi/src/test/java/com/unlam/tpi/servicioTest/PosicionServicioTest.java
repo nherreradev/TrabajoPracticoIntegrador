@@ -222,11 +222,7 @@ class PosicionServicioTest {
 
 		when(posicionRepositorio.getPosicionByUsuarioOid(oidUsuario)).thenReturn(listaPosiciones);
 
-<<<<<<< .mine
-		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal(1L);
-=======
 		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal(oidUsuario);
->>>>>>> .theirs
 
 		assertEquals(totalMonedas, valuacionTotalRespuesta.getTotalMonedas());
 		assertEquals(totalInstrumentos, valuacionTotalRespuesta.getTotalInstrumentos());
