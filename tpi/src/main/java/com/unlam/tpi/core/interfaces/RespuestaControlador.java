@@ -1,5 +1,6 @@
 package com.unlam.tpi.core.interfaces;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -16,5 +17,5 @@ public interface RespuestaControlador {
 
 	public List<RespuestaDTO> listar();
 
-	public void cargaDesdeExcel(MultipartFile excelRespuesta);
+	public void cargaDesdeExcel(MultipartFile excelRespuesta)throws IOException;
 }

@@ -55,43 +55,29 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 
 	@Override
 	public void guardar(PreguntaDTO pregunta) {
-		try {
 			Pregunta persistente = PreguntaMapper.dTOaEntidad(pregunta);
 			getPreguntaRepositorio().save(persistente);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al guardar la pregunta", e);
-		}
 	}
 
 	@Override
-	public void cargaDesdeExcel(MultipartFile excelPregunta) {
+	public void cargaDesdeExcel(MultipartFile excelPregunta) throws IOException {
 		List<Pregunta> listaPregunta = new ArrayList<>();
 		Map<Integer, String> encabezado = new HashedMap<>();
 		Map<String, Categoria> categoriaMap = new HashedMap<>();
 		Map<String, Seccion> seccionMap = new HashedMap<>();
 		XSSFWorkbook libro;
 		Pregunta pregunta;
-		try {
-			libro = new XSSFWorkbook(excelPregunta.getInputStream());
-			XSSFSheet hoja = libro.getSheet(HOJA_PREGUNTA);
-			if (hoja == null) {
-				throw new ServiceException("Error al importar excel verifique que exista la hoja pregunta");
-			}
-			for (Row fila : hoja) {
-				pregunta = new Pregunta();
-				leerColumna(encabezado, categoriaMap, seccionMap, pregunta, fila);
-				agregarPreguntaALista(listaPregunta, pregunta);
-			}
-			guardarPreguntaLista(listaPregunta);
-		} catch (IOException e) {
-			throw new ServiceException("Error al guardar la pregunta", e);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al guardar la pregunta", e);
+		libro = new XSSFWorkbook(excelPregunta.getInputStream());
+		XSSFSheet hoja = libro.getSheet(HOJA_PREGUNTA);
+		if (hoja == null) {
+			throw new ServiceException("Error al importar excel verifique que exista la hoja pregunta");
 		}
+		for (Row fila : hoja) {
+			pregunta = new Pregunta();
+			leerColumna(encabezado, categoriaMap, seccionMap, pregunta, fila);
+			agregarPreguntaALista(listaPregunta, pregunta);
+		}
+		guardarPreguntaLista(listaPregunta);
 	}
 
 	private void leerColumna(Map<Integer, String> encabezado, Map<String, Categoria> categoriaMap,
@@ -199,11 +185,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	}
 
 	private TipoComponente parseStringATipoComponente(String tipoComponente) {
-		try {
 			return TipoComponente.valueOf(tipoComponente);
-		} catch (IllegalArgumentException e) {
-			throw new ServiceException("El TipoComponente con nombre: " + tipoComponente + " no es valido.");
-		}
 	}
 
 	private void agregarCategoria(Map<String, Categoria> categoriaMap, Pregunta pregunta, String nombreCategoria) {
@@ -252,32 +234,20 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 
 	@Override
 	public PreguntaDTO getPreguntaDTOPorEnunciado(String nombre) {
-		try {
-			Pregunta pregunta = getPreguntaPorEnunciado(nombre);
-			if (pregunta == null) {
-				throw new ServiceException("Error al obtener la pregunta: " + nombre);
-			}
-			return PreguntaMapper.entidadADTO(pregunta);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la pregunta: " + nombre, e);
+		Pregunta pregunta = getPreguntaPorEnunciado(nombre);
+		if (pregunta == null) {
+			throw new ServiceException("Error al obtener la pregunta: " + nombre);
 		}
+		return PreguntaMapper.entidadADTO(pregunta);
 	}
 
 	@Override
 	public Pregunta getPreguntaPorEnunciado(String enunciado) {
-		try {
-			Pregunta pregunta = getPreguntaRepositorio().findByEnunciado(enunciado);
-			if (pregunta == null) {
-				throw new ServiceException("Error al obtener la pregunta: " + enunciado);
-			}
-			return pregunta;
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la pregunta: " + enunciado, e);
+		Pregunta pregunta = getPreguntaRepositorio().findByEnunciado(enunciado);
+		if (pregunta == null) {
+			throw new ServiceException("Error al obtener la pregunta: " + enunciado);
 		}
+		return pregunta;
 	}
 
 	@Override
@@ -293,24 +263,12 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 
 	@Override
 	public List<PreguntaDTO> listar() {
-		try {
-			return PreguntaMapper.entidadDTOLista(getPreguntaRepositorio().findAll());
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al listar las preguntas", e);
-		}
+		return PreguntaMapper.entidadDTOLista(getPreguntaRepositorio().findAll());
 	}
 
 	@Override
 	public List<PreguntaDTO> listarPorCategoria(String categoria) {
-		try {
-			return PreguntaMapper.entidadDTOLista(getPreguntaRepositorio().findByCategoria_Nombre(categoria));
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al listar las preguntas", e);
-		}
+		return PreguntaMapper.entidadDTOLista(getPreguntaRepositorio().findByCategoria_Nombre(categoria));
 	}
 
 	public PreguntaRepositorio getPreguntaRepositorio() {

@@ -1,5 +1,6 @@
 package com.unlam.tpi.core.interfaces;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -24,7 +25,7 @@ public interface CategoriaServicio {
 	public List<CategoriaDTO> listar();
 
 	@Transactional
-	public void cargaDesdeExcel(MultipartFile excelcategoria);
+	public void cargaDesdeExcel(MultipartFile excelcategoria) throws IOException;
 	
 	@Transactional
 	public CategoriaDTO getCategoriaDTOPorNombre(String nombre);

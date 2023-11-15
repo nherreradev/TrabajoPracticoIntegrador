@@ -1,5 +1,6 @@
 package com.unlam.tpi.core.interfaces;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,6 @@ public interface CategoriaControlador {
 
 	public List<CategoriaDTO> listar();
 
-	public void cargaDesdeExcel(MultipartFile excelCategoria);
+	public void cargaDesdeExcel(MultipartFile excelCategoria) throws IOException;
 
 }

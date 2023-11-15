@@ -18,9 +18,9 @@ import com.unlam.tpi.core.servicio.UsuarioServicioImpl;
 @Disabled
 public class UsuarioServicioTest {
     //Usuario existente
-    Usuario USUARIO_EXISTENTE = new Usuario("Usuario_Prueba", "Mercado", "Junior","Test@Test.com", "1234", Boolean.TRUE, Boolean.TRUE, "");
+    Usuario USUARIO_EXISTENTE = new Usuario("Usuario_Prueba", "Mercado", "Junior","Test@Test.com", "1234", Boolean.TRUE, Boolean.TRUE, "", Boolean.FALSE);
     //Usuario no existente
-    Usuario USUARIO_EXISTENTE_NO_CONFIRMADO = new Usuario("Usuario_Prueba-2", "Mercado", "Junior","Test2@Test.com", "1234", Boolean.FALSE, Boolean.FALSE, "");
+    Usuario USUARIO_EXISTENTE_NO_CONFIRMADO = new Usuario("Usuario_Prueba-2", "Mercado", "Junior","Test2@Test.com", "1234", Boolean.FALSE, Boolean.FALSE, "", Boolean.FALSE);
     @InjectMocks
     private UsuarioServicioImpl usuarioServicio = new UsuarioServicioImpl();
     @Mock
