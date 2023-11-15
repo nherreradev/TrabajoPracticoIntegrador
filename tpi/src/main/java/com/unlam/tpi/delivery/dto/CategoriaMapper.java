@@ -13,36 +13,20 @@ public class CategoriaMapper {
 	private static ModelMapper mapper = new ModelMapper();
 
 	public static Categoria dTOaEntidad(CategoriaDTO categoria) {
-		try {
-			return mapper.map(categoria, Categoria.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir CategoriaDTO a Categoria", e);
-		}
+		return mapper.map(categoria, Categoria.class);
 	}
 
 	public static CategoriaDTO entidadADTO(Categoria categoria) {
-		try {
-			return mapper.map(categoria, CategoriaDTO.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir Categoria a CategoriaDTO", e);
-		}
+		return mapper.map(categoria, CategoriaDTO.class);
 	}
 
 	public static List<CategoriaDTO> entidadDTOLista(List<Categoria> categorias) {
-		try {
-			return categorias.stream().map(categoria -> mapper.map(categoria, CategoriaDTO.class))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir una lista Categoria a lista CategoriaDTO", e);
-		}
+		return categorias.stream().map(categoria -> mapper.map(categoria, CategoriaDTO.class))
+				.collect(Collectors.toList());
 	}
 
 	public static List<Categoria> traductorDeListaDTOaEntidad(List<CategoriaDTO> categorias) throws ServiceException {
-		try {
-			return categorias.stream().map(categoria -> mapper.map(categoria, Categoria.class))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir una lista CategoriaDTO a lista Categoria", e);
-		}
+		return categorias.stream().map(categoria -> mapper.map(categoria, Categoria.class))
+				.collect(Collectors.toList());
 	}
 }

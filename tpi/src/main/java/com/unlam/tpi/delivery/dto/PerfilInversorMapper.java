@@ -16,39 +16,22 @@ public class PerfilInversorMapper {
 			.createTypeMap(PerfilInversor.class, PerfilInversorDTO.class);
 
 	public static PerfilInversor dTOaEntidad(PerfilInversorDTO perfilInversor) {
-		try {
-			return mapper.map(perfilInversor, PerfilInversor.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir PerfilInversorDTO a PerfilInversor", e);
-		}
+		return mapper.map(perfilInversor, PerfilInversor.class);
 	}
 
 	public static PerfilInversorDTO entidadADTO(PerfilInversor perfilInversor) {
-		try {
-			propertyMapper.addMappings(mapper -> mapper.map(pi -> pi.getUsuario(), PerfilInversorDTO::setUsuarioDTO));
-			return mapper.map(perfilInversor, PerfilInversorDTO.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir PerfilInversor a PerfilInversorDTO", e);
-		}
+		propertyMapper.addMappings(mapper -> mapper.map(pi -> pi.getUsuario(), PerfilInversorDTO::setUsuarioDTO));
+		return mapper.map(perfilInversor, PerfilInversorDTO.class);
 	}
 
 	public static List<PerfilInversorDTO> entidadDTOLista(List<PerfilInversor> perfilInversorLista) {
-		try {
-			return perfilInversorLista.stream()
-					.map(perfilInversor -> mapper.map(perfilInversor, PerfilInversorDTO.class))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir una lista PerfilInversor a lista PerfilInversorDTO", e);
-		}
+		return perfilInversorLista.stream().map(perfilInversor -> mapper.map(perfilInversor, PerfilInversorDTO.class))
+				.collect(Collectors.toList());
 	}
 
 	public static List<PerfilInversor> traductorDeListaDTOaEntidad(List<PerfilInversorDTO> perfilInversorLista)
 			throws ServiceException {
-		try {
-			return perfilInversorLista.stream().map(perfilInversor -> mapper.map(perfilInversor, PerfilInversor.class))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir una lista PerfilInversorDTO a lista PerfilInversor", e);
-		}
+		return perfilInversorLista.stream().map(perfilInversor -> mapper.map(perfilInversor, PerfilInversor.class))
+				.collect(Collectors.toList());
 	}
 }
