@@ -60,9 +60,14 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 		Predicate usuarioIdPredicado = criteriaBuilder.equal(root.get("usuarioOid"), oidUsuario);
 		Predicate conceptoPredicado = criteriaBuilder.equal(root.get("concepto"), concepto);
 
-		criteriaQuery.where(deletedPredicado, conceptoPredicado, usuarioIdPredicado);
+		criteriaQuery.where(deletedPredicado, usuarioIdPredicado, conceptoPredicado);
 
-		return entityManager.createQuery(criteriaQuery).getSingleResult();
+		List<Posicion> algo = entityManager.createQuery(criteriaQuery).getResultList();
+		if (algo.size() == 0) {
+			return null;
+		}
+		return algo.get(0);
+
 	}
 
 	@Override
