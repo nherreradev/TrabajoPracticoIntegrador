@@ -27,7 +27,7 @@ public class HistoricoControladorImpl implements HistoricoControlador{
 
     @Override
     @GetMapping("/obtener_historico")
-    public ResponseEntity<String> GetHistorico(String rango, String instrumento) {
+    public ResponseEntity<String> GetHistorico(@RequestBody String rango, String instrumento) {
         if (rango == null || instrumento == null){
             this.historicoServicio.GetHistoricoMongo(rango, instrumento);
             return new ResponseEntity<>("Request incorrecto", HttpStatus.BAD_REQUEST);

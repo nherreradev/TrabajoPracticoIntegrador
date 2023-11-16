@@ -100,7 +100,7 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
             if(INDEX < res.size()){
                 resultadoFinalJSON = res.get(INDEX);
                 INDEX++;
-                System.out.println(INDEX);
+                System.out.println("INDEX MONGO: "+ INDEX);
             }else{
                 INDEX = 0;
             }

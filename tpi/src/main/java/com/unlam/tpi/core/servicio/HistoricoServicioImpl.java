@@ -98,13 +98,19 @@ public class HistoricoServicioImpl implements HistoricoServicio {
             String url = ArmarURL(fechaRequestHistorico, mercado, simbolos.get(i));
             res = RealizarPeticionIOL(url);
             bodyResponse =  res.getBody().toString();
-            return bodyResponse;
+            if (bodyResponse.equals("[]")){
+                System.out.println(i);
+                i++;
+                continue;
+            }else{
+                return bodyResponse;
+            }
         }
         return null;
     }
 
     private ResponseEntity<String> RealizarPeticionIOL(String url) {
-        String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiYjI0ZjEwZjktMDgxZC00ZmYyLTkwZDctM2E4MWY5ZTMwYjEwIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE2OTg1MjY5MjYsImV4cCI6MTY5ODUyNzgyNiwiaWF0IjoxNjk4NTI2OTI2LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.lNgr_Lxrbv5q_wBnVJI7ljyNL1wIUucFyKRWvSGhR_YwGbk8Gh8-toNkSLaxkza5c0X69RpSgJpMlHhLgim1Gik1DvvnZgtbb2RdGTvfAyv-gaqEo6roN80wZeDrVBEkxyBN6Q_f6WQf7SOHJeUSizbKlXeVxM7uk2ZYnnvswAj5ttcYqLDrzSHypGPcMW19rCWCj_F45NfCxw_ZA0fgFrYXR034t2k3D-AWl6NisMvptMQ9vpRYuBv-JZTzFPKNKNfKtfnUjPkVTkGdd_ztuOI4BLKoNAB9JN9NtLBhdtB1Pi7FKyl7kzIL6dGIupJaN5qlRWzeVBWjfl-pAieoqA";
+        String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiZTE5YTZiZWQtMjJjMC00YWUwLWI5MDItY2YwNzQ3ZjliZWU3IiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE2OTk3MzgzODIsImV4cCI6MTY5OTczOTI4MiwiaWF0IjoxNjk5NzM4MzgyLCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.gWLmyYL9fw1pMD-k4giBwNkfRDmf8iAOMh5LXIZlofnONlINjD1mJHA8DedFZT__nyTy1nb2IGXSFSGF7jPZg1ZQ-Jx8i8ZCPat_cMfULeuXdskpTQa3r03DtdZdXWr3vVLs1a_FR0RR-9_Fwmx23_UPLiKImvDbKyU60NoxiQarXVL1H6Nh5d0Mq115079guZplpGE4YbkSkrD_ucbBu9bDP6xC95p8jfXanXtlQ3I4g9SVUzyqNBUw6WmzsMY43Yn6MQFhRCrVa_hiZKdqIjdNXbSIa6toCOIBh4Q0EBJK5Nf_RQMT_7so0wX85fnpi6VRWOLg5FeTJUE5wgvxRg";
         Map<String, Boolean> ResponseOK = new HashMap<>();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
