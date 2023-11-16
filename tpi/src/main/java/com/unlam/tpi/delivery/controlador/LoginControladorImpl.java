@@ -33,15 +33,5 @@ public class LoginControladorImpl implements LoginControlador {
         return ResponseEntity.ok(Token);
     }
     
-    @Override
-    @PostMapping("/iniciar-sesion-usuario")
-    public ResponseEntity<String> IniciarSesionUsuario(@RequestBody UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        if(usuarioLogin == null){
-            return ResponseEntity.badRequest().body("Error login.");
-        }
-
-        String Token = this.loginServicio.IniciarSesionUsuario(usuarioLogin);
-        return ResponseEntity.ok(Token);
-    }
 
 }
