@@ -124,15 +124,15 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	@Override
 	public void acreditarDinero(RequestCargaDeDinero request) {
-			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConceptoYUsuario(request.getConcepto(),
-					request.getUsuarioOid());
-			if (posicionBuscada == null || !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS
-					.equals(posicionBuscada != null ? posicionBuscada.getConcepto() : null)) {
+		Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConceptoYUsuario(request.getConcepto(),
+				request.getUsuarioOid());
+		if (posicionBuscada == null || !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS
+				.equals(posicionBuscada != null ? posicionBuscada.getConcepto() : null)) {
 			Posicion posicion = new Posicion();
 			posicion.setCantidad(request.getCantidadPorAcreditar());
 			posicion.setEsEfectivo(true);
 			posicion.setMonedaOid(1L);
-				posicion.setUsuarioOid(request.getUsuarioOid());
+			posicion.setUsuarioOid(request.getUsuarioOid());
 			posicion.setConcepto(request.getConcepto());
 			posicionRepositorio.save(posicion);
 		}
@@ -215,19 +215,45 @@ public class PosicionServicioImpl implements PosicionServicio {
 		case PanelesDePreciosConstantes.BONOS:
 			if (PanelPreciosImpl.panelBonos.containsKey(orden.getSimboloInstrumento())) {
 				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
-					orden.setPrecio(PanelPreciosImpl.panelBonos.get(orden.getSimboloInstrumento()).getPuntas()
-							.getPrecioCompra());
+					Puntas puntas = PanelPreciosImpl.panelBonos.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioVenta = puntas != null && puntas.getPrecioCompra() != null
+							? puntas.getPrecioVenta()
+							: null;
+					orden.setPrecio(precioVenta);
 				} else {
-					orden.setPrecio(PanelPreciosImpl.panelBonos.get(orden.getSimboloInstrumento()).getPuntas()
-							.getPrecioVenta());
+					Puntas puntas = PanelPreciosImpl.panelBonos.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioCompra = puntas != null && puntas.getPrecioVenta() != null
+							? puntas.getPrecioCompra()
+							: null;
+					orden.setPrecio(precioCompra);
 				}
 			} else {
-				throw new ServiceException("La orden que quiere capturar no se encuentra disponible en el panel");
+				throw new ServiceException(
+						"La orden que quiere capturar no se encuentra disponible en el panel o no tiene precio");
 			}
-
+			
 			break;
 
-		default:
+		case PanelesDePreciosConstantes.CEDEARS:
+			if (PanelPreciosImpl.panelCedears.containsKey(orden.getSimboloInstrumento())) {
+				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
+					Puntas puntas = PanelPreciosImpl.panelCedears.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioVenta = puntas != null && puntas.getPrecioCompra() != null
+							? puntas.getPrecioVenta()
+							: null;
+					orden.setPrecio(precioVenta);
+				} else {
+					Puntas puntas = PanelPreciosImpl.panelCedears.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioCompra = puntas != null && puntas.getPrecioVenta() != null
+							? puntas.getPrecioCompra()
+							: null;
+					orden.setPrecio(precioCompra);
+				}
+			} else {
+				throw new ServiceException(
+						"La orden que quiere capturar no se encuentra disponible en el panel o no tiene precio");
+			}
+			
 			break;
 		}
 	}
@@ -308,7 +334,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			Instrumento instrumentoDelPanel = null;
 
 			for (Posicion posicion2 : posicionEnCartera) {
-				
+
 				if (!posicion2.getSimboloInstrumento().equals(simboloAux)) {
 					costoTotalDeLasCompras = BigDecimal.ZERO;
 					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
@@ -363,11 +389,11 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 				} else {
 					mapaRendimientos.put(key, rendimientoResponse);
-					
+
 				}
-				
+
 				simboloAux = key;
-				
+
 			}
 		}
 
