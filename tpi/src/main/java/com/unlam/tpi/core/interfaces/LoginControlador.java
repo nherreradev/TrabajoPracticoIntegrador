@@ -8,6 +8,4 @@ import java.security.spec.InvalidKeySpecException;
 
 public interface LoginControlador {
     ResponseEntity<String> IniciarSesion(UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException;
-
-	ResponseEntity<String> IniciarSesionUsuario(UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException;
 }
