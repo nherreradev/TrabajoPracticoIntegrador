@@ -98,7 +98,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			Map<String, BigDecimal> instrumentosPorCantidad = obtenerCantidadPorInstrumento(titulosEnPosicionLista);
 			BigDecimal cantidadTitulosAVender = orden.getCantidad();
 			BigDecimal totalTitulosEnPosicion = instrumentosPorCantidad.get(orden.getSimboloInstrumento());
-			BigDecimal titulosQueMeQuedarianEnCartera = cantidadTitulosAVender.subtract(totalTitulosEnPosicion);
+			BigDecimal titulosQueMeQuedarianEnCartera = totalTitulosEnPosicion.subtract(cantidadTitulosAVender);
 
 			if (instrumentosPorCantidad.containsKey(orden.getSimboloInstrumento())) {
 				if (CalculosHabituales.esMasGrandeQue(cantidadTitulosAVender, totalTitulosEnPosicion)) {
@@ -215,10 +215,10 @@ public class PosicionServicioImpl implements PosicionServicio {
 		case PanelesDePreciosConstantes.BONOS:
 			if (PanelPreciosImpl.panelBonos.containsKey(orden.getSimboloInstrumento())) {
 				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
-					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
+					orden.setPrecio(PanelPreciosImpl.panelBonos.get(orden.getSimboloInstrumento()).getPuntas()
 							.getPrecioCompra());
 				} else {
-					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
+					orden.setPrecio(PanelPreciosImpl.panelBonos.get(orden.getSimboloInstrumento()).getPuntas()
 							.getPrecioVenta());
 				}
 			} else {
@@ -289,11 +289,12 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	@Override
 	public RendimientoActualResponse calcularRendimientoActual(Long usuarioOid) {
-		
+
 		RendimientoActualResponse rendimientoActualResponse = new RendimientoActualResponse();
 		Map<String, RendimientoResponse> mapaRendimientos = new HashMap<>();
 		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos(usuarioOid);
 		List<Posicion> posicionEnCartera = obtenerSoloPosicionesEnCartera(posicion);
+		String simboloAux = "";
 
 		if (posicionEnCartera != null && !posicionEnCartera.isEmpty()) {
 
@@ -307,6 +308,14 @@ public class PosicionServicioImpl implements PosicionServicio {
 			Instrumento instrumentoDelPanel = null;
 
 			for (Posicion posicion2 : posicionEnCartera) {
+				
+				if (!posicion2.getSimboloInstrumento().equals(simboloAux)) {
+					costoTotalDeLasCompras = BigDecimal.ZERO;
+					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
+					valorActualDeLaInversion = BigDecimal.ZERO;
+					gananciaTotalOPerdidaMonto = BigDecimal.ZERO;
+					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
+				}
 
 				Instrumento instrumentoObtenido = instrumentoServicio
 						.obtenerInstrumentoPorSimbolo(posicion2.getSimboloInstrumento());
@@ -347,27 +356,18 @@ public class PosicionServicioImpl implements PosicionServicio {
 				String key = posicion2.getSimboloInstrumento();
 
 				if (mapaRendimientos.containsKey(key)) {
-					RendimientoResponse rendimientoObtenido = mapaRendimientos.get(key);
 
-					rendimientoObtenido.setRendimientoTotal(
-							rendimientoObtenido.getRendimientoTotal().add(gananciaTotalOPerdidaMonto));
+					mapaRendimientos.remove(key);
 
-					mapaRendimientos.put(key, rendimientoObtenido);
-
-					costoTotalDeLasCompras = BigDecimal.ZERO;
-					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
-					valorActualDeLaInversion = BigDecimal.ZERO;
-					gananciaTotalOPerdidaMonto = BigDecimal.ZERO;
-					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
+					mapaRendimientos.put(key, rendimientoResponse);
 
 				} else {
 					mapaRendimientos.put(key, rendimientoResponse);
-					costoTotalDeLasCompras = BigDecimal.ZERO;
-					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
-					valorActualDeLaInversion = BigDecimal.ZERO;
-					gananciaTotalOPerdidaMonto = BigDecimal.ZERO;
-					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
+					
 				}
+				
+				simboloAux = key;
+				
 			}
 		}
 
