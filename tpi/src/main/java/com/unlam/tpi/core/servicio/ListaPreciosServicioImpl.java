@@ -19,98 +19,89 @@ import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 
 @Service
 public class ListaPreciosServicioImpl implements ListaPreciosServicio {
-    private static final String CEDEARS_KEY = "cedears";
+
+	@Autowired
+	private ListaPreciosRepository listaPreciosRepository;
+
+	private static final String CEDEARS_KEY = "cedears";
 	private static final String BONOS_KEY = "bonos";
 	private static final String ACCIONES_KEY = "acciones";
+
 	Integer INDEX = 0;
-    @Autowired
-    private ListaPreciosRepository listaPreciosRepository;
-    private final RestTemplate restTemplate;
-    String ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
-    String BONOS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=titulosPublicos&cotizacionInstrumentoModel.pais=argentina";
-    String CEDEARS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=cedears&cotizacionInstrumentoModel.pais=argentina";
-    
-    public ListaPreciosServicioImpl(RestTemplate restTemplate){
-        this.restTemplate = restTemplate;
-    }
 
-    @Override
-    public ResponseEntity<String> guardarListaPrecios(String titulo, String token) {
-        Map<String, Boolean> ResponseOK = new HashMap<>();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        RequestEntity<?> requestEntity;
-        ResponseEntity<String> responseEntity = null;
+	private final RestTemplate restTemplate;
 
-        try{
-            switch (titulo) {
-                case BONOS_KEY:
-                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(BONOS));
-                    responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.validateResponse(responseEntity, BONOS_KEY);
-                    break;
-                case ACCIONES_KEY:
-                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(ACCIONES));
-                    responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.validateResponse(responseEntity, ACCIONES_KEY);
-                    break;
-                case CEDEARS_KEY:
-                    requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(CEDEARS));
-                    responseEntity = restTemplate.exchange(requestEntity, String.class);
-                    ResponseOK = this.validateResponse(responseEntity, CEDEARS_KEY);
-                    break;
-                default:
-                    break;
-            }
-        }catch (Exception e){
-            System.out.println("|HTTP ERROR| "+"Error en la llamada a la API, exception: "+ e);
-            e.printStackTrace();
-            return null;
-        }
-        saveMongoTransaction(ResponseOK, responseEntity);
-        return responseEntity;
-    }
+	String ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
+	String BONOS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=titulosPublicos&cotizacionInstrumentoModel.pais=argentina";
+	String CEDEARS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=cedears&cotizacionInstrumentoModel.pais=argentina";
 
-    private void saveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) {
-        int IndexLlaveAbertura = responseEntity.toString().indexOf('{');
-        int IndexLlaveCierre = responseEntity.toString().lastIndexOf('}');
-        if (IndexLlaveAbertura != -1 && IndexLlaveCierre != -1 && IndexLlaveAbertura < IndexLlaveCierre) {
-            String jsonToSave = responseEntity.toString().substring(IndexLlaveAbertura, IndexLlaveCierre + 1);
-            String collection = getMapKey(responseOK);
-            if(collection!=null) {
-            	this.listaPreciosRepository.guardarResponseTransaccion(jsonToSave, collection);
-            }
-        }
-    }
+	public ListaPreciosServicioImpl(RestTemplate restTemplate){
+		this.restTemplate = restTemplate;
+	}
 
-    @Override
-    public Map<String, Boolean> validateResponse(ResponseEntity<String> responseEntity, String instrumento) {
-        Map<String, Boolean> ResponseOk = new HashMap<>();
-        ResponseOk.put(instrumento, isStatusCodeOk(responseEntity) ? true : false);
-        return ResponseOk;
-    }
+	@Override
+	public ResponseEntity<String> guardarListaPrecios(String titulo, String token) {
+		Map<String, Boolean> ResponseOK = new HashMap<>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + token);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		RequestEntity<?> requestEntity;
+		ResponseEntity<String> responseEntity = null;
+		switch (titulo) {
+			case BONOS_KEY:
+				requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(BONOS));
+				responseEntity = restTemplate.exchange(requestEntity, String.class);
+				ResponseOK = this.validateResponse(responseEntity, BONOS_KEY);
+				break;
+			case ACCIONES_KEY:
+				requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(ACCIONES));
+				responseEntity = restTemplate.exchange(requestEntity, String.class);
+				ResponseOK = this.validateResponse(responseEntity, ACCIONES_KEY);
+				break;
+			case CEDEARS_KEY:
+				requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(CEDEARS));
+				responseEntity = restTemplate.exchange(requestEntity, String.class);
+				ResponseOK = this.validateResponse(responseEntity, CEDEARS_KEY);
+				break;
+			default:
+				break;
+		}
+		saveMongoTransaction(ResponseOK, responseEntity);
+		return responseEntity;
+	}
 
-    @Override
-    public String getListaPrecioMongo(String instrumento) {
-        String resultadoFinalJSON = null;
-        List <String> res = null;;
-        try{
-            res = this.listaPreciosRepository.getAllWithoutID(instrumento);
-            if(INDEX < res.size()){
-                resultadoFinalJSON = res.get(INDEX);
-                INDEX++;
-                System.out.println("INDEX MONGO: "+ INDEX);
-            }else{
-                INDEX = 0;
-            }
-        }catch (Exception e){
-            System.out.println("Error al obtener información de mongo"+ e);
-            e.printStackTrace();
-            return null;
-        }
-        return resultadoFinalJSON;
-    }
+	private void saveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) {
+		int IndexLlaveAbertura = responseEntity.toString().indexOf('{');
+		int IndexLlaveCierre = responseEntity.toString().lastIndexOf('}');
+		if (IndexLlaveAbertura != -1 && IndexLlaveCierre != -1 && IndexLlaveAbertura < IndexLlaveCierre) {
+			String jsonToSave = responseEntity.toString().substring(IndexLlaveAbertura, IndexLlaveCierre + 1);
+			String collection = getMapKey(responseOK);
+			if(collection!=null) {
+				this.listaPreciosRepository.guardarResponseTransaccion(jsonToSave, collection);
+			}
+		}
+	}
+
+	@Override
+	public Map<String, Boolean> validateResponse(ResponseEntity<String> responseEntity, String instrumento) {
+		Map<String, Boolean> ResponseOk = new HashMap<>();
+		ResponseOk.put(instrumento, isStatusCodeOk(responseEntity) ? true : false);
+		return ResponseOk;
+	}
+
+	@Override
+	public String getListaPrecioMongo(String instrumento) {
+		String resultadoFinalJSON = null;
+		List<String> res = null;
+		res = this.listaPreciosRepository.getAllWithoutID(instrumento);
+		if (INDEX < res.size()) {
+			resultadoFinalJSON = res.get(INDEX);
+			INDEX++;
+		} else {
+			INDEX = 0;
+		}
+		return resultadoFinalJSON;
+	}
 
 	private String getMapKey(Map<String, Boolean> responseOK) {
 		if(responseOK.containsKey(ACCIONES_KEY)) {
@@ -127,10 +118,6 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
 
 	private boolean isStatusCodeOk(ResponseEntity<String> responseEntity) {
 		return responseEntity.getStatusCode() == HttpStatus.OK;
-	}
-
-	private Integer determinarIndexRandomDelArray(List<String> res) {
-		return 0;
 	}
 
 }

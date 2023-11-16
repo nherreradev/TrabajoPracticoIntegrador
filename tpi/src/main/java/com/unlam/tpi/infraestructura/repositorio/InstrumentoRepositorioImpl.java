@@ -23,110 +23,84 @@ public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomi
 
 	@Override
 	public Instrumento encontrarPorSimbolo(String simbolo) {
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
+		Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
 
-		try {
-			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
-			Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
+		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+		Predicate simboloInstrumentoPredicado = criteriaBuilder.equal(root.get("simbolo"), simbolo);
 
-			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
-			Predicate simboloInstrumentoPredicado = criteriaBuilder.equal(root.get("simbolo"), simbolo);
+		criteriaQuery.where(deletedPredicado, simboloInstrumentoPredicado);
 
-			criteriaQuery.where(deletedPredicado, simboloInstrumentoPredicado);
+		List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
 
-			List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
-
-			if (resultados.isEmpty()) {
-				return null;
-			}
-
-			return resultados.get(0);
-
-		} catch (Exception e) {
-			throw e;
+		if (resultados.isEmpty()) {
+			return null;
 		}
 
+		return resultados.get(0);
 	}
 
 	@Override
 	public List<Instrumento> obtenerInstrumentosAlAzar() {
-		try {
-			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
-			Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
+		Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
 
-			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 
-			criteriaQuery.where(deletedPredicado);
+		criteriaQuery.where(deletedPredicado);
 
-			TypedQuery<Instrumento> query = entityManager.createQuery(criteriaQuery);
-			query.setMaxResults(4);
+		TypedQuery<Instrumento> query = entityManager.createQuery(criteriaQuery);
+		query.setMaxResults(4);
 
-			List<Instrumento> resultados = query.getResultList();
+		List<Instrumento> resultados = query.getResultList();
 
-			if (resultados.isEmpty()) {
-				return null;
-			}
-
-			return resultados;
-
-		} catch (Exception e) {
-			throw e;
+		if (resultados.isEmpty()) {
+			return null;
 		}
+
+		return resultados;
 	}
 
 	@Override
 	public Instrumento obtenerInstrumentoPorID(Long coProductoID) {
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
+		Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
 
-		try {
-			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
-			Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
+		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+		Predicate oidPredicado = criteriaBuilder.equal(root.get("oid"), coProductoID);
 
-			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
-			Predicate oidPredicado = criteriaBuilder.equal(root.get("oid"), coProductoID);
+		criteriaQuery.where(deletedPredicado, oidPredicado);
 
-			criteriaQuery.where(deletedPredicado, oidPredicado);
+		List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
 
-			List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
-
-			if (resultados.isEmpty()) {
-				return null;
-			}
-
-			return resultados.get(0);
-
-		} catch (Exception e) {
-			throw e;
+		if (resultados.isEmpty()) {
+			return null;
 		}
 
+		return resultados.get(0);
 	}
 
 	@Override
 	public Instrumento obtenerInstrumentoPorTipoPerfil(String tipoPerfil) {
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
+		Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
 
-		try {
-			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
-			Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
+		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
+		Predicate oidPredicado = criteriaBuilder.equal(root.get("categoriaPerfil"), tipoPerfil);
 
-			Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
-			Predicate oidPredicado = criteriaBuilder.equal(root.get("categoriaPerfil"), tipoPerfil);
+		criteriaQuery.where(deletedPredicado, oidPredicado);
 
-			criteriaQuery.where(deletedPredicado, oidPredicado);
+		List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
 
-			List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
-
-			if (resultados.isEmpty()) {
-				return null;
-			}
-
-			return resultados.get(0);
-
-		} catch (Exception e) {
-			throw e;
+		if (resultados.isEmpty()) {
+			return null;
 		}
 
+		return resultados.get(0);
 	}
 
 }

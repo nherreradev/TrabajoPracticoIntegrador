@@ -19,7 +19,7 @@ public class LoginServicioImpl implements LoginServicio {
     UsuarioRepositorio usuarioRepositorio;
     @Autowired
     AutenticacionService autenticacionService;
-
+	
 
     @Override
     public String IniciarSesion(UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -30,7 +30,7 @@ public class LoginServicioImpl implements LoginServicio {
     private String GetTokenLoginUsuario(UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException {
         Usuario buscado = usuarioRepositorio.findByEmailAndPass(usuarioLogin.getMail(), usuarioLogin.getPass());
         try {
-            String token = this.autenticacionService.GenerarTokenLoginUsuario(buscado);
+            String token = this.autenticacionService.generarTokenLoginUsuario(buscado);
             String jsonString = "{\"token\":"+token+"}";
             return new Gson().fromJson(jsonString, JsonObject.class).toString();
         }catch (Exception e){
@@ -38,4 +38,26 @@ public class LoginServicioImpl implements LoginServicio {
             throw e;
         }
     }
+
+
+	@Override
+	public String IniciarSesionUsuario(UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException{
+	     String jsonString="";
+		 Usuario buscado = this.usuarioRepositorio.findByEmailAndPass(usuarioLogin.getMail(), usuarioLogin.getPass());
+		
+		 if(buscado==null) {
+		 return jsonString;
+		 }
+		
+		 String token = this.autenticacionService.generarTokenLoginUsuario(buscado);
+		 if(buscado.getEsAdministrador() != null && buscado.getEsAdministrador()) {
+			 	return jsonString = "{\"token\":\"" + token + "\",\"esAdministrador\":true}";
+	            //return new Gson().fromJson(jsonString, JsonObject.class).toString();
+		 }
+		 
+		 		return jsonString = "{\"token\":\"" + token + "\",\"esAdministrador\":false}";
+            
+		 		//return new Gson().fromJson(jsonString, JsonObject.class).toString();
+	
+	}
 }

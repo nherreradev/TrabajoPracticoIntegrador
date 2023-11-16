@@ -81,12 +81,15 @@ class PosicionServicioTest {
 	@Test
 	void testNoPuedoComprarSinoTengoSuficienteDinero() throws ServiceException {
 
+		Long usuarioOid = 1L;
+		
 		Orden orden = new Orden();
 		orden.setCantidad(new BigDecimal(1));
 		orden.setMonedaOid(1L);
 		orden.setSimboloInstrumento("AGRO");
 		orden.setSentido(OrdenConstantes.COMPRA);
 		orden.setCategoriaInstrumento("acciones");
+		orden.setUsuarioOid(usuarioOid);
 
 		Posicion posicion = new Posicion();
 		posicion.setCantidad(new BigDecimal(2000));
@@ -101,7 +104,7 @@ class PosicionServicioTest {
 
 		Puntas puntas = new Puntas();
 		puntas.setPrecioCompra(new BigDecimal(2500));
-		puntas.setPrecioVenta(new BigDecimal(25));
+		puntas.setPrecioVenta(new BigDecimal(10000));
 
 		instrumento.setPuntas(puntas);
 
@@ -145,7 +148,7 @@ class PosicionServicioTest {
 
 		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
 
-		when(posicionRepositorio.getTitulosDisponiblesPorSimbolo(orden.getSimboloInstrumento()))
+		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento()))
 				.thenReturn(listaPosiciones);
 
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);
@@ -184,7 +187,7 @@ class PosicionServicioTest {
 
 		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
 
-		when(posicionRepositorio.getTitulosDisponiblesPorSimbolo(orden.getSimboloInstrumento()))
+		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento()))
 				.thenReturn(listaPosiciones);
 
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);
@@ -196,42 +199,31 @@ class PosicionServicioTest {
 	@Test
 	void testPuedoObtenerLaValuacionDeMiCartera() {
 
-		String totalMonedas = "4500";
-		String totalInstrumentos = "20";
-		String totalCartera = "4520";
+		String totalCartera = "4500";
+		Long oidUsuario = 1L;
 
 		Posicion posicionDinero = new Posicion();
 		posicionDinero.setCantidad(new BigDecimal(4500));
 		posicionDinero.setEsEfectivo(true);
 		posicionDinero.setMonedaOid(1L);
 
-		Posicion posicionTitulos = new Posicion();
-		posicionTitulos.setCantidad(new BigDecimal(2));
-		posicionTitulos.setPrecio(new BigDecimal(10));
-		posicionTitulos.setSimboloInstrumento("AGRO");
-		posicionTitulos.setEsEfectivo(false);
-		posicionTitulos.setMonedaOid(1L);
-
 		List<Posicion> listaPosiciones = new ArrayList<>();
 		listaPosiciones.add(posicionDinero);
-		listaPosiciones.add(posicionTitulos);
 
-		when(posicionRepositorio.findAll()).thenReturn(listaPosiciones);
+		when(posicionRepositorio.getPosicionByUsuarioOid(oidUsuario)).thenReturn(listaPosiciones);
 
-		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal();
-
-		assertEquals(totalMonedas, valuacionTotalRespuesta.getTotalMonedas());
-		assertEquals(totalInstrumentos, valuacionTotalRespuesta.getTotalInstrumentos());
+		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal(oidUsuario);
 		assertEquals(totalCartera, valuacionTotalRespuesta.getTotalCartera());
-
 	}
 
 	@Test
 	void testSiNuncaHiceElPerfilObjetivoSeMeAcreditaElPremio() {
 
+		Long usuarioOid = 1L;
 		RequestCargaDeDinero requestCargaDeDinero = new RequestCargaDeDinero();
 		requestCargaDeDinero.setCantidadPorAcreditar(new BigDecimal(5000));
 		requestCargaDeDinero.setConcepto(CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS);
+		requestCargaDeDinero.setUsuarioOid(usuarioOid);
 
 		Posicion posicionDinero = new Posicion();
 		posicionDinero.setCantidad(new BigDecimal(4500));
@@ -239,7 +231,7 @@ class PosicionServicioTest {
 		posicionDinero.setMonedaOid(1L);
 		posicionDinero.setConcepto("carga manual");
 
-		when(posicionRepositorio.obtenerPosicionPorConcepto(requestCargaDeDinero.getConcepto()))
+		when(posicionRepositorio.obtenerPosicionPorConceptoYUsuario(requestCargaDeDinero.getConcepto(), usuarioOid))
 				.thenReturn(posicionDinero);
 
 		posicionServicio.acreditarDinero(requestCargaDeDinero);
@@ -251,18 +243,20 @@ class PosicionServicioTest {
 	@Test
 	void testSiYaHiceElPerfilObjetivoYLoVuelvoAHacerNoSeDeberiaAcreditarElPremio() {
 
+		Long usuarioOid = 1L;
 		RequestCargaDeDinero requestCargaDeDinero = new RequestCargaDeDinero();
 		requestCargaDeDinero.setCantidadPorAcreditar(new BigDecimal(5000));
 		requestCargaDeDinero.setConcepto(CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS);
-
+		requestCargaDeDinero.setUsuarioOid(usuarioOid);
+		
 		Posicion posicionDinero = new Posicion();
 		posicionDinero.setCantidad(new BigDecimal(4500));
 		posicionDinero.setEsEfectivo(true);
 		posicionDinero.setMonedaOid(1L);
 		posicionDinero.setConcepto(CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS);
 
-		when(posicionRepositorio.obtenerPosicionPorConcepto(requestCargaDeDinero.getConcepto()))
-				.thenReturn(posicionDinero);
+		 when(posicionRepositorio.obtenerPosicionPorConceptoYUsuario(requestCargaDeDinero.getConcepto(), usuarioOid))
+		 .thenReturn(posicionDinero);
 
 		posicionServicio.acreditarDinero(requestCargaDeDinero);
 

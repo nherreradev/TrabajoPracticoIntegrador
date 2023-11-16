@@ -11,10 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.core.interfaces.PanelPrecios;
@@ -24,7 +20,6 @@ import com.unlam.tpi.core.interfaces.PuntasServicio;
 import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
 import com.unlam.tpi.core.modelo.Posicion;
-import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.InstrumentoMapper;
 
 @Service
@@ -43,7 +38,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	PuntasServicio puntasServicio;
 
 	@Autowired
-	private ListaPreciosServicio listaPrecioServicio;
+	ListaPreciosServicio listaPrecioServicio;
 
 	public static List<Instrumento> listaInstrumentosAccionesAux = new ArrayList<>();
 	public static List<Instrumento> listaInstrumentosBonosAux = new ArrayList<>();
@@ -66,79 +61,64 @@ public class PanelesServicioImpl implements PanelesServicio {
 
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
-		try {
-			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.ACCIONES);
-			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
-			for (Instrumento instrumento : listaInstrumentos) {
-				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
-			}
-			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosAccionesAux);
-			recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
-			listaInstrumentosAccionesAux.addAll(listaInstrumentos);
-			panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
-			instrumentoServicio.persistirInstrumentos(listaInstrumentos);
-			return PanelPreciosImpl.panelAcciones;
-		} catch (ServiceException se) {
-			throw se;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener panel de acciones", e);
+		Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
+			String listaPreciosJson = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.ACCIONES);
+		List<Instrumento> listaInstrumentos = InstrumentoMapper
+				.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
+		for (Instrumento instrumento : listaInstrumentos) {
+			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
 		}
+		determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosAccionesAux);
+		recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
+		listaInstrumentosAccionesAux.addAll(listaInstrumentos);
+		panelPrecios.agregarInstrumentosAlPanelDeAcciones(listaInstrumentos);
+		instrumentoServicio.persistirInstrumentos(listaInstrumentos);
+		return PanelPreciosImpl.panelAcciones;
 	}
 
 	@Override
 	public Map<String, Instrumento> getPanelDeBonos() {
-		try {
-			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.BONOS);
-			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
-			for (Instrumento instrumento : listaInstrumentos) {
-				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.BONOS);
-			}
-			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosBonosAux);
-			recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
-			listaInstrumentosBonosAux.addAll(listaInstrumentos);
-			panelPrecios.agregarInstrumentosAlPanelDeBonos(listaInstrumentos);
-			instrumentoServicio.persistirInstrumentos(listaInstrumentos);
-			return PanelPreciosImpl.panelBonos;
-		} catch (ServiceException se) {
-			throw se;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener panel de bonos", e);
+		Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
+			String listaPreciosJson = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.BONOS);
+		List<Instrumento> listaInstrumentos = InstrumentoMapper
+				.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
+		for (Instrumento instrumento : listaInstrumentos) {
+			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.BONOS);
 		}
+		determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosBonosAux);
+		recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
+		listaInstrumentosBonosAux.addAll(listaInstrumentos);
+		panelPrecios.agregarInstrumentosAlPanelDeBonos(listaInstrumentos);
+		instrumentoServicio.persistirInstrumentos(listaInstrumentos);
+		return PanelPreciosImpl.panelBonos;
 	}
 
 	@Override
 	public Map<String, Instrumento> getPanelDeCedears() {
-		try {
-			Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			String listaPreciosJson = getListaPrecioServicio().getListaPrecioMongo(PanelesDePreciosConstantes.CEDEARS);
-			List<Instrumento> listaInstrumentos = InstrumentoMapper.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
-			for (Instrumento instrumento : listaInstrumentos) {
-				instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.CEDEARS);
-			}
-			determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosCedearsAux);
-			recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
-			listaInstrumentosCedearsAux.addAll(listaInstrumentos);
-			panelPrecios.agregarInstrumentosAlPanelDeCedears(listaInstrumentos);
-			instrumentoServicio.persistirInstrumentos(listaInstrumentos);
-			return PanelPreciosImpl.panelCedears;
-		} catch (ServiceException se) {
-			throw se;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener panel de cedears", e);
+		Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
+			String listaPreciosJson = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.CEDEARS);
+		List<Instrumento> listaInstrumentos = InstrumentoMapper
+				.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
+		for (Instrumento instrumento : listaInstrumentos) {
+			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.CEDEARS);
 		}
+		determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosCedearsAux);
+		recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
+		listaInstrumentosCedearsAux.addAll(listaInstrumentos);
+		panelPrecios.agregarInstrumentosAlPanelDeCedears(listaInstrumentos);
+		instrumentoServicio.persistirInstrumentos(listaInstrumentos);
+		return PanelPreciosImpl.panelCedears;
 	}
 
 	private void recalcularPosicionTotalSegunVariacionDePrecios(List<Instrumento> listaInstrumentos) {
 		List<Posicion> posicionTotal = posicionServicio.obtenerPosicionTotal();
 		for (Instrumento instrumento : listaInstrumentos) {
-			if (instrumento.getFlashCompra() != 0 || instrumento.getFlashVenta() != 0) {
+			if (instrumento.getFlashVenta() != 0) {
 				for (Posicion posicion : posicionTotal) {
 					if (posicion.getSimboloInstrumento() != null && instrumento.getSimbolo() != null
 							&& !posicion.getEsEfectivo()) {
 						if (posicion.getSimboloInstrumento().equals(instrumento.getSimbolo())) {
-							posicion.setPrecio(
+							posicion.setPrecioActualDeVenta(
 									instrumento.getPuntas() != null ? instrumento.getPuntas().getPrecioVenta() : null);
 							posicionServicio.actualizarPosicion(posicion);
 						}
@@ -149,15 +129,8 @@ public class PanelesServicioImpl implements PanelesServicio {
 	}
 
 	public ResponseEntity<String> getInstrumentos(String url) {
-		try {
-			ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
-			return responseEntity;
-		} catch (ServiceException se) {
-			throw se;
-		} catch (Exception e) {
-			throw new ServiceException("Error al conectar con mongo DB");
-		}
-
+		ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+		return responseEntity;
 	}
 
 	public void determinarFlashDeCompraVenta(Map<String, Instrumento> mapaInstrumentosAux,
@@ -166,15 +139,12 @@ public class PanelesServicioImpl implements PanelesServicio {
 			for (Instrumento instrumento : listaInstrumentosAux) {
 				mapaInstrumentosAux.put(instrumento.getSimbolo(), instrumento);
 			}
-
 			for (Instrumento instrumento : listaInstrumentos) {
 				if (instrumento.getPuntas() != null) {
 					String simbolo = instrumento.getSimbolo();
 					BigDecimal precioCompraNuevo = instrumento.getPuntas().getPrecioCompra();
 					BigDecimal precioVentaNuevo = instrumento.getPuntas().getPrecioVenta();
-
 					Instrumento instrumentoAux = mapaInstrumentosAux.get(simbolo);
-
 					if (instrumentoAux != null) {
 						if (instrumentoAux.getPuntas() != null) {
 							BigDecimal precioCompraViejo = instrumentoAux.getPuntas().getPrecioCompra();
@@ -193,7 +163,6 @@ public class PanelesServicioImpl implements PanelesServicio {
 							}
 						}
 					}
-
 					if (instrumentoAux != null) {
 						if (instrumentoAux.getPuntas() != null) {
 							BigDecimal precioVentaViejo = instrumentoAux.getPuntas().getPrecioVenta();
@@ -214,14 +183,6 @@ public class PanelesServicioImpl implements PanelesServicio {
 				}
 			}
 		}
-	}
-
-	public ListaPreciosServicio getListaPrecioServicio() {
-		return listaPrecioServicio;
-	}
-
-	public void setListaPrecioServicio(ListaPreciosServicio listaPrecioServicio) {
-		this.listaPrecioServicio = listaPrecioServicio;
 	}
 
 }

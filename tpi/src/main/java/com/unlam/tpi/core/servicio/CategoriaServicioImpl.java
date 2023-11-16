@@ -35,41 +35,27 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 
 	@Override
 	public void guardar(CategoriaDTO categoria) {
-		try {
-			Categoria persistente = CategoriaMapper.dTOaEntidad(categoria);
-			getCategoriaRepositorio().save(persistente);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al guardar la categoria", e);
-		}
+		Categoria persistente = CategoriaMapper.dTOaEntidad(categoria);
+		getCategoriaRepositorio().save(persistente);
 	}
 
 	@Override
-	public void cargaDesdeExcel(MultipartFile excelPregunta) {
+	public void cargaDesdeExcel(MultipartFile excelPregunta) throws IOException {
 		List<Categoria> listaCategoria = new ArrayList<>();
 		Map<Integer, String> encabezado = new HashedMap<>();
 		XSSFWorkbook libro;
 		Categoria categoria;
-		try {
-			libro = new XSSFWorkbook(excelPregunta.getInputStream());
-			XSSFSheet hoja = libro.getSheet(HOJA_CATEGORIA);
-			if (hoja == null) {
-				throw new ServiceException("Error al importar excel verifique que exista la hoja categoria");
-			}
-			for (Row fila : hoja) {
-				categoria = new Categoria();
-				leerColumna(encabezado, categoria, fila);
-				agregarCategoriaALista(listaCategoria, categoria);
-			}
-			guardarCategoriaLista(listaCategoria);
-		} catch (IOException e) {
-			throw new ServiceException("Error al guardar la categoria", e);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al guardar la categoria", e);
+		libro = new XSSFWorkbook(excelPregunta.getInputStream());
+		XSSFSheet hoja = libro.getSheet(HOJA_CATEGORIA);
+		if (hoja == null) {
+			throw new ServiceException("Error al importar excel verifique que exista la hoja categoria");
 		}
+		for (Row fila : hoja) {
+			categoria = new Categoria();
+			leerColumna(encabezado, categoria, fila);
+			agregarCategoriaALista(listaCategoria, categoria);
+		}
+		guardarCategoriaLista(listaCategoria);
 	}
 
 	private void guardarCategoriaLista(List<Categoria> listaCategoria) {
@@ -156,70 +142,40 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 
 	@Override
 	public CategoriaDTO getCategoriaDTOPorID(Long id) {
-		try {
-			Categoria categoria = getCategoriaRepositorio().findByOid(id);
-			if (categoria == null) {
-				throw new ServiceException("Error al obtener la categoria");
-			}
-			return CategoriaMapper.entidadADTO(categoria);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la categoria", e);
+		Categoria categoria = getCategoriaRepositorio().findByOid(id);
+		if (categoria == null) {
+			throw new ServiceException("Error al obtener la categoria");
 		}
+		return CategoriaMapper.entidadADTO(categoria);
 	}
 
 	@Override
 	public CategoriaDTO getCategoriaDTOPorNombre(String nombre) {
-		try {
-			Categoria categoria = getCategoriaPorNombre(nombre);
-			return CategoriaMapper.entidadADTO(categoria);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la categoria", e);
-		}
+		Categoria categoria = getCategoriaPorNombre(nombre);
+		return CategoriaMapper.entidadADTO(categoria);
 	}
 
 	@Override
 	public Categoria getCategoriaPorNombre(String nombre) {
-		try {
-			Categoria categoria = getCategoriaRepositorio().findByNombre(nombre);
-			if (categoria == null) {
-				throw new ServiceException("Error al obtener la categoria por nombre " + nombre);
-			}
-			return categoria;
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la categoria " + nombre, e);
+		Categoria categoria = getCategoriaRepositorio().findByNombre(nombre);
+		if (categoria == null) {
+			throw new ServiceException("Error al obtener la categoria por nombre " + nombre);
 		}
+		return categoria;
 	}
 
 	@Override
 	public void borrar(Long id) {
-		try {
-			getCategoriaRepositorio().deleteById(id);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al borrar la categoria", e);
-		}
+		getCategoriaRepositorio().deleteById(id);
 	}
 
 	@Override
 	public List<CategoriaDTO> listar() {
-		try {
-			List<Categoria> categoriaList = getCategoriaRepositorio().findAll();
-			if (categoriaList == null || categoriaList.size() == 0) {
-				throw new ServiceException("Error al obtener la lista de Categorias");
-			}
-			return CategoriaMapper.entidadDTOLista(categoriaList);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la lista de Categorias", e);
+		List<Categoria> categoriaList = getCategoriaRepositorio().findAll();
+		if (categoriaList == null || categoriaList.size() == 0) {
+			throw new ServiceException("Error al obtener la lista de Categorias");
 		}
+		return CategoriaMapper.entidadDTOLista(categoriaList);
 	}
 
 	public CategoriaRepositorio getCategoriaRepositorio() {

@@ -32,5 +32,6 @@ public class LoginControladorImpl implements LoginControlador {
         String Token = this.loginServicio.IniciarSesion(usuarioLogin);
         return ResponseEntity.ok(Token);
     }
+    
 
 }

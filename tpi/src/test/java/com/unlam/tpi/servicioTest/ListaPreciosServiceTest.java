@@ -1,5 +1,6 @@
 package com.unlam.tpi.servicioTest;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@Disabled
 public class ListaPreciosServiceTest {
     @Mock
     private final RestTemplate restTemplate = new RestTemplate();

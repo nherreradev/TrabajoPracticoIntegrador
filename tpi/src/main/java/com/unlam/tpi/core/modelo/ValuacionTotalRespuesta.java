@@ -14,9 +14,12 @@ public class ValuacionTotalRespuesta {
 
 	@JsonProperty("totalInstrumentos")
 	private String totalInstrumentos;
-
+	
 	@JsonProperty("totalMonedas")
 	private String totalMonedas;
+	
+	@JsonProperty("procentajeGananciaPerdida")
+	private String procentajeGananciaPerdida;
 
 	@JsonProperty("cantidadPorInstrumento")
 	private Map<String, BigDecimal> cantidadPorInstrumento;
@@ -56,5 +59,16 @@ public class ValuacionTotalRespuesta {
 	public void setCantidadPorInstrumento(Map<String, BigDecimal> cantidadPorInstrumento) {
 		this.cantidadPorInstrumento = cantidadPorInstrumento;
 	}
+
+	@JsonProperty("procentajeGananciaPerdida")
+	public String getProcentajeGananciaPerdida() {
+		return procentajeGananciaPerdida;
+	}
+
+	public void setProcentajeGananciaPerdida(String procentajeGananciaPerdida) {
+		this.procentajeGananciaPerdida = procentajeGananciaPerdida;
+	}
+	
+	
 
 }
