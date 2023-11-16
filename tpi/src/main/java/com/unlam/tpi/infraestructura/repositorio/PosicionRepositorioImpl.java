@@ -62,11 +62,11 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 
 		criteriaQuery.where(deletedPredicado, usuarioIdPredicado, conceptoPredicado);
 
-		List<Posicion> algo = entityManager.createQuery(criteriaQuery).getResultList();
-		if (algo.size() == 0) {
+		List<Posicion> listaPosicion = entityManager.createQuery(criteriaQuery).getResultList();
+		if (listaPosicion.size() == 0) {
 			return null;
 		}
-		return algo.get(0);
+		return listaPosicion.get(0);
 
 	}
 
