@@ -2,6 +2,7 @@ package com.unlam.tpi.delivery.controlador;
 
 import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 import com.unlam.tpi.core.interfaces.HistoricoServicio;
+import com.unlam.tpi.core.modelo.HistoricoRequestGET;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +28,12 @@ public class HistoricoControladorImpl implements HistoricoControlador{
 
     @Override
     @GetMapping("/obtener_historico")
-    public ResponseEntity<String> GetHistorico(@RequestBody String rango, String instrumento) {
-        if (rango == null || instrumento == null){
-            this.historicoServicio.GetHistoricoMongo(rango, instrumento);
+    public ResponseEntity<String> GetHistorico(@RequestBody HistoricoRequestGET historicoRequestGET) {
+        if (historicoRequestGET.getRango() == null || historicoRequestGET.getInstrumento() == null){
+
             return new ResponseEntity<>("Request incorrecto", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("Operación completada", HttpStatus.OK);
+        String response = this.historicoServicio.GetHistoricoMongo(historicoRequestGET.getRango(), historicoRequestGET.getInstrumento());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

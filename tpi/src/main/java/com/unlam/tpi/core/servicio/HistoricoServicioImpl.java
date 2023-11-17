@@ -43,17 +43,14 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 		Integer index = null;
 		switch (rango) {
 			case "mensual":
-				response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("mensual", instrumento);
-				index = DeterminarIndexRandomDelArray(response);
-				return response.get(index);
+				response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("mensual", instrumento);
+				return response.toString();
 			case "trimestral":
-				response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("trimestral", instrumento);
-				index = DeterminarIndexRandomDelArray(response);
-				return response.get(index);
+				response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("trimestral", instrumento);
+				return response.toString();
 			case "semestral":
-				response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("semestral", instrumento);
-				index = DeterminarIndexRandomDelArray(response);
-				return response.get(index);
+				response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("semestral", instrumento);
+				return response.toString();
 		}
 		return null;
 	}
@@ -69,10 +66,10 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 			System.out.println("Rango de fecha no válido");
 		}
 		String historico = ConsultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
-		EliminarCorchetesYGuardarTransaccion(rango, instrumento, historico);
+		EliminarLlavesYGuardarTransaccion(rango, instrumento, historico);
 	}
 
-	private void EliminarCorchetesYGuardarTransaccion(String rango, String instrumento, String historico) {
+	private void EliminarLlavesYGuardarTransaccion(String rango, String instrumento, String historico) {
 		int IndexCorcheteAbertura = historico.toString().indexOf('{');
 		int IndexCorcheteCierre = historico.toString().lastIndexOf('}');
 		if (IndexCorcheteAbertura != -1 && IndexCorcheteCierre != -1 && IndexCorcheteAbertura < IndexCorcheteCierre) {
