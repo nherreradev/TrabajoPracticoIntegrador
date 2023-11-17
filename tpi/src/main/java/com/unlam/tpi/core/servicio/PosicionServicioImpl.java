@@ -106,6 +106,11 @@ public class PosicionServicioImpl implements PosicionServicio {
 			Map<String, BigDecimal> instrumentosPorCantidad = obtenerCantidadPorInstrumento(titulosEnPosicionLista);
 			BigDecimal cantidadTitulosAVender = orden.getCantidad();
 			BigDecimal totalTitulosEnPosicion = instrumentosPorCantidad.get(orden.getSimboloInstrumento());
+			if(totalTitulosEnPosicion == null) {
+				puedeOperarResultado.setPuedeOperar(false);
+				puedeOperarResultado.setDisponible(BigDecimal.ZERO);
+				return puedeOperarResultado;
+			}
 			BigDecimal titulosQueMeQuedarianEnCartera = totalTitulosEnPosicion.subtract(cantidadTitulosAVender);
 
 			if (instrumentosPorCantidad.containsKey(orden.getSimboloInstrumento())) {
