@@ -93,7 +93,7 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 
 	@Override
 	@PostMapping("/cambiar-password")
-	public ResponseEntity<ResponseAPI> cambiarPassword(PasswordDto passwordDto) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public ResponseEntity<ResponseAPI> cambiarPassword(@RequestBody PasswordDto passwordDto) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException {
 		if (!this.usuarioServicio.cambioPassword(passwordDto)) {
 			return new ResponseEntity<>(response.MensajeDeErrorEnRequest(),
 					response.MensajeDeErrorEnRequest().getStatus());
