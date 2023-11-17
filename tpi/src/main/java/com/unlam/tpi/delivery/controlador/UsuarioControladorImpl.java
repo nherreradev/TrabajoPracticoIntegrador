@@ -46,18 +46,18 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	@Override
 	@PostMapping("/guardar-usuario")
 	public ResponseEntity<ResponseAPI> RegistrarUsuario(@RequestBody UsuarioRestDTO usuarioRegistro) throws Exception {
-		if (this.usuarioServicio.ExisteEmail(usuarioRegistro.getEmail())
-				|| this.usuarioServicio.ExisteNombreUsuario(usuarioRegistro.getNombreUsuario()))
+		if (this.usuarioServicio.existeEmail(usuarioRegistro.getEmail())
+				|| this.usuarioServicio.existeNombreUsuario(usuarioRegistro.getNombreUsuario()))
 			return new ResponseEntity<>(response.RecursoYaExistente(), response.RecursoYaExistente().getStatus());
 		else
-			this.usuarioServicio.GuardarUsuario(usuarioRegistro);
+			this.usuarioServicio.guardarUsuario(usuarioRegistro);
 		return new ResponseEntity<>(response.MensajeDeExito(), response.MensajeDeExito().getStatus());
 	}
 
 	@Override
 	@GetMapping("/obtener-usuario/{email}")
 	public ResponseEntity<Usuario> ObtenerDatosUsuarioPorEmail(@PathVariable String email) {
-		Usuario usuario = this.usuarioServicio.ObtenerUsuarioPorEmail(email);
+		Usuario usuario = this.usuarioServicio.obtenerUsuarioPorEmail(email);
 		return (usuario == null) ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
 				: new ResponseEntity<>(usuario, HttpStatus.OK);
 	}
@@ -65,7 +65,7 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	@Override
 	@PostMapping("/modificar-usuario")
 	public ResponseEntity<ResponseAPI> ModificarUsuario(@RequestBody Usuario usuario) {
-		ResponseAPI response = this.usuarioServicio.ModificarUsuario(usuario);
+		ResponseAPI response = this.usuarioServicio.modificarUsuario(usuario);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
@@ -81,10 +81,10 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	public ResponseEntity<ResponseAPI> ActivarCuenta(@RequestBody String token) throws JsonProcessingException {
 		// TODO: terminar token, buscar por mail y verificar si ya fue activada la
 		// cuenta
-		if (usuarioServicio.ElUsuarioFueYaEstaValidado(token)) {
+		if (usuarioServicio.elUsuarioFueYaEstaValidado(token)) {
 			return new ResponseEntity<>(response.RecursoYaExistente(), response.RecursoYaExistente().getStatus());
 		}
-		if (!this.usuarioServicio.UsuarioValidadoPorPrimeraVez(token)) {
+		if (!this.usuarioServicio.usuarioValidadoPorPrimeraVez(token)) {
 			return new ResponseEntity<>(response.MensajeDeErrorEnRequest(),
 					response.MensajeDeErrorEnRequest().getStatus());
 		}

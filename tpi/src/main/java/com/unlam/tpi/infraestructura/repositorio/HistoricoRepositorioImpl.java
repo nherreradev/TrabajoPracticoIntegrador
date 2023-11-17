@@ -13,12 +13,12 @@ public class HistoricoRepositorioImpl implements HistoricoRepositorio{
         this.mongoTemplate = mongoTemplate;
     }
     @Override
-    public List<String> GetInstrumentoPorRangoFechaSinId(String rango, String instrumento) {
+    public List<String> getInstrumentoPorRangoFechaSinId(String rango, String instrumento) {
         return null;
     }
 
     @Override
-    public void GuardarHistoricoInstrumento(String rango, String instrumento, String historico) {
+    public void guardarHistoricoInstrumento(String rango, String instrumento, String historico) {
         String collection = instrumento + "-" + rango;
         Document document = Document.parse(historico);
         mongoTemplate.save(document, collection);

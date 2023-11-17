@@ -43,11 +43,23 @@ public class PreguntaControladorImpl implements PreguntaControlador {
 	public PreguntaDTO obtener(Long id) {
 		return getPreguntaServicio().getPreguntaDTOPorID(id);
 	}
-
+	
+	@Override
+	@GetMapping("/obtener-codigo")
+	public PreguntaDTO getPreguntaDTOPorCodigo(String codigo) {
+		return getPreguntaServicio().getPreguntaDTOPorCodigo(codigo);
+	}
+	
 	@Override
 	@GetMapping("/borrar")
 	public void borrar(Long id) {
 		getPreguntaServicio().borrar(id);
+	}
+	
+	@Override
+	@GetMapping("/borrar-codigo")
+	public void borrar(String codigo) {
+		getPreguntaServicio().borrar(codigo);
 	}
 
 	@Override

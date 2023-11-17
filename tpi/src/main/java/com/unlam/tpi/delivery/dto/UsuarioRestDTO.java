@@ -1,9 +1,6 @@
 package com.unlam.tpi.delivery.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.core.modelo.Usuario;
-import org.modelmapper.ModelMapper;
 
 public class UsuarioRestDTO {
 
@@ -18,7 +15,19 @@ public class UsuarioRestDTO {
     @JsonProperty("contraseña")
     private String pass;
 
-    public String getNombre() {
+
+	public UsuarioRestDTO(String nombre, String apellido, String nombreUsuario, String email, String pass) {
+		super();
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.nombreUsuario = nombreUsuario;
+		this.email = email;
+		this.pass = pass;
+	}
+
+	public UsuarioRestDTO() {}
+	
+	public String getNombre() {
         return nombre;
     }
 

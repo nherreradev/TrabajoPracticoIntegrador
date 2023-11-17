@@ -90,15 +90,16 @@ public class PreguntaServicioTest {
 
 	private List<RespuestaDTO> crearListaRespuesta() {
 		List<RespuestaDTO> respuestaList = new ArrayList<>();
-		respuestaList.add(crearRespuestaDTO("Opción A", 10, 1));
-		respuestaList.add(crearRespuestaDTO("Opción B", 2, 2));
-		respuestaList.add(crearRespuestaDTO("Opción C", 5, 3));
-		respuestaList.add(crearRespuestaDTO("Opción D", 7, 4));
+		respuestaList.add(crearRespuestaDTO("OA","Opción A", 10, 1));
+		respuestaList.add(crearRespuestaDTO("OB","Opción B", 2, 2));
+		respuestaList.add(crearRespuestaDTO("OC","Opción C", 5, 3));
+		respuestaList.add(crearRespuestaDTO("OD","Opción D", 7, 4));
 		return respuestaList;
 	}
 
-	private RespuestaDTO crearRespuestaDTO(String nombre, Integer valor, Integer orden) {
+	private RespuestaDTO crearRespuestaDTO(String codigo, String nombre, Integer valor, Integer orden) {
 		RespuestaDTO respuesta = new RespuestaDTO();
+		respuesta.setCodigo(nombre);
 		respuesta.setNombre(nombre);
 		respuesta.setValor(valor);
 		respuesta.setOrden(orden);
@@ -107,6 +108,7 @@ public class PreguntaServicioTest {
 
 	private PreguntaDTO crearPreguntaDTO() {
 		PreguntaDTO pregunta = new PreguntaDTO();
+		pregunta.setCodigo("PP");
 		pregunta.setEnunciado("PreguntaPrueba");
 		pregunta.setOrden(1);
 		pregunta.setTipoComponente(TipoComponente.RADIO);
@@ -150,17 +152,16 @@ public class PreguntaServicioTest {
 		pregunta.setCategoria(crearCategoria());
 		pregunta.setSeccion(crearSeccion());
 		pregunta.setRespuestas(crearListaRespuesta());
-		when(preguntaRepositorio.findByEnunciado("PreguntaPrueba")).thenReturn(PreguntaMapper.dTOaEntidad(pregunta));
+		when(preguntaRepositorio.findByCodigo("PreguntaPrueba")).thenReturn(PreguntaMapper.dTOaEntidad(pregunta));
 		assertEquals("PreguntaPrueba",
-				getPreguntaServicio().getPreguntaDTOPorEnunciado("PreguntaPrueba").getEnunciado());
-		;
+				getPreguntaServicio().getPreguntaDTOPorCodigo("PreguntaPrueba").getEnunciado());
 	}
 
 	@Test
 	public void testQueBusqueUnaPreguntaPorNombreYNoLaEncuentre() {
 		String nombre = "Noexiste";
 		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-			getPreguntaServicio().getPreguntaDTOPorEnunciado("Noexiste");
+			getPreguntaServicio().getPreguntaDTOPorCodigo("Noexiste");
 		});
 		String expectedMessage = "Error al obtener la pregunta: " + nombre;
 		String actualMessage = serviceException.getMessage();

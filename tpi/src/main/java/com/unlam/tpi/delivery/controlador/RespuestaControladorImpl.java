@@ -43,9 +43,21 @@ public class RespuestaControladorImpl implements RespuestaControlador {
 	}
 
 	@Override
+	@GetMapping("/obtener-codigo")
+	public RespuestaDTO obtener(String codigo) {
+		return getRespuestaServicio().getRespuestaDTOPorCodigo(codigo);
+	}
+
+	@Override
 	@GetMapping("/borrar")
 	public void borrar(Long id) {
 		getRespuestaServicio().borrar(id);
+	}
+
+	@Override
+	@GetMapping("/borrar-codigo")
+	public void borrar(String codigo) {
+		getRespuestaServicio().borrar(codigo);
 	}
 
 	@Override

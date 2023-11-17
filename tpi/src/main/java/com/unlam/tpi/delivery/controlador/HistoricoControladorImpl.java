@@ -18,7 +18,7 @@ public class HistoricoControladorImpl implements HistoricoControlador{
     @PostMapping("/guardar")
     public ResponseEntity<String> GuardarHistorico(@RequestBody FechaRequestHistorico fechaRequestHistorico) {
         if (fechaRequestHistorico != null) {
-            this.historicoServicio.GuardarHistorico(fechaRequestHistorico, fechaRequestHistorico.getInstrumento());
+            this.historicoServicio.guardarHistorico(fechaRequestHistorico, fechaRequestHistorico.getInstrumento());
             return new ResponseEntity<>("Operación completada", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("El objeto fechaRequestHistorico es nulo", HttpStatus.BAD_REQUEST);
@@ -29,9 +29,9 @@ public class HistoricoControladorImpl implements HistoricoControlador{
     @GetMapping("/obtener_historico")
     public ResponseEntity<String> GetHistorico(String rango, String instrumento) {
         if (rango == null || instrumento == null){
-            this.historicoServicio.GetHistoricoMongo(rango, instrumento);
             return new ResponseEntity<>("Request incorrecto", HttpStatus.BAD_REQUEST);
         }
+        this.historicoServicio.getHistoricoMongo(rango, instrumento);
         return new ResponseEntity<>("Operación completada", HttpStatus.OK);
     }
 }
