@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class HistoricoRepositorioImpl implements HistoricoRepositorio{
@@ -12,9 +13,17 @@ public class HistoricoRepositorioImpl implements HistoricoRepositorio{
     public HistoricoRepositorioImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
+
     @Override
     public List<String> getInstrumentoPorRangoFechaSinId(String rango, String instrumento) {
-        return null;
+        String collection = instrumento + "-" + rango;
+        List<Document> documents = mongoTemplate.findAll(Document.class, collection);
+        for (Document doc : documents) {
+            doc.remove("_id");
+    }
+        List<String> jsonStrings = documents.stream().map(Document::toJson).collect(Collectors.toList());
+        return jsonStrings;
+
     }
 
     @Override
