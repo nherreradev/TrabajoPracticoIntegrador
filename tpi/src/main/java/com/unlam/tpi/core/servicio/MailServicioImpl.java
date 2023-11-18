@@ -25,13 +25,13 @@ public class MailServicioImpl implements MailServicio {
 	private String urlMercadoJr;
 
 	@Override
-	public void PrepararMailYEnviar(UsuarioRestDTO usuarioRestDTO, String token) {
+	public void prepararMailYEnviar(UsuarioRestDTO usuarioRestDTO, String token) {
 		String asunto = "Bienvenido a MercadoJR";
 		String saludo = "Hola " + usuarioRestDTO.getNombre() + ",";
 		String mensaje = "¡Gracias por registrarte en MercadoJR! Para completar el proceso de registro, active su cuenta con el siguiente token:";
 		String validacionUrl = urlMercadoJr + "activar-cuenta?token=" + token;
 		String cuerpoMail = saludo + "\n\n" + mensaje + "\n\n" + validacionUrl + "\n\n";
-		EnviarMail(usuarioRestDTO.getEmail(), asunto, cuerpoMail);
+		enviarMail(usuarioRestDTO.getEmail(), asunto, cuerpoMail);
 	}
 	
 	@Override
@@ -41,11 +41,11 @@ public class MailServicioImpl implements MailServicio {
 		String mensaje = "Para completar el proceso de recuperacion de cuenta dirigirse al siguiente link:";
 		String validacionUrl = urlMercadoJr + "recuperar-cuenta?token=" + token;
 		String cuerpoMail = saludo + "\n\n" + mensaje + "\n\n" + validacionUrl + "\n\n";
-		EnviarMail(email, asunto, cuerpoMail);
+		enviarMail(email, asunto, cuerpoMail);
 	}
 
 	@Override
-	public void EnviarMail(String destinatario, String asunto, String CuerpoMail) {
+	public void enviarMail(String destinatario, String asunto, String CuerpoMail) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(EMAIL_MERCADOJR);
 		message.setTo(destinatario);

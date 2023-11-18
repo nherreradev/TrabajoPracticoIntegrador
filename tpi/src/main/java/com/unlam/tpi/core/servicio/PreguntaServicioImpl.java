@@ -43,6 +43,8 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	private static final String COLUMNA_ENUNCIADO = "enunciado";
 
 	private static final String HOJA_PREGUNTA = "pregunta";
+	
+	private static final String COLUMNA_CODIGO = "codigo";
 
 	@Autowired
 	PreguntaRepositorio preguntaRepositorio;
@@ -127,8 +129,9 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	}
 
 	private Pregunta agregarModificarPregunta(Pregunta pregunta) {
-		Pregunta preguntaExistente = getPreguntaRepositorio().findByEnunciado(pregunta.getEnunciado());
+		Pregunta preguntaExistente = getPreguntaRepositorio().findByCodigo(pregunta.getCodigo());
 		if (preguntaExistente != null) {
+			preguntaExistente.setEnunciado(pregunta.getEnunciado());
 			preguntaExistente.setCategoria(pregunta.getCategoria());
 			preguntaExistente.setDescripcion(pregunta.getDescripcion());
 			preguntaExistente.setTipoComponente(pregunta.getTipoComponente());
@@ -139,7 +142,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	}
 
 	private Boolean preguntaEsValida(Pregunta pregunta) {
-		if (pregunta.getEnunciado() != null && pregunta.getCategoria() != null
+		if (pregunta.getCodigo() != null &&pregunta.getEnunciado() != null && pregunta.getCategoria() != null
 				&& pregunta.getTipoComponente() != null) {
 			return Boolean.TRUE;
 		}
@@ -149,6 +152,12 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	private void parsearExcelAPregunta(Map<String, Categoria> categoriaMap, Map<String, Seccion> seccionMap,
 			Pregunta pregunta, Cell columna, String nombreColumna) {
 		switch (nombreColumna) {
+		case COLUMNA_CODIGO:
+			String codigo = columna.getStringCellValue().trim();
+			if (esStringValido(codigo)) {
+				pregunta.setCodigo(codigo);
+			}
+			break;
 		case COLUMNA_ENUNCIADO:
 			String enunciado = columna.getStringCellValue().trim();
 			if (esStringValido(enunciado)) {
@@ -219,17 +228,11 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 
 	@Override
 	public PreguntaDTO getPreguntaDTOPorID(Long id) {
-		try {
-			Pregunta pregunta = getPreguntaRepositorio().getReferenceById(id);
-			if (pregunta == null) {
-				throw new ServiceException("Error al obtener la pregunta");
-			}
-			return PreguntaMapper.entidadADTO(pregunta);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener la pregunta", e);
+		Pregunta pregunta = getPreguntaRepositorio().getReferenceById(id);
+		if (pregunta == null) {
+			throw new ServiceException("Error al obtener la pregunta");
 		}
+		return PreguntaMapper.entidadADTO(pregunta);
 	}
 
 	@Override
@@ -237,6 +240,15 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 		Pregunta pregunta = getPreguntaPorEnunciado(nombre);
 		if (pregunta == null) {
 			throw new ServiceException("Error al obtener la pregunta: " + nombre);
+		}
+		return PreguntaMapper.entidadADTO(pregunta);
+	}
+	
+	@Override
+	public PreguntaDTO getPreguntaDTOPorCodigo(String codigo) {
+		Pregunta pregunta = getPreguntaPorCodigo(codigo);
+		if (pregunta == null) {
+			throw new ServiceException("Error al obtener la pregunta: " + codigo);
 		}
 		return PreguntaMapper.entidadADTO(pregunta);
 	}
@@ -249,16 +261,24 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 		}
 		return pregunta;
 	}
+	
+	@Override
+	public Pregunta getPreguntaPorCodigo(String codigo) {
+		Pregunta pregunta = getPreguntaRepositorio().findByCodigo(codigo);
+		if (pregunta == null) {
+			throw new ServiceException("Error al obtener la pregunta: " + codigo);
+		}
+		return pregunta;
+	}
 
 	@Override
 	public void borrar(Long id) {
-		try {
-			getPreguntaRepositorio().deleteById(id);
-		} catch (ServiceException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new ServiceException("Error al borrar la pregunta", e);
-		}
+		getPreguntaRepositorio().deleteById(id);
+	}
+
+	@Override
+	public void borrar(String codigo) {
+		getPreguntaRepositorio().deleteByCodigo(codigo);
 	}
 
 	@Override

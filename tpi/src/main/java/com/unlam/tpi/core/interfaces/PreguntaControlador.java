@@ -21,4 +21,8 @@ public interface PreguntaControlador {
 	public ResponseEntity<List<PreguntaDTO>> listarPorCategoria(String categoria);
 
 	public void cargaDesdeExcel(MultipartFile excelPregunta) throws IOException;
+
+	public PreguntaDTO getPreguntaDTOPorCodigo(String codigo);
+
+	public void borrar(String codigo);
 }

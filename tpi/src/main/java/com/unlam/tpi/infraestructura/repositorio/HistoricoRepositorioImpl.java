@@ -20,14 +20,14 @@ public class HistoricoRepositorioImpl implements HistoricoRepositorio{
         List<Document> documents = mongoTemplate.findAll(Document.class, collection);
         for (Document doc : documents) {
             doc.remove("_id");
-        }
+    }
         List<String> jsonStrings = documents.stream().map(Document::toJson).collect(Collectors.toList());
         return jsonStrings;
 
     }
 
     @Override
-    public void GuardarHistoricoInstrumento(String rango, String instrumento, String historico) {
+    public void guardarHistoricoInstrumento(String rango, String instrumento, String historico) {
         String collection = instrumento + "-" + rango;
         Document document = Document.parse(historico);
         mongoTemplate.save(document, collection);

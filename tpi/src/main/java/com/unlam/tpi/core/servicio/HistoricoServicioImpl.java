@@ -34,25 +34,23 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 		this.restTemplate = restTemplate;
 	}
 
-	// 1 será un mes,
-	// 2 serán 3 meses
-	// 3 serán 6 meses
 	@Override
-	public String GetHistoricoMongo(String rango, String instrumento) {
+	public String getHistoricoMongo(String rango, String instrumento) {
 		List<String> response = null;
 		Integer index = null;
 		switch (rango) {
-			case "mensual":
+		case "mensual":
 				response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("mensual", instrumento);
 				return response.toString();
-			case "trimestral":
+		case "trimestral":
 				response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("trimestral", instrumento);
 				return response.toString();
-			case "semestral":
+		case "semestral":
 				response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("semestral", instrumento);
 				return response.toString();
+		default:
+			throw new IllegalArgumentException("Rango de fecha no válido: " + rango);
 		}
-		return null;
 	}
 
 	private Integer DeterminarIndexRandomDelArray(List<String> response) {
@@ -60,12 +58,12 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 	}
 
 	@Override
-	public void GuardarHistorico(FechaRequestHistorico fechaRequestHistorico, String instrumento) {
-		String rango = DeterminarRangoDeFecha(fechaRequestHistorico);
+	public void guardarHistorico(FechaRequestHistorico fechaRequestHistorico, String instrumento) {
+		String rango = determinarRangoDeFecha(fechaRequestHistorico);
 		if (rango == null) {
 			System.out.println("Rango de fecha no válido");
 		}
-		String historico = ConsultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
+		String historico = consultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
 		EliminarLlavesYGuardarTransaccion(rango, instrumento, historico);
 	}
 
@@ -78,21 +76,22 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 		}
 	}
 
-	private String ConsultarHistoricoIOL(FechaRequestHistorico fechaRequestHistorico, String instrumento,
-										 String rango) {
-		List<String> simbolos = ObtenerSimbolosDeInstrumentos(instrumento);
+	private String consultarHistoricoIOL(FechaRequestHistorico fechaRequestHistorico, String instrumento,
+			String rango) {
+		List<String> simbolos = obtenerSimbolosDeInstrumentos(instrumento);
 		String mercado = ObtenerMercado(instrumento);
 		ResponseEntity<String> res = null;
 		for (String simbolo : simbolos) {
-			String url = ArmarURL(fechaRequestHistorico, mercado, simbolo);
-			res = RealizarPeticionIOL(url);
+			String url = armarURL(fechaRequestHistorico, mercado, simbolo);
+			res = realizarPeticionIOL(url);
 			return res.getBody().toString();
 		}
 		return null;
 	}
 
-	private ResponseEntity<String> RealizarPeticionIOL(String url) {
-		String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiODM4MmM5NDYtOTdhMS00OGY1LWFiNWItMGMzNjczMDZhOTlhIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE3MDAyNjAyNDMsImV4cCI6MTcwMDI2MTE0MywiaWF0IjoxNzAwMjYwMjQzLCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.YPVPJiKXKKRjRcVFtQ4a6CXuKGbXi5HAjfJve3erhMz8a26nEUq9JeGOzgKSrsQDVZmTYOSXoOgkzRtmEIlIgxi0vzFzP5AJ8ndY5KKVA3igoXTH_QXebcG1MIMLqKcYqkK1nCaplPPFjoflizvNP9QP06bxQHJl6UyCVqyCZwrAuD1-evPcdKlko6-EUSeDTrE4PtxBAlPnU7Svvl22DLM_cvuLGxu1yU35JvaueqgaMF9O8NVE3RrOGRGI0jrZwLwWE7_ZYMkdl8rU-qIEWmB7S1cMjZGbZYX6mC1m2XtWVgj9KMzTk231M_SqexZvhDaSxWdkGzJVroiMp1md8Q";
+
+	private ResponseEntity<String> realizarPeticionIOL(String url) {
+		String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzY4Mjg3IiwiSUQiOiIxNzY4Mjg3IiwianRpIjoiMDIzM2EwNWItN2I0Ni00OGY4LTgzMGEtMjQ4OTczNmQ1YzNhIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE2OTk5MzUwODUsImV4cCI6MTY5OTkzNTk4NSwiaWF0IjoxNjk5OTM1MDg1LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.UpSMeo7wLbxgr9w4tl93GLs2HuW6tOTneufoIGnZPMafF3Z6nkIzCrTK1MC03sKH04HMsUCwhINzSDp3ITLn9yTKU0YvY0UWlCSmqb1czfb1uxRkiayp8iTZQi0vIPBBdZrh__nb1I3GDqcXlJMkl8HjF3IuN2TtnkPXBDVArHemVNqCqJ5UTEg77sFdqN9wLKWlgq1R-4NbFAKeOmM2ZzhDA3GEotFstNhJ2xExXQaJEXbNSV1yDq29nEc6ReWwyIG2eya3uBTKMkirP50RfSsmfv2n5Jxy4nl-OpT6MaxZP7spx2xuFh9YZik9-uZV3Q-T42QQfFBhosSAaqZ1Ow";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + token);
 		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
@@ -103,17 +102,17 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 		return responseEntity;
 	}
 
-	private String ArmarURL(FechaRequestHistorico fechaRequestHistorico, String mercado, String simbolo) {
+	private String armarURL(FechaRequestHistorico fechaRequestHistorico, String mercado, String simbolo) {
 		return "https://api.invertironline.com/api/v2/" + mercado + "/Titulos/" + simbolo
-				+ "/Cotizacion/seriehistorica/" + fechaRequestHistorico.getFecha_desde() + "/"
-				+ fechaRequestHistorico.getMeses_atras() + "/ajustada";
+				+ "/Cotizacion/seriehistorica/" + fechaRequestHistorico.getFechaDesde() + "/"
+				+ fechaRequestHistorico.getMesesAtras() + "/ajustada";
 	}
 
 	private String ObtenerMercado(String instrumento) {
 		return "bCBA";
 	}
 
-	private List<String> ObtenerSimbolosDeInstrumentos(String tipoInstrumento) {
+	private List<String> obtenerSimbolosDeInstrumentos(String tipoInstrumento) {
 		List<String> ArraySimbolos = new ArrayList<>();
 		String listaPreciosJson = listaPreciosServicio.getListaPrecioMongo(tipoInstrumento);
 		List<Instrumento> listaInstrumentos = InstrumentoMapper
@@ -126,18 +125,18 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 		return ArraySimbolos;
 	}
 
-	private String DeterminarRangoDeFecha(FechaRequestHistorico fechaRequestHistorico) {
-		Period period = Period.between(fechaRequestHistorico.getFecha_desde(), fechaRequestHistorico.getMeses_atras());
+	private String determinarRangoDeFecha(FechaRequestHistorico fechaRequestHistorico) {
+		Period period = Period.between(fechaRequestHistorico.getFechaDesde(), fechaRequestHistorico.getMesesAtras());
 		int mesesDiferencia = Math.abs(period.getMonths());
 		switch (mesesDiferencia) {
-			case 1:
-				return "mensual";
-			case 3:
-				return "trimetral";
-			case 6:
-				return "semestral";
-			default:
-				return null;
+		case 1:
+			return "mensual";
+		case 3:
+			return "trimetral";
+		case 6:
+			return "semestral";
+		default:
+			return null;
 		}
 	}
 }

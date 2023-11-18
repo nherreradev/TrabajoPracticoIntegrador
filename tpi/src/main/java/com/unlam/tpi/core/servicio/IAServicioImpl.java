@@ -2,6 +2,8 @@ package com.unlam.tpi.core.servicio;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +56,7 @@ public class IAServicioImpl implements IAServicio {
 	}
 
 	@Override
-	public List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) throws IOException {
+	public List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) throws IOException, KeyManagementException, NoSuchAlgorithmException {
 		int idProductoAEnviar = 0;
 		if (idProducto == 0) {
 			Instrumento instrumentoPorPerfil = instrumentoServicio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);

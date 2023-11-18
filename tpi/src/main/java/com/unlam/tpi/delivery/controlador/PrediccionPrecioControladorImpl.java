@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.unlam.tpi.core.interfaces.PrediccionPrecioServicio;
 import com.unlam.tpi.core.interfaces.PrediccionPreciosControlador;
 import com.unlam.tpi.delivery.dto.PrediccionPrecioDTO;
@@ -21,7 +23,7 @@ public class PrediccionPrecioControladorImpl implements PrediccionPreciosControl
 	
 	@Override
 	@GetMapping("/dolar")
-	public ResponseEntity<PrediccionPrecioDTO> getDolar() {
+	public ResponseEntity<PrediccionPrecioDTO> getDolar() throws JsonMappingException, JsonProcessingException {
 		return ResponseEntity.ok(prediccionPreciosServicio.obtenerCotizacionDolar());
 	}
 }
