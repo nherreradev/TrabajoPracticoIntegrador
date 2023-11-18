@@ -1,26 +1,24 @@
 package com.unlam.tpi.core.modelo;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class UsuarioLogin {
-    @JsonProperty("email")
-    public String Mail;
-    @JsonProperty("contraseña")
-    private String Pass;
 
-    public String getMail() {
-        return Mail;
-    }
+	public String email;
+	private String pass;
 
-    public void setMail(String mail) {
-        Mail = mail;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public String getPass() {
-        return Pass;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setPass(String pass) {
-        Pass = pass;
-    }
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+
 }
