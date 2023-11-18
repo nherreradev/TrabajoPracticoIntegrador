@@ -82,17 +82,13 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
 			String jsonToSave = responseEntity.toString().substring(IndexLlaveAbertura, IndexLlaveCierre + 1);
 			String collection = getMapKey(responseOK);
 			if(collection!=null) {
-				if (responseOK.containsKey("cedears")){
-					String save = limitarCantidadDeRegistrosCedears(jsonToSave);
-					this.listaPreciosRepository.guardarResponseTransaccion(save, collection);
-					return;
-				}
-				this.listaPreciosRepository.guardarResponseTransaccion(jsonToSave, collection);
+				String save = limitarCantidadDeRegistros(jsonToSave);
+				this.listaPreciosRepository.guardarResponseTransaccion(save, collection);
 			}
 		}
 	}
 
-	private String limitarCantidadDeRegistrosCedears(String jsonToSave) throws JsonProcessingException {
+	private String limitarCantidadDeRegistros(String jsonToSave) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonNode = objectMapper.readTree(jsonToSave);
 		JsonNode titulosNode = jsonNode.get("titulos");
