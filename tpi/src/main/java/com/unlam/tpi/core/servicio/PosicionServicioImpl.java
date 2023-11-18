@@ -483,6 +483,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		rendimientoResponse.setFecha(posicion2.getFecha_posicion());
 	}
 
+	@Override
 	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos, Long usuarioOid) {
 
 		for (Map.Entry<String, RendimientoResponse> entry : mapaRendimientos.entrySet()) {
