@@ -26,7 +26,7 @@ public class HistoricoControladorImpl implements HistoricoControlador{
         }
     }
 
-    @Override
+   /* @Override
     @GetMapping("/obtener_historico")
     public ResponseEntity<String> getHistorico(@RequestBody HistoricoRequestGET historicoRequestGET) {
         if (historicoRequestGET.getRango() == null || historicoRequestGET.getInstrumento() == null){
@@ -35,5 +35,5 @@ public class HistoricoControladorImpl implements HistoricoControlador{
         }
         String response = this.historicoServicio.getHistoricoMongo(historicoRequestGET.getRango(), historicoRequestGET.getInstrumento());
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+    }*/
 }

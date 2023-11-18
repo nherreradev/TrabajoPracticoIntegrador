@@ -6,5 +6,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface HistoricoControlador {
     ResponseEntity<String> guardarHistorico(FechaRequestHistorico fechaRequestHistorico);
-    ResponseEntity<String> getHistorico(HistoricoRequestGET historicoRequestGET);
+    //ResponseEntity<String> getHistorico(HistoricoRequestGET historicoRequestGET);
 }
