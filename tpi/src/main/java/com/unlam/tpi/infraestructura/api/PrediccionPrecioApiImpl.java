@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.unlam.tpi.core.interfaces.PrediccionPrecioApi;
@@ -51,8 +53,7 @@ public class PrediccionPrecioApiImpl implements PrediccionPrecioApi{
 	}
 	
 	@Override
-	public PrediccionPrecioDTO obtenerPrecio() {
-		try {
+	public PrediccionPrecioDTO obtenerPrecio() throws JsonMappingException, JsonProcessingException {
 			RequestEntity<Object> requestEntity = new RequestEntity<>(HttpMethod.GET, URI.create(dolarUrl));
 			ResponseEntity<String> response = restTemplate.exchange(dolarUrl, HttpMethod.GET, requestEntity, String.class);
 
@@ -62,11 +63,6 @@ public class PrediccionPrecioApiImpl implements PrediccionPrecioApi{
 			PrediccionPrecioDTO prediccionPrecioDTO = (PrediccionPrecioDTO) getMapper()
 					.readerFor(PrediccionPrecioDTO.class).readValue(response.getBody());
 			return prediccionPrecioDTO;
-		} catch (IOException e) {
-			throw new ServiceException("Error realizando la consulta a la API Prediccion de dolar", e);
-		}catch (Exception e) {
-			throw e;
-		}
 	}
 
 	public static ObjectMapper getMapper() {

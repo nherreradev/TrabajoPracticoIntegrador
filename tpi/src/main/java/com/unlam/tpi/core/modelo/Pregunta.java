@@ -23,8 +23,11 @@ public class Pregunta extends ObjetoPersistente{
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "Enunciado")
+	@Column(name = "ENUNCIADO")
 	private String enunciado;
+	
+	@Column(name = "CODIGO")
+	private String codigo;
 	
 	@Column(name = "DESCRIPCION")
 	private String descripcion;
@@ -102,6 +105,14 @@ public class Pregunta extends ObjetoPersistente{
 
 	public void setTipoComponente(TipoComponente tipoComponente) {
 		this.tipoComponente = tipoComponente;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
 }

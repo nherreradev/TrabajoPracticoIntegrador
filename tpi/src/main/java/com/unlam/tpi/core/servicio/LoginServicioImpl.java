@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.interfaces.LoginServicio;
 import com.unlam.tpi.core.interfaces.UsuarioRepositorio;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.core.modelo.UsuarioLogin;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,22 +24,20 @@ public class LoginServicioImpl implements LoginServicio {
 
     @Override
     public String IniciarSesion(UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        return GetTokenLoginUsuario(usuarioLogin);
+        return getTokenLoginUsuario(usuarioLogin);
     }
 
 
-    private String GetTokenLoginUsuario(UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        Usuario buscado = usuarioRepositorio.findByEmailAndPass(usuarioLogin.getMail(), usuarioLogin.getPass());
-        try {
-            String token = this.autenticacionService.generarTokenLoginUsuario(buscado);
-            String jsonString = "{\"token\":"+token+"}";
-            return new Gson().fromJson(jsonString, JsonObject.class).toString();
-        }catch (Exception e){
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
+	private String getTokenLoginUsuario(UsuarioLogin usuarioLogin)
+			throws NoSuchAlgorithmException, InvalidKeySpecException {
+		Usuario usaurio = usuarioRepositorio.findByEmailAndPass(usuarioLogin.getMail(), usuarioLogin.getPass());
+		if (usaurio == null) {
+			throw new ServiceException("Usuario/Password invalidos ");
+		}
+		String token = this.autenticacionService.generarTokenLoginUsuario(usaurio);
+		String jsonString = "{\"token\":" + token + "}";
+		return new Gson().fromJson(jsonString, JsonObject.class).toString();
+	}
 
 	@Override
 	public String IniciarSesionUsuario(UsuarioLogin usuarioLogin) throws NoSuchAlgorithmException, InvalidKeySpecException{

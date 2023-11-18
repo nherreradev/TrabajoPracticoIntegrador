@@ -33,15 +33,15 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	MailServicio mailServicio;
 
 	@Override
-	public void GuardarUsuario(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public void guardarUsuario(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String token = this.autenticacionService.GenerarTokenValidacionCuenta(usuarioRestDTO.getEmail());
-		Usuario nuevo = CrearUsuario(usuarioRestDTO, token);
+		Usuario nuevo = crearUsuario(usuarioRestDTO, token);
 		this.usuarioRepositorio.save(nuevo);
-		this.mailServicio.PrepararMailYEnviar(usuarioRestDTO, token);
+		this.mailServicio.prepararMailYEnviar(usuarioRestDTO, token);
 	}
 
 	// TODO agregar nickname
-	private Usuario CrearUsuario(UsuarioRestDTO usuarioRestDTO, String token) {
+	private Usuario crearUsuario(UsuarioRestDTO usuarioRestDTO, String token) {
 		Usuario usuario = UsuarioMapper.UsuarioRest2UsuarioModel(usuarioRestDTO);
 		usuario.setTokenValidacion(token);
 		usuario.setCuentaConfirmada(Boolean.FALSE);
@@ -52,27 +52,27 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public Boolean ExisteEmail(String email) {
+	public Boolean existeEmail(String email) {
 		return this.usuarioRepositorio.existsByEmail(email);
 	}
 	@Override
-	public Boolean ExisteNombreUsuario(String nombreUsuario) {
+	public Boolean existeNombreUsuario(String nombreUsuario) {
 		return this.usuarioRepositorio.existsByNombreUsuario(nombreUsuario);
 	}
 
 	@Override
-	public Usuario ObtenerUsuarioPorEmail(String email) {
+	public Usuario obtenerUsuarioPorEmail(String email) {
 		return this.usuarioRepositorio.getUsuarioByEmail(email);
 	}
 	
 	@Override
-	public Usuario ObtenerUsuarioPorToken(String token) {
+	public Usuario obtenerUsuarioPorToken(String token) {
 		return this.usuarioRepositorio.getUsuarioByTokenValidacion(token);
 	}
 	
 
 	@Override
-	public Usuario ObtenerUsuarioPorNombreUsuario(String nombreUsuario) {
+	public Usuario obtenerUsuarioPorNombreUsuario(String nombreUsuario) {
 		Usuario usaurio = this.usuarioRepositorio.findByNombreUsuario(nombreUsuario);
 		if (usaurio == null) {
 			throw new ServiceException("Usuario no encontrado: " + nombreUsuario);
@@ -81,8 +81,8 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public UsuarioDTO ObtenerUsuarioDTOPorNombreUsuario(String nombreUsuario) {
-		Usuario usaurio = ObtenerUsuarioPorNombreUsuario(nombreUsuario);
+	public UsuarioDTO obtenerUsuarioDTOPorNombreUsuario(String nombreUsuario) {
+		Usuario usaurio = obtenerUsuarioPorNombreUsuario(nombreUsuario);
 		if (usaurio == null) {
 			throw new ServiceException("Error obteniendo el usuario: " + nombreUsuario);
 		}
@@ -90,10 +90,10 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public boolean UsuarioValidadoPorPrimeraVez(String token) throws JsonProcessingException {
+	public boolean usuarioValidadoPorPrimeraVez(String token) throws JsonProcessingException {
 		JWTRestDTO res = this.autenticacionService.obtenerClaimsToken(token);
 		if (res.getEmailUsuario() != null) {
-			Usuario buscado = ObtenerUsuarioPorEmail(res.getEmailUsuario());
+			Usuario buscado = obtenerUsuarioPorEmail(res.getEmailUsuario());
 			buscado.setCuentaConfirmada(Boolean.TRUE);
 			this.usuarioRepositorio.save(buscado);
 			return true;
@@ -102,14 +102,14 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public Boolean ElUsuarioFueYaEstaValidado(String token) throws JsonProcessingException {
+	public Boolean elUsuarioFueYaEstaValidado(String token) throws JsonProcessingException {
 		JWTRestDTO UsuarioToken = autenticacionService.obtenerClaimsToken(token);
 		Usuario usuario = usuarioRepositorio.getUsuarioByEmail(UsuarioToken.getEmailUsuario());
 		return usuario.getCuentaConfirmada();
 	}
 
 	@Override
-	public ResponseAPI ModificarUsuario(Usuario usuario) {
+	public ResponseAPI modificarUsuario(Usuario usuario) {
 		Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
 		if (buscado != null) {
 			buscado.setNombre(usuario.getNombre());
@@ -122,7 +122,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public ResponseAPI DarDeBajaUsuario(Usuario usuario) {
-		if (!ExisteEmail(usuario.getEmail()))
+		if (!existeEmail(usuario.getEmail()))
 			return responseAPI.MensajeDeErrorRecursoNoEncontrado();
 		Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
 		if (buscado != null) {
@@ -136,7 +136,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	
 	@Override
 	public void recuperarCuenta(Usuario usuario) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		if (!ExisteEmail(usuario.getEmail()))
+		if (!existeEmail(usuario.getEmail()))
 			return;
 		Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
 		if (buscado != null) {
@@ -151,7 +151,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public Boolean cambioPassword(PasswordDto passwordDto) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException {
-		Usuario usuario = ObtenerUsuarioPorToken(passwordDto.getToken());
+		Usuario usuario = obtenerUsuarioPorToken(passwordDto.getToken());
 		if (usuario == null) {
 			return Boolean.FALSE;
 		}
@@ -166,7 +166,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	
 	
 	@Override
-	public void ConfirmarCuenta(Usuario usuario) {
+	public void confirmarCuenta(Usuario usuario) {
 		usuario.setCuentaConfirmada(Boolean.TRUE);
 		this.usuarioRepositorio.save(usuario);
 	}

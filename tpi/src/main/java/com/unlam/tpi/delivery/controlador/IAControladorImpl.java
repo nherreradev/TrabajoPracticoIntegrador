@@ -1,6 +1,8 @@
 package com.unlam.tpi.delivery.controlador;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ public class IAControladorImpl implements IAControlador {
 
 	@Override
 	@GetMapping("/portafolio/sugerido")
-	public ResponseEntity<String> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) throws IOException {
+	public ResponseEntity<String> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) throws IOException, KeyManagementException, NoSuchAlgorithmException {
 		if (!tipoPerfil.equals("undefined")) {
 			List<Instrumento> instrumentosRecomendados = iAServicio.obtenerPortafolioSugerido(tipoPerfil, idProducto);
 			String json = new Gson().toJson(instrumentosRecomendados);

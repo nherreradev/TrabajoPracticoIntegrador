@@ -26,22 +26,17 @@ public class OrdenControladorImpl implements OrdenControlador {
 	@Autowired
 	OrdenServicio ordenServicio;
 
-
 	@Autowired
 	AutenticacionService autenticacionServicio;
-	
+
 	@Override
 	@PostMapping("/capturar")
-	public ResponseEntity<String> capturarOrden(@RequestHeader("Authorization") String headerAuthorization, @RequestBody OrdenDTO orden) throws JsonProcessingException {
-		 try {
-			 	String token = headerAuthorization.replaceAll("Bearer ", "");
-				UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
-				orden.setUsuarioOid(usuario.getOid());
-	            ordenServicio.capturarOrden(orden);
-	            return ResponseEntity.ok("Orden creada correctamente");
-	        } catch (ServiceException se) {
-	            String errorMessage = "Error al crear la orden: " + se.getMessage();
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
-	        }
+	public ResponseEntity<String> capturarOrden(@RequestHeader("Authorization") String headerAuthorization,
+			@RequestBody OrdenDTO orden) throws JsonProcessingException {
+		String token = headerAuthorization.replaceAll("Bearer ", "");
+		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
+		orden.setUsuarioOid(usuario.getOid());
+		ordenServicio.capturarOrden(orden);
+		return ResponseEntity.ok("Orden creada correctamente");
 	}
 }

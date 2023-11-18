@@ -1,14 +1,5 @@
 package com.unlam.tpi.delivery.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-
-import com.unlam.tpi.core.modelo.PerfilInversor;
-import com.unlam.tpi.core.modelo.ServiceException;
-
 public class PerfilInversorDTO {
 
 	private Long oid;
