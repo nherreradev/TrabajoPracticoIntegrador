@@ -5,6 +5,6 @@ import com.unlam.tpi.core.modelo.HistoricoRequestGET;
 import org.springframework.http.ResponseEntity;
 
 public interface HistoricoControlador {
-    ResponseEntity<String> GuardarHistorico(FechaRequestHistorico fechaRequestHistorico);
-    ResponseEntity<String> GetHistorico(HistoricoRequestGET historicoRequestGET);
+    ResponseEntity<String> guardarHistorico(FechaRequestHistorico fechaRequestHistorico);
+    ResponseEntity<String> getHistorico(HistoricoRequestGET historicoRequestGET);
 }

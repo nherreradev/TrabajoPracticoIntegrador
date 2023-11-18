@@ -63,7 +63,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 		if (rango == null) {
 			System.out.println("Rango de fecha no válido");
 		}
-		String historico = ConsultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
+		String historico = consultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
 		EliminarLlavesYGuardarTransaccion(rango, instrumento, historico);
 	}
 

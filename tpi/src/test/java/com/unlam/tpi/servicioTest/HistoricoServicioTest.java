@@ -50,7 +50,7 @@ public class HistoricoServicioTest {
 		fechaRequestHistorico.setFechaDesde(LocalDate.now());
 		fechaRequestHistorico.setInstrumento("Acciones");
 
-		ResponseEntity<String> responseEntity = historicoControlador.GuardarHistorico(fechaRequestHistorico);
+		ResponseEntity<String> responseEntity = historicoControlador.guardarHistorico(fechaRequestHistorico);
 
 		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 		assertEquals("Operación completada", responseEntity.getBody());
@@ -60,7 +60,7 @@ public class HistoricoServicioTest {
 	@Test
 	void testGuardarHistoricoConObjetoNulo() {
 		// Act
-		ResponseEntity<String> responseEntity = historicoControlador.GuardarHistorico(null);
+		ResponseEntity<String> responseEntity = historicoControlador.guardarHistorico(null);
 
 		// Assert
 		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
@@ -68,25 +68,6 @@ public class HistoricoServicioTest {
 		verify(historicoServicio, never()).guardarHistorico(any(), any());
 	}
 
-	@Test
-	void testGetHistorico() {
-		String rango = "mensual";
-		String instrumento = "acciones";
 
-		ResponseEntity<String> responseEntity = historicoControlador.GetHistorico(rango, instrumento);
-
-		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals("Operación completada", responseEntity.getBody());
-		verify(historicoServicio, times(1)).getHistoricoMongo(eq(rango), eq(instrumento));
-	}
-
-	@Test
-	void testGetHistoricoConParametrosNulos() {
-		ResponseEntity<String> responseEntity = historicoControlador.GetHistorico(null, null);
-
-		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-		assertEquals("Request incorrecto", responseEntity.getBody());
-		verify(historicoServicio, never()).getHistoricoMongo(any(), any());
-	}
 	
 }

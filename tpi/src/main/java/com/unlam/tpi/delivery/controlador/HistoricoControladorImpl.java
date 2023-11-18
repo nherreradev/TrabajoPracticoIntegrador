@@ -17,7 +17,7 @@ public class HistoricoControladorImpl implements HistoricoControlador{
 
     @Override
     @PostMapping("/guardar")
-    public ResponseEntity<String> GuardarHistorico(@RequestBody FechaRequestHistorico fechaRequestHistorico) {
+    public ResponseEntity<String> guardarHistorico(@RequestBody FechaRequestHistorico fechaRequestHistorico) {
         if (fechaRequestHistorico != null) {
             this.historicoServicio.guardarHistorico(fechaRequestHistorico, fechaRequestHistorico.getInstrumento());
             return new ResponseEntity<>("Operación completada", HttpStatus.OK);
@@ -28,12 +28,12 @@ public class HistoricoControladorImpl implements HistoricoControlador{
 
     @Override
     @GetMapping("/obtener_historico")
-    public ResponseEntity<String> GetHistorico(@RequestBody HistoricoRequestGET historicoRequestGET) {
+    public ResponseEntity<String> getHistorico(@RequestBody HistoricoRequestGET historicoRequestGET) {
         if (historicoRequestGET.getRango() == null || historicoRequestGET.getInstrumento() == null){
 
             return new ResponseEntity<>("Request incorrecto", HttpStatus.BAD_REQUEST);
         }
-        String response = this.historicoServicio.GetHistoricoMongo(historicoRequestGET.getRango(), historicoRequestGET.getInstrumento());
+        String response = this.historicoServicio.getHistoricoMongo(historicoRequestGET.getRango(), historicoRequestGET.getInstrumento());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
