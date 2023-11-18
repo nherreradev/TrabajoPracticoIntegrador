@@ -1,10 +1,12 @@
 package com.unlam.tpi.core.servicio;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,12 +16,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.unlam.tpi.core.interfaces.HistoricoServicio;
 import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.delivery.dto.HistoricoInstrumentoDTO;
 import com.unlam.tpi.delivery.dto.InstrumentoMapper;
 import com.unlam.tpi.infraestructura.repositorio.HistoricoRepositorio;
+
+import net.sf.jasperreports.engine.util.ConcurrentMapping.Mapper;
 
 @Service
 public class HistoricoServicioImpl implements HistoricoServicio {
@@ -37,61 +47,97 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 	@Override
 	public String getHistoricoMongo(String rango, String instrumento) {
 		List<String> response = null;
-		Integer index = null;
+
 		switch (rango) {
 		case "mensual":
-				response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("mensual", instrumento);
-				return response.toString();
+			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("mensual", instrumento);
+			return response.toString();
 		case "trimestral":
-				response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("trimestral", instrumento);
-				return response.toString();
+			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("trimestral", instrumento);
+			return response.toString();
 		case "semestral":
-				response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("semestral", instrumento);
-				return response.toString();
+			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("semestral", instrumento);
+			return response.toString();
 		default:
 			throw new IllegalArgumentException("Rango de fecha no válido: " + rango);
 		}
 	}
 
-	private Integer DeterminarIndexRandomDelArray(List<String> response) {
-		return null;
-	}
-
 	@Override
 	public void guardarHistorico(FechaRequestHistorico fechaRequestHistorico, String instrumento) {
+
 		String rango = determinarRangoDeFecha(fechaRequestHistorico);
-		if (rango == null) {
-			System.out.println("Rango de fecha no válido");
-		}
-		String historico = consultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
-		EliminarLlavesYGuardarTransaccion(rango, instrumento, historico);
-	}
 
-	private void EliminarLlavesYGuardarTransaccion(String rango, String instrumento, String historico) {
-		int IndexCorcheteAbertura = historico.toString().indexOf('{');
-		int IndexCorcheteCierre = historico.toString().lastIndexOf('}');
-		if (IndexCorcheteAbertura != -1 && IndexCorcheteCierre != -1 && IndexCorcheteAbertura < IndexCorcheteCierre) {
-			String jsonToSave = historico.toString().substring(IndexCorcheteAbertura, IndexCorcheteCierre + 1);
-			this.historicoRepositorio.guardarHistoricoInstrumento(rango, instrumento, jsonToSave);
-		}
-	}
-
-	private String consultarHistoricoIOL(FechaRequestHistorico fechaRequestHistorico, String instrumento,
-			String rango) {
 		List<String> simbolos = obtenerSimbolosDeInstrumentos(instrumento);
-		String mercado = ObtenerMercado(instrumento);
-		ResponseEntity<String> res = null;
+
 		for (String simbolo : simbolos) {
-			String url = armarURL(fechaRequestHistorico, mercado, simbolo);
-			res = realizarPeticionIOL(url);
-			return res.getBody().toString();
+			String historico = consultarHistoricoIOL(simbolo, fechaRequestHistorico, instrumento, rango);
+			guardarTransaccion(rango, instrumento, historico, simbolo);
 		}
-		return null;
+
+		/*
+		 * String rango = determinarRangoDeFecha(fechaRequestHistorico); if (rango ==
+		 * null) { System.out.println("Rango de fecha no válido"); } String historico =
+		 * consultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
+		 * guardarTransaccion(rango, instrumento, historico, simbolo);
+		 */
 	}
 
+	private void guardarTransaccion(String rango, String instrumento, String historico, String simbolo) {
+
+		List<HistoricoInstrumentoDTO> listaHistoricoDTO = new ArrayList<>();
+
+		JsonArray jsonArray = JsonParser.parseString(historico).getAsJsonArray();
+		for (JsonElement elemento : jsonArray) {
+			HistoricoInstrumentoDTO historicoInstrumentoDTO = new HistoricoInstrumentoDTO();
+			historicoInstrumentoDTO.setSimbolo(simbolo);
+			JsonPrimitive apertura = elemento.getAsJsonObject().getAsJsonPrimitive("apertura");
+			JsonPrimitive cierreAnterior = elemento.getAsJsonObject().getAsJsonPrimitive("cierreAnterior");
+			JsonPrimitive maximo = elemento.getAsJsonObject().getAsJsonPrimitive("maximo");
+			JsonPrimitive minimo = elemento.getAsJsonObject().getAsJsonPrimitive("minimo");
+			completarDTO(historicoInstrumentoDTO, apertura, cierreAnterior, maximo, minimo);
+			listaHistoricoDTO.add(historicoInstrumentoDTO);
+		}
+
+		this.historicoRepositorio.guardarHistoricoInstrumento(rango, instrumento, listaHistoricoDTO);
+
+	}
+
+	private void completarDTO(HistoricoInstrumentoDTO historicoInstrumentoDTO, JsonPrimitive apertura,
+			JsonPrimitive cierreAnterior, JsonPrimitive maximo, JsonPrimitive minimo) {
+		if (chequearJson(apertura)) {
+			historicoInstrumentoDTO.setApertura(apertura.getAsBigDecimal());
+
+		}
+		if (chequearJson(cierreAnterior)) {
+			historicoInstrumentoDTO.setCierre(cierreAnterior.getAsBigDecimal());
+
+		}
+		if (chequearJson(maximo)) {
+			historicoInstrumentoDTO.setMaximo(maximo.getAsBigDecimal());
+
+		}
+		if (chequearJson(minimo)) {
+			historicoInstrumentoDTO.setMinimo(minimo.getAsBigDecimal());
+
+		}
+	}
+
+	private boolean chequearJson(JsonPrimitive apertura) {
+		return apertura != null && apertura.isNumber();
+	}
+
+	private String consultarHistoricoIOL(String simbolo, FechaRequestHistorico fechaRequestHistorico,
+			String instrumento, String rango) {
+
+		String mercado = ObtenerMercado(instrumento);
+		String url = armarURL(fechaRequestHistorico, mercado, simbolo);
+		return realizarPeticionIOL(url).getBody().toString();
+
+	}
 
 	private ResponseEntity<String> realizarPeticionIOL(String url) {
-		String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzY4Mjg3IiwiSUQiOiIxNzY4Mjg3IiwianRpIjoiMDIzM2EwNWItN2I0Ni00OGY4LTgzMGEtMjQ4OTczNmQ1YzNhIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE2OTk5MzUwODUsImV4cCI6MTY5OTkzNTk4NSwiaWF0IjoxNjk5OTM1MDg1LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.UpSMeo7wLbxgr9w4tl93GLs2HuW6tOTneufoIGnZPMafF3Z6nkIzCrTK1MC03sKH04HMsUCwhINzSDp3ITLn9yTKU0YvY0UWlCSmqb1czfb1uxRkiayp8iTZQi0vIPBBdZrh__nb1I3GDqcXlJMkl8HjF3IuN2TtnkPXBDVArHemVNqCqJ5UTEg77sFdqN9wLKWlgq1R-4NbFAKeOmM2ZzhDA3GEotFstNhJ2xExXQaJEXbNSV1yDq29nEc6ReWwyIG2eya3uBTKMkirP50RfSsmfv2n5Jxy4nl-OpT6MaxZP7spx2xuFh9YZik9-uZV3Q-T42QQfFBhosSAaqZ1Ow";
+		String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiYzBkMWRjNjEtMTgzMy00ZGUyLWI1NzctNjlkNzRkNmYxYTU1IiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE3MDAyODkxMDgsImV4cCI6MTcwMDI5MDAwOCwiaWF0IjoxNzAwMjg5MTA4LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.V3XOQhTbKqVDSoPRALCCrSEEf6bkaQHg5Oq5mfZ6qTOyFEdZ5xg8Q7omI-NKNXtczhKqrOtUsEgcSUHjRY1pk_Jnv1EEx6pOPcu4wA2_q_5wdOiCBL0wnS4os6haMUr5wbLa9GBuu1Aq4kyO2dHQELeSXcc6wFQyKr1j4UwuG1i9DgtFRJ9R5rMt-ZsnmZhYtWE9LsO_9Vgb4964_GAZoJ-OCyLNZfuHupUj-YEjagu4Gdl-7mO_x_c89m1Ip8gUDxI_8JKpGKF4tDWi-TN9_UUqvax2Hpam-rljS19NnLjjJpLSIg3fxyuKR3sa6ggcZh9bkBUmwCviotPGLd4jdw";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + token);
 		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
