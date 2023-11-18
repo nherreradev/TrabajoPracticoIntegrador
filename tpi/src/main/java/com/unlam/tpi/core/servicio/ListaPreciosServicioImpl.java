@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -40,7 +45,7 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
 	}
 
 	@Override
-	public ResponseEntity<String> guardarListaPrecios(String titulo, String token) {
+	public ResponseEntity<String> guardarListaPrecios(String titulo, String token) throws JsonProcessingException {
 		Map<String, Boolean> ResponseOK = new HashMap<>();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + token);
@@ -70,16 +75,39 @@ public class ListaPreciosServicioImpl implements ListaPreciosServicio {
 		return responseEntity;
 	}
 
-	private void saveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) {
+	private void saveMongoTransaction(Map<String, Boolean> responseOK, ResponseEntity<String> responseEntity) throws JsonProcessingException {
 		int IndexLlaveAbertura = responseEntity.toString().indexOf('{');
 		int IndexLlaveCierre = responseEntity.toString().lastIndexOf('}');
 		if (IndexLlaveAbertura != -1 && IndexLlaveCierre != -1 && IndexLlaveAbertura < IndexLlaveCierre) {
 			String jsonToSave = responseEntity.toString().substring(IndexLlaveAbertura, IndexLlaveCierre + 1);
 			String collection = getMapKey(responseOK);
 			if(collection!=null) {
-				this.listaPreciosRepository.guardarResponseTransaccion(jsonToSave, collection);
+				String save = limitarCantidadDeRegistros(jsonToSave);
+				this.listaPreciosRepository.guardarResponseTransaccion(save, collection);
 			}
 		}
+	}
+
+	private String limitarCantidadDeRegistros(String jsonToSave) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode jsonNode = objectMapper.readTree(jsonToSave);
+		JsonNode titulosNode = jsonNode.get("titulos");
+
+		if (titulosNode.isArray() && titulosNode.size() > 60) {
+			ArrayNode arrayNode = objectMapper.createArrayNode(); // Crear nuevo ArrayNode
+
+			for (int i = 0; i < Math.min(60, titulosNode.size()); i++) {
+				arrayNode.add((JsonNode) titulosNode.get(i));
+			}
+
+			// Asignar el nuevo ArrayNode a titulosNode
+			((ObjectNode) jsonNode).replace("titulos", arrayNode);
+		}
+
+		jsonToSave = objectMapper.writeValueAsString(jsonNode);
+		return jsonToSave;
+
+
 	}
 
 	@Override
