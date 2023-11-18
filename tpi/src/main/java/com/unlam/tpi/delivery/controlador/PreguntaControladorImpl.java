@@ -1,5 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class PreguntaControladorImpl implements PreguntaControlador {
 
 	@Override
 	@RequestMapping(path = "/carga-pregunta-excel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public void cargaDesdeExcel(@RequestParam MultipartFile excelPregunta) {
+	public void cargaDesdeExcel(@RequestParam MultipartFile excelPregunta) throws IOException {
 		getPreguntaServicio().cargaDesdeExcel(excelPregunta);
 	}
 		
@@ -42,11 +43,23 @@ public class PreguntaControladorImpl implements PreguntaControlador {
 	public PreguntaDTO obtener(Long id) {
 		return getPreguntaServicio().getPreguntaDTOPorID(id);
 	}
-
+	
+	@Override
+	@GetMapping("/obtener-codigo")
+	public PreguntaDTO getPreguntaDTOPorCodigo(String codigo) {
+		return getPreguntaServicio().getPreguntaDTOPorCodigo(codigo);
+	}
+	
 	@Override
 	@GetMapping("/borrar")
 	public void borrar(Long id) {
 		getPreguntaServicio().borrar(id);
+	}
+	
+	@Override
+	@GetMapping("/borrar-codigo")
+	public void borrar(String codigo) {
+		getPreguntaServicio().borrar(codigo);
 	}
 
 	@Override

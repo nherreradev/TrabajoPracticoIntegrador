@@ -1,10 +1,17 @@
 package com.unlam.tpi.servicioTest;
 
-import org.junit.jupiter.api.Disabled;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -12,20 +19,12 @@ import org.springframework.web.client.RestTemplate;
 import com.unlam.tpi.core.servicio.ListaPreciosServicioImpl;
 import com.unlam.tpi.core.servicio.PanelesServicioImpl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-@SpringBootTest
-@Disabled
+@ExtendWith(MockitoExtension.class)
 public class ListaPreciosServiceTest {
-    @Mock
     private final RestTemplate restTemplate = new RestTemplate();
-    private ListaPreciosServicioImpl lp = new ListaPreciosServicioImpl(restTemplate);
     @InjectMocks
+    private ListaPreciosServicioImpl lp = new ListaPreciosServicioImpl(restTemplate);
+    @Mock
     private PanelesServicioImpl ps = new PanelesServicioImpl();
     private static final String MERCADOJR_URL_ACCIONES = "https://api.mercadojunior.com.ar/list/precios/acciones";
     private static final String MERCADOJR_URL_BONOS = "https://api.mercadojunior.com.ar/list/precios/bonos";

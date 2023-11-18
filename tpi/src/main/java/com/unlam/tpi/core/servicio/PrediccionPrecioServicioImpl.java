@@ -3,6 +3,8 @@ package com.unlam.tpi.core.servicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.unlam.tpi.core.interfaces.PrediccionPrecioApi;
 import com.unlam.tpi.core.interfaces.PrediccionPrecioServicio;
 import com.unlam.tpi.delivery.dto.PrediccionPrecioDTO;
@@ -14,10 +16,7 @@ public class PrediccionPrecioServicioImpl implements PrediccionPrecioServicio {
 	private PrediccionPrecioApi prediccionPrecioApi;
 	
 	@Override
-	public PrediccionPrecioDTO obtenerCotizacionDolar() {
-//		String dolar = getPrediccionPrecioApi().obtenerPrecio();
-//		PrediccionPrecioDTO prediccionPrecioDTO = new PrediccionPrecioDTO();
-//		prediccionPrecioDTO.setSimbolo(dolar);
+	public PrediccionPrecioDTO obtenerCotizacionDolar() throws JsonMappingException, JsonProcessingException {
 		return getPrediccionPrecioApi().obtenerPrecio();
 	}
 	

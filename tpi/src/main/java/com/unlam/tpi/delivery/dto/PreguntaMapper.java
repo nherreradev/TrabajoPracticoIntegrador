@@ -13,37 +13,18 @@ public class PreguntaMapper {
 	private static ModelMapper mapper = new ModelMapper();
 
 	public static Pregunta dTOaEntidad(PreguntaDTO pregunta) {
-		try {
-			return mapper.map(pregunta, Pregunta.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir PreguntaDTO a Pregunta", e);
-		}
+		return mapper.map(pregunta, Pregunta.class);
 	}
 
 	public static PreguntaDTO entidadADTO(Pregunta pregunta) {
-		try {
-			return mapper.map(pregunta, PreguntaDTO.class);
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir Pregunta a PreguntaDTO", e);
-		}
+		return mapper.map(pregunta, PreguntaDTO.class);
 	}
 
 	public static List<PreguntaDTO> entidadDTOLista(List<Pregunta> preguntas) {
-		try {
-			return preguntas.stream().map(pregunta -> mapper.map(pregunta, PreguntaDTO.class))
-					.collect(Collectors.toList());
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir una lista Pregunta a lista PreguntaDTO", e);
-		}
+		return preguntas.stream().map(pregunta -> mapper.map(pregunta, PreguntaDTO.class)).collect(Collectors.toList());
 	}
 
 	public static List<Pregunta> traductorDeListaDTOaEntidad(List<PreguntaDTO> preguntas) throws ServiceException {
-		try {
-			return preguntas.stream().map(pregunta -> mapper.map(pregunta, Pregunta.class))
-					.collect(Collectors.toList());
-
-		} catch (Exception e) {
-			throw new ServiceException("Error en convertir una lista PreguntaDTO a lista Pregunta", e);
-		}
+		return preguntas.stream().map(pregunta -> mapper.map(pregunta, Pregunta.class)).collect(Collectors.toList());
 	}
 }

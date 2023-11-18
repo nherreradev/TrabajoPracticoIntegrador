@@ -34,7 +34,7 @@ public class CarteraControladorImpl implements CarteraControlador {
 	public ResponseEntity<ValuacionTotalRespuesta> getValuacionTotal(
 			@RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException {
 		
-		String token = headerAuthorization.replaceAll("Bearer ", "");
+		String token = getToken(headerAuthorization);
 		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
 		
 		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal(usuario.getOid());
@@ -44,11 +44,15 @@ public class CarteraControladorImpl implements CarteraControlador {
 	@Override
 	@PostMapping("/acreditar/dinero")
 	public ResponseEntity<String> acreditarDinero(@RequestHeader("Authorization") String headerAuthorization, @RequestBody RequestCargaDeDinero request) throws JsonProcessingException {
-		String token = headerAuthorization.replaceAll("Bearer ", "");
+		String token = getToken(headerAuthorization);
 		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
 		request.setUsuarioOid(usuario.getOid());	
 		posicionServicio.acreditarDinero(request);
 		return ResponseEntity.ok("Dinero acreditado correctamente");
 	}
-
+	
+	private String getToken(String headerAuthorization) {
+		String token = headerAuthorization.replaceAll("Bearer ", "");
+		return token;
+	}
 }

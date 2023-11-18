@@ -1,5 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +19,20 @@ import com.unlam.tpi.delivery.dto.RespuestaDTO;
 
 @RestController
 @RequestMapping("/api/respuesta")
-public class RespuestaControladorImpl implements RespuestaControlador{
+public class RespuestaControladorImpl implements RespuestaControlador {
 
 	@Autowired
 	private RespuestaServicio respuestaServicio;
-	
+
 	@Override
 	@PostMapping(value = "/guardar", consumes = "application/json", produces = "application/json")
 	public void guardar(RespuestaDTO respuesta) {
-		getRespuestaServicio().guardar(respuesta);		
+		getRespuestaServicio().guardar(respuesta);
 	}
-	
+
 	@Override
 	@RequestMapping(path = "/carga-respuesta-excel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public void cargaDesdeExcel(@RequestParam MultipartFile excelRespuesta) {
+	public void cargaDesdeExcel(@RequestParam MultipartFile excelRespuesta) throws IOException {
 		getRespuestaServicio().cargaDesdeExcel(excelRespuesta);
 	}
 
@@ -42,9 +43,21 @@ public class RespuestaControladorImpl implements RespuestaControlador{
 	}
 
 	@Override
+	@GetMapping("/obtener-codigo")
+	public RespuestaDTO obtener(String codigo) {
+		return getRespuestaServicio().getRespuestaDTOPorCodigo(codigo);
+	}
+
+	@Override
 	@GetMapping("/borrar")
 	public void borrar(Long id) {
-		getRespuestaServicio().borrar(id);		
+		getRespuestaServicio().borrar(id);
+	}
+
+	@Override
+	@GetMapping("/borrar-codigo")
+	public void borrar(String codigo) {
+		getRespuestaServicio().borrar(codigo);
 	}
 
 	@Override

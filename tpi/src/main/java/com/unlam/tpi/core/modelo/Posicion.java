@@ -13,10 +13,11 @@ import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 @Entity
 @Table(name = "POSICION_")
 public class Posicion extends ObjetoPersistente {
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Usuario al cual pertenece la posición
 	 */
-
 	@Column(name = "USUARIO_OID")
 	private Long usuarioOid;
 

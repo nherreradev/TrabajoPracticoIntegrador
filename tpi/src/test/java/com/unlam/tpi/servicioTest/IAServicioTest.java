@@ -3,7 +3,9 @@ package com.unlam.tpi.servicioTest;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import java.net.ProtocolException;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ class IAServicioTest {
 	PortafolioSugerenciaServicio portafolioSugerenciaServicio;
 
 	@Test
-	void testPuedoObtenerElPortafolioSugerido() throws ProtocolException {
+	void testPuedoObtenerElPortafolioSugerido() throws IOException, KeyManagementException, NoSuchAlgorithmException {
 
 		String json = "[{\"coPurchaseProductID\":73,\"score\":9.279588E-07},{\"coPurchaseProductID\":51,\"score\":9.279586E-07},{\"coPurchaseProductID\":68,\"score\":9.279586E-07},{\"coPurchaseProductID\":41,\"score\":9.2795847E-07},{\"coPurchaseProductID\":63,\"score\":9.2795847E-07}]";
 

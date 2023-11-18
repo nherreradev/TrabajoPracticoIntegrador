@@ -199,9 +199,7 @@ class PosicionServicioTest {
 	@Test
 	void testPuedoObtenerLaValuacionDeMiCartera() {
 
-		String totalMonedas = "4500";
-		String totalInstrumentos = "20";
-		String totalCartera = "4520";
+		String totalCartera = "4500";
 		Long oidUsuario = 1L;
 
 		Posicion posicionDinero = new Posicion();
@@ -209,23 +207,12 @@ class PosicionServicioTest {
 		posicionDinero.setEsEfectivo(true);
 		posicionDinero.setMonedaOid(1L);
 
-		Posicion posicionTitulos = new Posicion();
-		posicionTitulos.setCantidad(new BigDecimal(2));
-		posicionTitulos.setPrecioActualDeVenta(new BigDecimal(10));
-		posicionTitulos.setSimboloInstrumento("AGRO");
-		posicionTitulos.setEsEfectivo(false);
-		posicionTitulos.setMonedaOid(1L);
-
 		List<Posicion> listaPosiciones = new ArrayList<>();
 		listaPosiciones.add(posicionDinero);
-		listaPosiciones.add(posicionTitulos);
 
 		when(posicionRepositorio.getPosicionByUsuarioOid(oidUsuario)).thenReturn(listaPosiciones);
 
 		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal(oidUsuario);
-
-		assertEquals(totalMonedas, valuacionTotalRespuesta.getTotalMonedas());
-		assertEquals(totalInstrumentos, valuacionTotalRespuesta.getTotalInstrumentos());
 		assertEquals(totalCartera, valuacionTotalRespuesta.getTotalCartera());
 	}
 

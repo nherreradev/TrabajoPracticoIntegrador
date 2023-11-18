@@ -19,6 +19,8 @@ public class PreguntaDTO {
 	private SeccionDTO seccion;
 
 	private Integer orden;
+	
+	private String codigo;
 
 	private TipoComponente tipoComponente;
 
@@ -104,4 +106,12 @@ public class PreguntaDTO {
 		this.tipoComponente = tipoComponente;
 	}
 
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
+	
 }

@@ -1,163 +1,190 @@
 package com.unlam.tpi.core.servicio;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
-import com.unlam.tpi.core.interfaces.HistoricoServicio;
-import com.unlam.tpi.core.modelo.FechaRequestHistorico;
-import com.unlam.tpi.infraestructura.repositorio.HistoricoRepositorio;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.net.URI;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.unlam.tpi.core.interfaces.HistoricoServicio;
+import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
+import com.unlam.tpi.core.modelo.FechaRequestHistorico;
+import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.delivery.dto.HistoricoInstrumentoDTO;
+import com.unlam.tpi.delivery.dto.InstrumentoMapper;
+import com.unlam.tpi.infraestructura.repositorio.HistoricoRepositorio;
 
 @Service
 public class HistoricoServicioImpl implements HistoricoServicio {
-    @Autowired
-    HistoricoRepositorio historicoRepositorio;
-    @Autowired
-    ListaPreciosServicio listaPreciosServicio;
-    @Autowired
-    private final RestTemplate restTemplate;
-    public HistoricoServicioImpl(RestTemplate restTemplate){
-        this.restTemplate = restTemplate;
-    }
+	@Autowired
+	HistoricoRepositorio historicoRepositorio;
+	@Autowired
+	ListaPreciosServicio listaPreciosServicio;
+	@Autowired
+	private final RestTemplate restTemplate;
 
-    //1 será un mes,
-    //2 serán 3 meses
-    //3 serán 6 meses
-    @Override
-    public String GetHistoricoMongo(String rango, String instrumento) {
-        List<String> response = null;
-        Integer index = null;
-        try{
-            switch (rango){
-                case "mensual":
-                    response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("mensual", instrumento);
-                    index = DeterminarIndexRandomDelArray(response);
-                    return response.get(index);
-                case "trimestral":
-                    response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("trimestral", instrumento);
-                    index = DeterminarIndexRandomDelArray(response);
-                    return response.get(index);
-                case "semestral":
-                    response = this.historicoRepositorio.GetInstrumentoPorRangoFechaSinId("semestral", instrumento);
-                    index = DeterminarIndexRandomDelArray(response);
-                    return response.get(index);
-            }
-            return null;
-        }catch (Exception e){
-            System.out.println("Error al obtener información de mongo "+ e);
-            e.printStackTrace();
-            return null;
-        }
-    }
+	public HistoricoServicioImpl(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
 
-    private Integer DeterminarIndexRandomDelArray(List<String> response) {
-        return null;
-    }
+	@Override
+	public String getHistoricoMongo(String rango, String instrumento, String simbolo) {
+		List<String> response = null;
 
-    @Override
-    public void GuardarHistorico(FechaRequestHistorico fechaRequestHistorico, String instrumento) {
-        String rango = DeterminarRangoDeFecha(fechaRequestHistorico);
-        if (rango == null){
-            System.out.println("Rango de fecha no válido");
-        }
-        String historico = ConsultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
-        EliminarCorchetesYGuardarTransaccion(rango, instrumento,historico);
-    }
+		switch (rango) {
+		case "mensual":
+			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("mensual", instrumento, simbolo);
+			return response.toString();
+		case "trimestral":
+			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("trimestral", instrumento, simbolo);
+			return response.toString();
+		case "semestral":
+			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("semestral", instrumento, simbolo);
+			return response.toString();
+		default:
+			throw new IllegalArgumentException("Rango de fecha no válido: " + rango);
+		}
+	}
 
-    private void EliminarCorchetesYGuardarTransaccion(String rango, String instrumento, String historico) {
-        int IndexCorcheteAbertura = historico.toString().indexOf('{');
-        int IndexCorcheteCierre = historico.toString().lastIndexOf('}');
-        if (IndexCorcheteAbertura != -1 && IndexCorcheteCierre != -1 && IndexCorcheteAbertura < IndexCorcheteCierre) {
-            String jsonToSave = historico.toString().substring(IndexCorcheteAbertura, IndexCorcheteCierre + 1);
-            this.historicoRepositorio.GuardarHistoricoInstrumento(rango, instrumento, jsonToSave);
-        }
-    }
+	@Override
+	public void guardarHistorico(FechaRequestHistorico fechaRequestHistorico, String instrumento) {
 
-    private String ConsultarHistoricoIOL(FechaRequestHistorico fechaRequestHistorico, String instrumento, String rango) {
-        String bodyResponse = null;
-        List<String> simbolos = ObtenerSimbolosDeInstrumentos(instrumento);
-        String mercado = ObtenerMercado(instrumento);
-        ResponseEntity<String> res = null;
-        if (simbolos.size() == 0) {
-            System.out.println("Error al obtener simbolos");
-        }else if (mercado == null)  {
-            System.out.println("Error al obtener mercado");
-        }
-        for(int i=0; i<simbolos.size(); i++){
-            String url = ArmarURL(fechaRequestHistorico, mercado, simbolos.get(i));
-            res = RealizarPeticionIOL(url);
-            bodyResponse =  res.getBody().toString();
-            return bodyResponse;
-        }
-        return null;
-    }
+		String rango = determinarRangoDeFecha(fechaRequestHistorico);
 
-    private ResponseEntity<String> RealizarPeticionIOL(String url) {
-        String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiYjI0ZjEwZjktMDgxZC00ZmYyLTkwZDctM2E4MWY5ZTMwYjEwIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE2OTg1MjY5MjYsImV4cCI6MTY5ODUyNzgyNiwiaWF0IjoxNjk4NTI2OTI2LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.lNgr_Lxrbv5q_wBnVJI7ljyNL1wIUucFyKRWvSGhR_YwGbk8Gh8-toNkSLaxkza5c0X69RpSgJpMlHhLgim1Gik1DvvnZgtbb2RdGTvfAyv-gaqEo6roN80wZeDrVBEkxyBN6Q_f6WQf7SOHJeUSizbKlXeVxM7uk2ZYnnvswAj5ttcYqLDrzSHypGPcMW19rCWCj_F45NfCxw_ZA0fgFrYXR034t2k3D-AWl6NisMvptMQ9vpRYuBv-JZTzFPKNKNfKtfnUjPkVTkGdd_ztuOI4BLKoNAB9JN9NtLBhdtB1Pi7FKyl7kzIL6dGIupJaN5qlRWzeVBWjfl-pAieoqA";
-        Map<String, Boolean> ResponseOK = new HashMap<>();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        RequestEntity<?> requestEntity;
-        ResponseEntity<String> responseEntity = null;
-        requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(url));
-        responseEntity = restTemplate.exchange(requestEntity, String.class);
-        return responseEntity;
-    }
+		List<String> simbolos = obtenerSimbolosDeInstrumentos(instrumento);
 
-    private String ArmarURL(FechaRequestHistorico fechaRequestHistorico, String mercado, String simbolo) {
-        return "https://api.invertironline.com/api/v2/"+mercado+"/Titulos/"+simbolo+"/Cotizacion/seriehistorica/"+fechaRequestHistorico.getFecha_desde()+"/"+fechaRequestHistorico.getMeses_atras()+"/ajustada";
-    }
+		for (String simbolo : simbolos) {
+			String historico = consultarHistoricoIOL(simbolo, fechaRequestHistorico, instrumento, rango);
+			guardarTransaccion(rango, instrumento, historico, simbolo);
+		}
+	}
 
-    private String ObtenerMercado(String instrumento) {
-        return "bCBA";
-    }
+	private void guardarTransaccion(String rango, String instrumento, String historico, String simbolo) {
 
-    private List<String> ObtenerSimbolosDeInstrumentos(String instrumento) {
-        List<String> ArraySimbolos = new ArrayList<>();
-        String JsonMongo = listaPreciosServicio.getListaPrecioMongo(instrumento);
-        JsonObject JsonParseado = JsonParser.parseString(JsonMongo).getAsJsonObject();
-        JsonArray TituloArray = JsonParseado.getAsJsonArray("titulos");
+		HashSet<HistoricoInstrumentoDTO> listaHistoricoDTO = new HashSet();
 
-        for (int i = 0; i < TituloArray.size(); i++) {
-            JsonObject titulo = TituloArray.get(i).getAsJsonObject();
-            if(!titulo.get("puntas").isJsonNull()){
-                String simbolo = titulo.get("simbolo").getAsString();
-                ArraySimbolos.add(simbolo);
-            }
-        }
-        return ArraySimbolos;
-    }
+		JsonArray jsonArray = JsonParser.parseString(historico).getAsJsonArray();
+		for (JsonElement elemento : jsonArray) {
+			HistoricoInstrumentoDTO historicoInstrumentoDTO = new HistoricoInstrumentoDTO();
+			historicoInstrumentoDTO.setSimbolo(simbolo);
+			JsonPrimitive apertura = elemento.getAsJsonObject().getAsJsonPrimitive("apertura");
+			JsonPrimitive cierreAnterior = elemento.getAsJsonObject().getAsJsonPrimitive("cierreAnterior");
+			JsonPrimitive maximo = elemento.getAsJsonObject().getAsJsonPrimitive("maximo");
+			JsonPrimitive minimo = elemento.getAsJsonObject().getAsJsonPrimitive("minimo");
+			JsonPrimitive fechahora = elemento.getAsJsonObject().getAsJsonPrimitive("fechaHora");
 
-    private String DeterminarRangoDeFecha(FechaRequestHistorico fechaRequestHistorico) {
-        try {
-            Period period = Period.between(fechaRequestHistorico.getFecha_desde(), fechaRequestHistorico.getMeses_atras());
-            int mesesDiferencia = Math.abs(period.getMonths());
-            switch (mesesDiferencia){
-                case 1:
-                    return "mensual";
-                case 3:
-                    return "trimetral";
-                case 6:
-                    return "semestral";
-                default:
-                    return null;
-            }
-        }catch (Exception e){
-            System.out.println("Error al determinar rango de fechas "+ e);
-            e.printStackTrace();
-            return null;
-        }
-    }
+			boolean contiene17 = fechahora.toString().contains("T17");
+
+			if (contiene17) {
+				completarDTO(historicoInstrumentoDTO, apertura, cierreAnterior, maximo, minimo, fechahora);
+				listaHistoricoDTO.add(historicoInstrumentoDTO);
+			}
+
+		}
+
+		this.historicoRepositorio.guardarHistoricoInstrumento(rango, instrumento, listaHistoricoDTO);
+
+	}
+
+	private void completarDTO(HistoricoInstrumentoDTO historicoInstrumentoDTO, JsonPrimitive apertura,
+			JsonPrimitive cierreAnterior, JsonPrimitive maximo, JsonPrimitive minimo, JsonPrimitive fechaHora) {
+		if (chequearJson(apertura)) {
+			historicoInstrumentoDTO.setApertura(apertura.getAsBigDecimal());
+
+		}
+		if (chequearJson(cierreAnterior)) {
+			historicoInstrumentoDTO.setCierre(cierreAnterior.getAsBigDecimal());
+
+		}
+		if (chequearJson(maximo)) {
+			historicoInstrumentoDTO.setMaximo(maximo.getAsBigDecimal());
+
+		}
+		if (chequearJson(minimo)) {
+			historicoInstrumentoDTO.setMinimo(minimo.getAsBigDecimal());
+
+		}
+
+		if (fechaHora != null && fechaHora.isString()) {
+			historicoInstrumentoDTO.setFechaHora(fechaHora.getAsString());
+			historicoInstrumentoDTO.setFecha(fechaHora.getAsString().substring(0, fechaHora.getAsString().indexOf('T')));
+		}
+
+	}
+
+	private boolean chequearJson(JsonPrimitive apertura) {
+		return apertura != null && apertura.isNumber();
+	}
+
+	private String consultarHistoricoIOL(String simbolo, FechaRequestHistorico fechaRequestHistorico,
+			String instrumento, String rango) {
+
+		String mercado = ObtenerMercado(instrumento);
+		String url = armarURL(fechaRequestHistorico, mercado, simbolo);
+		return realizarPeticionIOL(url).getBody().toString();
+
+	}
+
+	private ResponseEntity<String> realizarPeticionIOL(String url) {
+		String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzY4Mjg3IiwiSUQiOiIxNzY4Mjg3IiwianRpIjoiMjRhMWMxZTUtNDEwOS00MGY1LWE0NmEtZTE1M2QyNWVlNzgyIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE3MDAzMzM1MzksImV4cCI6MTcwMDMzNDQzOSwiaWF0IjoxNzAwMzMzNTM5LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.fYVqzUkPeYW2GV6d6Wp2V8256zzgyaTIjpoJ6FiX9D4TlwR6bqzEoLA0gbLQBjgLMlA4X_OMBNTPNFpDi3DA-0Hp0Ofxw340uRU6Q41M1OIPDaPAQM3_l3lElxPwjMXP0QhSiwUD3Sk0buFAxTUpoNiVlNRm35yC1Qn0L-M5rmehGaiHRVkwbr2LSoAnteHXq4PPHJU1ez7wb8e51glEUOHmE0R9JeUa8mK9bm8dWn6owpcCXqEaCfFSjSy50cDvxFtnfed6RDZhDYqQoLAxIjfYfmofwwxL2J0mgrM2OTMC1FDyVHe9IjqflzDyhZOLUKgdzVaVCfxXmX0slkP96g";
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + token);
+		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+		RequestEntity<?> requestEntity;
+		ResponseEntity<String> responseEntity = null;
+		requestEntity = new RequestEntity<>(headers, HttpMethod.GET, URI.create(url));
+		responseEntity = restTemplate.exchange(requestEntity, String.class);
+		return responseEntity;
+	}
+
+	private String armarURL(FechaRequestHistorico fechaRequestHistorico, String mercado, String simbolo) {
+		return "https://api.invertironline.com/api/v2/" + mercado + "/Titulos/" + simbolo
+				+ "/Cotizacion/seriehistorica/" + fechaRequestHistorico.getFechaDesde() + "/"
+				+ fechaRequestHistorico.getMesesAtras() + "/sinajustar";
+	}
+
+	private String ObtenerMercado(String instrumento) {
+		return "bCBA";
+	}
+
+	private List<String> obtenerSimbolosDeInstrumentos(String tipoInstrumento) {
+		List<String> ArraySimbolos = new ArrayList<>();
+		String listaPreciosJson = listaPreciosServicio.getListaPrecioMongo(tipoInstrumento);
+		List<Instrumento> listaInstrumentos = InstrumentoMapper
+				.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
+		for (Instrumento instrumento : listaInstrumentos) {
+			if (instrumento.getPuntas() != null) {
+				ArraySimbolos.add(instrumento.getSimbolo());
+			}
+		}
+		return ArraySimbolos;
+	}
+
+	private String determinarRangoDeFecha(FechaRequestHistorico fechaRequestHistorico) {
+		Period period = Period.between(fechaRequestHistorico.getFechaDesde(), fechaRequestHistorico.getMesesAtras());
+		int mesesDiferencia = Math.abs(period.getMonths());
+		switch (mesesDiferencia) {
+		case 1:
+			return "mensual";
+		case 3:
+			return "trimetral";
+		case 6:
+			return "semestral";
+		default:
+			return null;
+		}
+	}
 }

@@ -1,6 +1,9 @@
 package com.unlam.tpi.core.servicio;
 
 import java.io.FileWriter;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +21,7 @@ import com.unlam.tpi.core.interfaces.IARepositorio;
 import com.unlam.tpi.core.interfaces.IAServicio;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PortafolioSugerenciaServicio;
-import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
 import com.unlam.tpi.core.modelo.Instrumento;
-import com.unlam.tpi.core.modelo.ServiceException;
 
 @Service
 @Transactional
@@ -36,25 +37,17 @@ public class IAServicioImpl implements IAServicio {
 	PortafolioSugerenciaServicio portafolioSugerenciaServicio;
 
 	@Override
-	public void generarTXT(String tipo) {
-
+	public void generarTXT(String tipo) throws IOException {
 		List<Tuple> result = iARepositorio.generarTxt(tipo);
-
 		FileWriter fileWriter;
-
-		try {
-			fileWriter = new FileWriter(tipo + ".txt");
-			fileWriter.write("ProductID\tProductID_Copurchased\n");
-			for (Tuple tuple : result) {
-				String producto = tuple.get("producto").toString();
-				String coProducto = tuple.get("co_producto").toString();
-				fileWriter.write(producto + "\t" + coProducto + "\n");
-
-			}
-			fileWriter.close();
-		} catch (Exception e) {
-			throw new ServiceException("Error al generar archivos para la IA");
+		fileWriter = new FileWriter(tipo + ".txt");
+		fileWriter.write("ProductID\tProductID_Copurchased\n");
+		for (Tuple tuple : result) {
+			String producto = tuple.get("producto").toString();
+			String coProducto = tuple.get("co_producto").toString();
+			fileWriter.write(producto + "\t" + coProducto + "\n");
 		}
+		fileWriter.close();
 	}
 
 	@Override
@@ -63,38 +56,24 @@ public class IAServicioImpl implements IAServicio {
 	}
 
 	@Override
-	public List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) {
-		try {
-
-			int idProductoAEnviar = 0;
-
-			if (idProducto == 0) {
-				Instrumento instrumentoPorPerfil = instrumentoServicio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);
-				idProductoAEnviar = instrumentoPorPerfil.getOid().intValue();
-			} else {
-				idProductoAEnviar = idProducto;
-			}
-
-			List<Instrumento> portafolioSugerido = new ArrayList<>();
-
-			String json = portafolioSugerenciaServicio.obtenerRecomendacion(tipoPerfil, idProductoAEnviar);
-
-			JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
-
-			for (JsonElement elemento : jsonArray) {
-				JsonObject objeto = elemento.getAsJsonObject();
-				Long coProductoID = objeto.get("coPurchaseProductID").getAsLong();
-				Instrumento instrumento = instrumentoServicio.obtenerInstrumentoPorID(coProductoID);
-				portafolioSugerido.add(instrumento);
-			}
-
-			return portafolioSugerido;
-
-		} catch (ServiceException se) {
-			throw se;
-		} catch (Exception e) {
-			throw new ServiceException("Error al obtener portafolio sugerido", e);
+	public List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+		int idProductoAEnviar = 0;
+		if (idProducto == 0) {
+			Instrumento instrumentoPorPerfil = instrumentoServicio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);
+			idProductoAEnviar = instrumentoPorPerfil.getOid().intValue();
+		} else {
+			idProductoAEnviar = idProducto;
 		}
+		List<Instrumento> portafolioSugerido = new ArrayList<>();
+		String json = portafolioSugerenciaServicio.obtenerRecomendacion(tipoPerfil, idProductoAEnviar);
+		JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
+		for (JsonElement elemento : jsonArray) {
+			JsonObject objeto = elemento.getAsJsonObject();
+			Long coProductoID = objeto.get("coPurchaseProductID").getAsLong();
+			Instrumento instrumento = instrumentoServicio.obtenerInstrumentoPorID(coProductoID);
+			portafolioSugerido.add(instrumento);
+		}
+		return portafolioSugerido;
 	}
 
 }

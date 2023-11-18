@@ -1,5 +1,6 @@
 package com.unlam.tpi.delivery.controlador;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class SeccionControladorImpl implements SeccionControlador {
 
 	@Override
 	@RequestMapping(path = "/carga-seccion-excel", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public void cargaDesdeExcel(@RequestParam MultipartFile excelSeccion) {
+	public void cargaDesdeExcel(@RequestParam MultipartFile excelSeccion) throws IOException {
 		getCategoriaServicio().cargaDesdeExcel(excelSeccion);
 	}
 	

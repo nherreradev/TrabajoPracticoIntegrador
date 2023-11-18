@@ -53,7 +53,10 @@ public class PosicionServicioImpl implements PosicionServicio {
 		ValuacionTotalRespuesta valuacionTotalRespuesta = new ValuacionTotalRespuesta();
 		List<Posicion> posicionTotal = posicionRepositorio.getPosicionByUsuarioOid(oidUsuario);
 
+		BigDecimal premioPreguntasObjetivas = new BigDecimal(5000);
+
 		BigDecimal totalCartera = BigDecimal.ZERO;
+		BigDecimal porcentajeGananciaPerdida = BigDecimal.ZERO;
 
 		BigDecimal totalMonedas = calcularPosicionMoneda(posicionTotal);
 		valuacionTotalRespuesta.setTotalMonedas(totalMonedas.toString());
@@ -65,6 +68,10 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 		totalCartera = totalMonedas.add(totalInstrumentos);
 		valuacionTotalRespuesta.setTotalCartera(totalCartera.toString());
+
+		porcentajeGananciaPerdida = ((totalCartera.subtract(premioPreguntasObjetivas)).multiply(new BigDecimal(100)))
+				.divide(premioPreguntasObjetivas);
+		valuacionTotalRespuesta.setProcentajeGananciaPerdida(porcentajeGananciaPerdida.toString());
 
 		return valuacionTotalRespuesta;
 	}
@@ -83,6 +90,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			} else {
 				puedeOperarResultado.setPuedeOperar(true);
 				Posicion posicionTitulos = new Posicion();
+				completarPrecioDeLaOrden(orden);
 				completarPosicionDeTitulos(orden, posicionTitulos, null);
 				posicionRepositorio.save(posicionTitulos);
 
@@ -98,7 +106,12 @@ public class PosicionServicioImpl implements PosicionServicio {
 			Map<String, BigDecimal> instrumentosPorCantidad = obtenerCantidadPorInstrumento(titulosEnPosicionLista);
 			BigDecimal cantidadTitulosAVender = orden.getCantidad();
 			BigDecimal totalTitulosEnPosicion = instrumentosPorCantidad.get(orden.getSimboloInstrumento());
-			BigDecimal titulosQueMeQuedarianEnCartera = cantidadTitulosAVender.subtract(totalTitulosEnPosicion);
+			if(totalTitulosEnPosicion == null) {
+				puedeOperarResultado.setPuedeOperar(false);
+				puedeOperarResultado.setDisponible(BigDecimal.ZERO);
+				return puedeOperarResultado;
+			}
+			BigDecimal titulosQueMeQuedarianEnCartera = totalTitulosEnPosicion.subtract(cantidadTitulosAVender);
 
 			if (instrumentosPorCantidad.containsKey(orden.getSimboloInstrumento())) {
 				if (CalculosHabituales.esMasGrandeQue(cantidadTitulosAVender, totalTitulosEnPosicion)) {
@@ -124,23 +137,17 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	@Override
 	public void acreditarDinero(RequestCargaDeDinero request) {
-		try {
-			Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConceptoYUsuario(request.getConcepto(),
-					request.getUsuarioOid());
-			if (posicionBuscada == null || !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS
-					.equals(posicionBuscada != null ? posicionBuscada.getConcepto() : null)) {
-				Posicion posicion = new Posicion();
-				posicion.setCantidad(request.getCantidadPorAcreditar());
-				posicion.setEsEfectivo(true);
-				posicion.setMonedaOid(1L);
-				posicion.setUsuarioOid(request.getUsuarioOid());
-				posicion.setConcepto(request.getConcepto());
-				posicionRepositorio.save(posicion);
-			}
-		} catch (ServiceException se) {
-			throw se;
-		} catch (Exception e) {
-			throw new ServiceException("Ocurrio un error al acreditar el dinero");
+		Posicion posicionBuscada = posicionRepositorio.obtenerPosicionPorConceptoYUsuario(request.getConcepto(),
+				request.getUsuarioOid());
+		if (posicionBuscada == null || !CargaCreditoConstantes.PREMIO_PREGUNTAS_OBJETIVAS
+				.equals(posicionBuscada != null ? posicionBuscada.getConcepto() : null)) {
+			Posicion posicion = new Posicion();
+			posicion.setCantidad(request.getCantidadPorAcreditar());
+			posicion.setEsEfectivo(true);
+			posicion.setMonedaOid(1L);
+			posicion.setUsuarioOid(request.getUsuarioOid());
+			posicion.setConcepto(request.getConcepto());
+			posicionRepositorio.save(posicion);
 		}
 	}
 
@@ -200,13 +207,12 @@ public class PosicionServicioImpl implements PosicionServicio {
 			if (PanelPreciosImpl.panelAcciones.containsKey(orden.getSimboloInstrumento())) {
 				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
 					Puntas puntas = PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas();
-					BigDecimal precioVenta = puntas != null && puntas.getPrecioCompra() != null
-							? puntas.getPrecioVenta()
+					BigDecimal precioVenta = puntas != null && puntas.getPrecioVenta() != null ? puntas.getPrecioVenta()
 							: null;
 					orden.setPrecio(precioVenta);
 				} else {
 					Puntas puntas = PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas();
-					BigDecimal precioCompra = puntas != null && puntas.getPrecioVenta() != null
+					BigDecimal precioCompra = puntas != null && puntas.getPrecioCompra() != null
 							? puntas.getPrecioCompra()
 							: null;
 					orden.setPrecio(precioCompra);
@@ -221,19 +227,45 @@ public class PosicionServicioImpl implements PosicionServicio {
 		case PanelesDePreciosConstantes.BONOS:
 			if (PanelPreciosImpl.panelBonos.containsKey(orden.getSimboloInstrumento())) {
 				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
-					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
-							.getPrecioCompra());
+					Puntas puntas = PanelPreciosImpl.panelBonos.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioVenta = puntas != null && puntas.getPrecioCompra() != null
+							? puntas.getPrecioVenta()
+							: null;
+					orden.setPrecio(precioVenta);
 				} else {
-					orden.setPrecio(PanelPreciosImpl.panelAcciones.get(orden.getSimboloInstrumento()).getPuntas()
-							.getPrecioVenta());
+					Puntas puntas = PanelPreciosImpl.panelBonos.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioCompra = puntas != null && puntas.getPrecioVenta() != null
+							? puntas.getPrecioCompra()
+							: null;
+					orden.setPrecio(precioCompra);
 				}
 			} else {
-				throw new ServiceException("La orden que quiere capturar no se encuentra disponible en el panel");
+				throw new ServiceException(
+						"La orden que quiere capturar no se encuentra disponible en el panel o no tiene precio");
 			}
 
 			break;
 
-		default:
+		case PanelesDePreciosConstantes.CEDEARS:
+			if (PanelPreciosImpl.panelCedears.containsKey(orden.getSimboloInstrumento())) {
+				if (OrdenConstantes.COMPRA.equals(orden.getSentido())) {
+					Puntas puntas = PanelPreciosImpl.panelCedears.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioVenta = puntas != null && puntas.getPrecioCompra() != null
+							? puntas.getPrecioVenta()
+							: null;
+					orden.setPrecio(precioVenta);
+				} else {
+					Puntas puntas = PanelPreciosImpl.panelCedears.get(orden.getSimboloInstrumento()).getPuntas();
+					BigDecimal precioCompra = puntas != null && puntas.getPrecioVenta() != null
+							? puntas.getPrecioCompra()
+							: null;
+					orden.setPrecio(precioCompra);
+				}
+			} else {
+				throw new ServiceException(
+						"La orden que quiere capturar no se encuentra disponible en el panel o no tiene precio");
+			}
+
 			break;
 		}
 	}
@@ -274,13 +306,69 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	private BigDecimal calcularPosicionEnInstrumentos(List<Posicion> posicionTotal) {
 		BigDecimal totalInstrumentos = BigDecimal.ZERO;
+		Map<String, BigDecimal> posicionesPorSimbolos = new HashMap<>();
 		for (Posicion posicion : posicionTotal) {
-			if (!posicion.getEsEfectivo()) {
-				totalInstrumentos = totalInstrumentos
-						.add(posicion.getPrecioActualDeVenta().multiply(posicion.getCantidad()));
+
+			if (posicion.getSimboloInstrumento() != null && !posicion.getEsEfectivo()) {
+				if (!posicionesPorSimbolos.containsKey(posicion.getSimboloInstrumento())) {
+					posicionesPorSimbolos.put(posicion.getSimboloInstrumento(), posicion.getCantidad());
+				} else {
+					BigDecimal cantidad = posicionesPorSimbolos.get(posicion.getSimboloInstrumento());
+					cantidad = cantidad.add(posicion.getCantidad());
+					posicionesPorSimbolos.put(posicion.getSimboloInstrumento(), cantidad);
+				}
 			}
+
 		}
+
+		for (Map.Entry<String, BigDecimal> entry : posicionesPorSimbolos.entrySet()) {
+			String simbolo = entry.getKey();
+			BigDecimal cantidad = entry.getValue();
+
+			if (cantidad.compareTo(BigDecimal.ZERO) > 0) {
+				BigDecimal precioActual = obtenerPrecioActualDelPanel(simbolo);
+				totalInstrumentos = totalInstrumentos.add(cantidad.multiply(precioActual));
+			}
+
+		}
+
 		return totalInstrumentos;
+	}
+
+	private BigDecimal obtenerPrecioActualDelPanel(String simbolo) {
+
+		BigDecimal precioActual = BigDecimal.ZERO;
+
+		if (PanelPreciosImpl.panelAcciones.containsKey(simbolo)) {
+			Instrumento instrumento = PanelPreciosImpl.panelAcciones.get(simbolo);
+
+			BigDecimal precioVenta = instrumento != null && instrumento.getPuntas() != null
+					? instrumento.getPuntas().getPrecioVenta()
+					: null;
+
+			precioActual = precioVenta;
+
+		} else if (PanelPreciosImpl.panelBonos.containsKey(simbolo)) {
+			Instrumento instrumento = PanelPreciosImpl.panelBonos.get(simbolo);
+
+			BigDecimal precioVenta = instrumento != null && instrumento.getPuntas() != null
+					? instrumento.getPuntas().getPrecioVenta()
+					: null;
+
+			precioActual = precioVenta;
+
+		} else if (PanelPreciosImpl.panelCedears.containsKey(simbolo)) {
+			Instrumento instrumento = PanelPreciosImpl.panelCedears.get(simbolo);
+
+			BigDecimal precioVenta = instrumento != null && instrumento.getPuntas() != null
+					? instrumento.getPuntas().getPrecioVenta()
+					: null;
+
+			precioActual = precioVenta;
+
+		}
+
+		return precioActual;
 	}
 
 	private BigDecimal calcularPosicionMoneda(Iterable<Posicion> posicionTotal) {
@@ -295,11 +383,12 @@ public class PosicionServicioImpl implements PosicionServicio {
 
 	@Override
 	public RendimientoActualResponse calcularRendimientoActual(Long usuarioOid) {
-		
+
 		RendimientoActualResponse rendimientoActualResponse = new RendimientoActualResponse();
 		Map<String, RendimientoResponse> mapaRendimientos = new HashMap<>();
 		List<Posicion> posicion = posicionRepositorio.obtenerTodosLosTitulos(usuarioOid);
 		List<Posicion> posicionEnCartera = obtenerSoloPosicionesEnCartera(posicion);
+		String simboloAux = "";
 
 		if (posicionEnCartera != null && !posicionEnCartera.isEmpty()) {
 
@@ -313,6 +402,14 @@ public class PosicionServicioImpl implements PosicionServicio {
 			Instrumento instrumentoDelPanel = null;
 
 			for (Posicion posicion2 : posicionEnCartera) {
+
+				if (!posicion2.getSimboloInstrumento().equals(simboloAux)) {
+					costoTotalDeLasCompras = BigDecimal.ZERO;
+					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
+					valorActualDeLaInversion = BigDecimal.ZERO;
+					gananciaTotalOPerdidaMonto = BigDecimal.ZERO;
+					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
+				}
 
 				Instrumento instrumentoObtenido = instrumentoServicio
 						.obtenerInstrumentoPorSimbolo(posicion2.getSimboloInstrumento());
@@ -353,27 +450,18 @@ public class PosicionServicioImpl implements PosicionServicio {
 				String key = posicion2.getSimboloInstrumento();
 
 				if (mapaRendimientos.containsKey(key)) {
-					RendimientoResponse rendimientoObtenido = mapaRendimientos.get(key);
 
-					rendimientoObtenido.setRendimientoTotal(
-							rendimientoObtenido.getRendimientoTotal().add(gananciaTotalOPerdidaMonto));
+					mapaRendimientos.remove(key);
 
-					mapaRendimientos.put(key, rendimientoObtenido);
-
-					costoTotalDeLasCompras = BigDecimal.ZERO;
-					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
-					valorActualDeLaInversion = BigDecimal.ZERO;
-					gananciaTotalOPerdidaMonto = BigDecimal.ZERO;
-					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
+					mapaRendimientos.put(key, rendimientoResponse);
 
 				} else {
 					mapaRendimientos.put(key, rendimientoResponse);
-					costoTotalDeLasCompras = BigDecimal.ZERO;
-					cantidadTotalDeInstrumentosQueTengo = BigDecimal.ZERO;
-					valorActualDeLaInversion = BigDecimal.ZERO;
-					gananciaTotalOPerdidaMonto = BigDecimal.ZERO;
-					gananciaTotalOPerdidaPorcentaje = BigDecimal.ZERO;
+
 				}
+
+				simboloAux = key;
+
 			}
 		}
 
@@ -400,6 +488,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 		rendimientoResponse.setFecha(posicion2.getFecha_posicion());
 	}
 
+	@Override
 	public void guardarCierresDiarios(Map<String, RendimientoResponse> mapaRendimientos, Long usuarioOid) {
 
 		for (Map.Entry<String, RendimientoResponse> entry : mapaRendimientos.entrySet()) {

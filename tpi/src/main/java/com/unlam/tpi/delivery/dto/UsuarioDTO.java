@@ -1,13 +1,5 @@
 package com.unlam.tpi.delivery.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.modelmapper.ModelMapper;
-
-import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.core.modelo.Usuario;
-
 public class UsuarioDTO {
 
 	private Long oid;
@@ -21,12 +13,13 @@ public class UsuarioDTO {
 	private Boolean cuentaConfirmada;
 	private Boolean activo;
 	private Boolean premium;
-
+	private Boolean esAdministrador;
+	
 	public UsuarioDTO() {
 	}
 
 	public UsuarioDTO(String nombreUsuario, String nombre, String apellido, String email, String pass,
-			Boolean cuentaConfirmada, Boolean activo) {
+			Boolean cuentaConfirmada, Boolean activo, Boolean esAdministrador) {
 		this.nombreUsuario = nombreUsuario;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -34,6 +27,7 @@ public class UsuarioDTO {
 		this.pass = pass;
 		this.cuentaConfirmada = cuentaConfirmada;
 		this.activo = activo;
+		this.esAdministrador = esAdministrador;
 	}
 
 	public String getNombreUsuario() {
@@ -124,4 +118,12 @@ public class UsuarioDTO {
 		this.premium = premium;
 	}
 
+	public Boolean getEsAdministrador() {
+		return esAdministrador;
+	}
+
+	public void setEsAdministrador(Boolean esAdministrador) {
+		this.esAdministrador = esAdministrador;
+	}
+	
 }

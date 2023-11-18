@@ -16,6 +16,9 @@ public class Respuesta extends ObjetoPersistente{
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "CODIGO")
+	private String codigo;
+	
 	@Column(name = "INSTRUMENTO")
 	private String instrumento;
 	
@@ -72,4 +75,12 @@ public class Respuesta extends ObjetoPersistente{
 		this.instrumento = instrumento;
 	}
 
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
+	
 }

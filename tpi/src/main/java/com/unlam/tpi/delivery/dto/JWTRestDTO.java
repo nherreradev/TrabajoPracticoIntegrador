@@ -4,6 +4,7 @@ public class JWTRestDTO {
     private String accion;
     private String emailUsuario;
     private Boolean estaValidado;
+    private String pass;
 
     public String getAccion() {
         return accion;
@@ -28,4 +29,13 @@ public class JWTRestDTO {
     public void setEstaValidado(Boolean estaValidado) {
         this.estaValidado = estaValidado;
     }
+
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+    
 }
