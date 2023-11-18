@@ -1,14 +1,11 @@
 package com.unlam.tpi.core.servicio;
 
-import java.math.BigDecimal;
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.unlam.tpi.core.interfaces.HistoricoServicio;
@@ -30,8 +26,6 @@ import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.delivery.dto.HistoricoInstrumentoDTO;
 import com.unlam.tpi.delivery.dto.InstrumentoMapper;
 import com.unlam.tpi.infraestructura.repositorio.HistoricoRepositorio;
-
-import net.sf.jasperreports.engine.util.ConcurrentMapping.Mapper;
 
 @Service
 public class HistoricoServicioImpl implements HistoricoServicio {
@@ -76,18 +70,11 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 			String historico = consultarHistoricoIOL(simbolo, fechaRequestHistorico, instrumento, rango);
 			guardarTransaccion(rango, instrumento, historico, simbolo);
 		}
-
-		/*
-		 * String rango = determinarRangoDeFecha(fechaRequestHistorico); if (rango ==
-		 * null) { System.out.println("Rango de fecha no válido"); } String historico =
-		 * consultarHistoricoIOL(fechaRequestHistorico, instrumento, rango);
-		 * guardarTransaccion(rango, instrumento, historico, simbolo);
-		 */
 	}
 
 	private void guardarTransaccion(String rango, String instrumento, String historico, String simbolo) {
 
-		List<HistoricoInstrumentoDTO> listaHistoricoDTO = new ArrayList<>();
+		HashSet<HistoricoInstrumentoDTO> listaHistoricoDTO = new HashSet();
 
 		JsonArray jsonArray = JsonParser.parseString(historico).getAsJsonArray();
 		for (JsonElement elemento : jsonArray) {
@@ -133,6 +120,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 
 		if (fechaHora != null && fechaHora.isString()) {
 			historicoInstrumentoDTO.setFechaHora(fechaHora.getAsString());
+			historicoInstrumentoDTO.setFecha(fechaHora.getAsString().substring(0, fechaHora.getAsString().indexOf('T')));
 		}
 
 	}
@@ -151,7 +139,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 	}
 
 	private ResponseEntity<String> realizarPeticionIOL(String url) {
-		String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxMjQ3ODkzIiwiSUQiOiIxMjQ3ODkzIiwianRpIjoiZGJkMDE1YTctY2I4OS00MjNhLWJmMTAtODI1NTVjMjlhMWI1IiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE3MDAzMjk5OTYsImV4cCI6MTcwMDMzMDg5NiwiaWF0IjoxNzAwMzI5OTk2LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.bokM7KdlI-g4KyD-W4b9vMFiyo4OjrqoHlfDlqLVBJIMOahveAeaTQd5VtVta-zWZd-Pjq9culUnO6YTuaaGJmjG60D2b9B5kA2O7EY8BAO_Qd3TaoUbq4Qo4Qol3FuxsBkWFhZCZqKNiwkWW7QmiN7j4etiC8ThmXhoi7kU2398cgKqqG_soWlYG7N8bE49GrZDT_ludwOXrsppTnScidHxWGh6NNK8d-K5aVgvila84kK7QZwIMrfLXfmxBjBHsWACgw477FEmh6mILpk_VC7MLW0UI34sCTwymOLnM0NY1cS2Jf07iNC0mMhYNhcG9AK-FTXINh8RBZVV6-fC1g";
+		String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzY4Mjg3IiwiSUQiOiIxNzY4Mjg3IiwianRpIjoiMjRhMWMxZTUtNDEwOS00MGY1LWE0NmEtZTE1M2QyNWVlNzgyIiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE3MDAzMzM1MzksImV4cCI6MTcwMDMzNDQzOSwiaWF0IjoxNzAwMzMzNTM5LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.fYVqzUkPeYW2GV6d6Wp2V8256zzgyaTIjpoJ6FiX9D4TlwR6bqzEoLA0gbLQBjgLMlA4X_OMBNTPNFpDi3DA-0Hp0Ofxw340uRU6Q41M1OIPDaPAQM3_l3lElxPwjMXP0QhSiwUD3Sk0buFAxTUpoNiVlNRm35yC1Qn0L-M5rmehGaiHRVkwbr2LSoAnteHXq4PPHJU1ez7wb8e51glEUOHmE0R9JeUa8mK9bm8dWn6owpcCXqEaCfFSjSy50cDvxFtnfed6RDZhDYqQoLAxIjfYfmofwwxL2J0mgrM2OTMC1FDyVHe9IjqflzDyhZOLUKgdzVaVCfxXmX0slkP96g";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + token);
 		headers.setAccept(List.of(MediaType.APPLICATION_JSON));

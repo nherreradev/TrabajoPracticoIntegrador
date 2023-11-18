@@ -12,7 +12,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.PanelesDePreciosConstantes;
-import com.unlam.tpi.core.modelo.Pregunta;
 
 public class InstrumentoMapper {
 	
@@ -38,5 +37,16 @@ public class InstrumentoMapper {
 	public static HistoricoInstrumentoDTO jsonAHistorico(JsonElement json) {
 		return mapper.map(json, HistoricoInstrumentoDTO.class);
 	}
+	
+	public static JsonArray armarHistoricoArray(String json) {
+		Gson gson = new Gson();
+		JsonArray jsonArray = gson.fromJson(json, JsonArray.class);
+
+		JsonObject objetoLista = jsonArray.get(0).getAsJsonObject();
+
+		JsonArray historicoArray = objetoLista.getAsJsonArray("historico");
+		return historicoArray;
+	}
+
 
 }

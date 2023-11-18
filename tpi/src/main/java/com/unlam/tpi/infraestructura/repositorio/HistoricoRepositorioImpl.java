@@ -1,5 +1,9 @@
 package com.unlam.tpi.infraestructura.repositorio;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -8,17 +12,9 @@ import org.springframework.stereotype.Repository;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.delivery.dto.HistoricoInstrumentoDTO;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class HistoricoRepositorioImpl implements HistoricoRepositorio {
@@ -52,7 +48,7 @@ public class HistoricoRepositorioImpl implements HistoricoRepositorio {
 	}
 
 	@Override
-	public void guardarHistoricoInstrumento(String rango, String instrumento, List<HistoricoInstrumentoDTO> historico) {
+	public void guardarHistoricoInstrumento(String rango, String instrumento, HashSet<HistoricoInstrumentoDTO> historico) {
 
 		Gson gson = new Gson();
 		String json = gson.toJson(historico);
