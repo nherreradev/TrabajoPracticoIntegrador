@@ -27,7 +27,7 @@ public class HistoricoRepositorioImpl implements HistoricoRepositorio{
     }
 
     @Override
-    public void GuardarHistoricoInstrumento(String rango, String instrumento, String historico) {
+    public void guardarHistoricoInstrumento(String rango, String instrumento, String historico) {
         String collection = instrumento + "-" + rango;
         Document document = Document.parse(historico);
         mongoTemplate.save(document, collection);

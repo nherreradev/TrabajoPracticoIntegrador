@@ -72,7 +72,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 		int IndexCorcheteCierre = historico.toString().lastIndexOf('}');
 		if (IndexCorcheteAbertura != -1 && IndexCorcheteCierre != -1 && IndexCorcheteAbertura < IndexCorcheteCierre) {
 			String jsonToSave = historico.toString().substring(IndexCorcheteAbertura, IndexCorcheteCierre + 1);
-			this.historicoRepositorio.GuardarHistoricoInstrumento(rango, instrumento, jsonToSave);
+			this.historicoRepositorio.guardarHistoricoInstrumento(rango, instrumento, jsonToSave);
 		}
 	}
 
