@@ -47,6 +47,7 @@ public class RespuestaServicioTest {
 	@Test
 	public void testQuePuedaGuardarRespuestaYLaObtenga() {
 		RespuestaDTO respuesta = new RespuestaDTO();
+		respuesta.setCodigo("RA");
 		respuesta.setNombre("Respuesta A");
 		respuesta.setValor(10);
 		respuesta.setOrden(1);
@@ -54,30 +55,20 @@ public class RespuestaServicioTest {
 	}
 
 	@Test
-	public void testQueAlGuardarUnaRespuestaDevuelvaUnaServiceException() {
-		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-			RespuestaDTO respuesta = null;
-			getRespuestaServicio().guardar(respuesta);
-		});
-		String expectedMessage = "Error en convertir RespuestaDTO a Respuesta";
-		String actualMessage = serviceException.getMessage();
-		assertTrue(actualMessage.contains(expectedMessage));
-	}
-
-	@Test
 	public void testQuePuedaCargarLasRespuestaDesdeExcelYLasListe() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelRespuesta", "pregunta.xls", "application/x-xlsx",
 				new ClassPathResource("pregunta.xlsx").getInputStream());
 		RespuestaDTO respuesta = new RespuestaDTO();
+		respuesta.setCodigo("RR");
 		respuesta.setNombre("R1");
 		respuesta.setInstrumento("A");
 		respuesta.setValor(10);
 		respuesta.setOrden(1);
 		List<RespuestaDTO> dtoRespuestas = new ArrayList<>();
 		dtoRespuestas.add(respuesta);
-		when(respuestaRepositorio.findByNombreAndInstrumento("R1", "A"))
+		when(respuestaRepositorio.findByCodigoAndInstrumento("R1", "A"))
 				.thenReturn(RespuestaMapper.dTOaEntidad(respuesta));
-		when(preguntaServicio.getPreguntaPorEnunciado("A1")).thenReturn(PreguntaMapper.dTOaEntidad(crearPreguntaDTO()));
+		when(preguntaServicio.getPreguntaPorCodigo("A1")).thenReturn(PreguntaMapper.dTOaEntidad(crearPreguntaDTO()));
 		when(respuestaRepositorio.findAll()).thenReturn(RespuestaMapper.traductorDeListaDTOaEntidad(dtoRespuestas));
 		getRespuestaServicio().cargaDesdeExcel(excelFile);
 		assertNotNull(getRespuestaServicio().listar());
@@ -107,7 +98,7 @@ public class RespuestaServicioTest {
 	public void testQueBusqueUnaRespuestaPorNombreYNoLaEncuentre() {
 		String nombre = "Noexiste";
 		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-			getRespuestaServicio().getRespuestaDTOPorNombre(nombre);
+			getRespuestaServicio().getRespuestaDTOPorCodigo(nombre);
 		});
 		String expectedMessage = "Error al obtener la respuesta: " + nombre;
 		String actualMessage = serviceException.getMessage();

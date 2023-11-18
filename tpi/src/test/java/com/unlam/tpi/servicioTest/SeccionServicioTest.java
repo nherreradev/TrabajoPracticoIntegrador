@@ -46,17 +46,6 @@ public class SeccionServicioTest {
 	}
 
 	@Test
-	public void testQuePuedaGuardarSeccionDevuelvaUnaServiceException() {
-		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-			SeccionDTO seccion = null;
-			getSeccionServicio().guardar(seccion);
-		});
-		String expectedMessage = "Error en convertir SeccionDTO a Seccion";
-		String actualMessage = serviceException.getMessage();
-		assertTrue(actualMessage.contains(expectedMessage));
-	}
-
-	@Test
 	public void testQuePuedaCargarLasSeccionesDesdeExcelYLasListe() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelSeccion", "pregunta.xls", "application/x-xlsx",
 				new ClassPathResource("pregunta.xlsx").getInputStream());

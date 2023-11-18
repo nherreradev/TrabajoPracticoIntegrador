@@ -34,6 +34,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	private static final String COLUMNA_NOMBRE = "nombre";
 	private static final String COLUMNA_INSTRUMENTO = "instrumento";
 	private static final String HOJA_RESPUESTA = "respuesta";
+	private static final String COLUMNA_CODIGO = "codigo";	
 
 	@Autowired
 	RespuestaRepositorio respuestaRepositorio;
@@ -116,12 +117,13 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	private Respuesta agregarModificarRespuesta(Respuesta respuesta) {
 		Respuesta respuestaExistente = null;
 		if (respuesta.getInstrumento() != null) {
-			respuestaExistente = getRespuestaRepositorio().findByNombreAndInstrumento(respuesta.getNombre(),
+			respuestaExistente = getRespuestaRepositorio().findByCodigoAndInstrumento(respuesta.getCodigo(),
 					respuesta.getInstrumento());
 		} else {
-			respuestaExistente = getRespuestaRepositorio().findByNombre(respuesta.getNombre());
+			respuestaExistente = getRespuestaRepositorio().findByCodigo(respuesta.getCodigo());
 		}
 		if (respuestaExistente != null) {
+			respuestaExistente.setNombre(respuesta.getNombre());
 			respuestaExistente.setOrden(respuesta.getOrden());
 			respuestaExistente.setValor(respuesta.getValor());
 			respuestaExistente.setPregunta(respuesta.getPregunta());
@@ -131,8 +133,8 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	}
 
 	private boolean respuestaEsValida(Respuesta respuesta) {
-		if (respuesta.getNombre() != null && respuesta.getValor() != null && respuesta.getOrden() != null
-				&& respuesta.getPregunta() != null) {
+		if (respuesta.getCodigo() != null && respuesta.getNombre() != null && respuesta.getValor() != null
+				&& respuesta.getOrden() != null && respuesta.getPregunta() != null) {
 			return Boolean.TRUE;
 		}
 		return Boolean.FALSE;
@@ -141,6 +143,12 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	private void parsearExcelARespuesta(Map<String, Pregunta> preguntaMap, Respuesta respuesta, Cell columna,
 			String nombreColumna) {
 		switch (nombreColumna) {
+		case COLUMNA_CODIGO:
+			String codigo = columna.getStringCellValue().trim();
+			if (esStringValido(codigo)) {
+				respuesta.setCodigo(codigo);
+			}
+			break;
 		case COLUMNA_INSTRUMENTO:
 			String instrumento = columna.getStringCellValue().trim();
 			if (esStringValido(instrumento)) {
@@ -166,9 +174,9 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 			}
 			break;
 		case COLUMNA_PREGUNTA:
-			String enunciado = columna.getStringCellValue().trim();
-			if (esStringValido(enunciado)) {
-				Pregunta pregunta = obtenerPregunta(preguntaMap, respuesta, enunciado);
+			String codigo_pregunta = columna.getStringCellValue().trim();
+			if (esStringValido(codigo_pregunta)) {
+				Pregunta pregunta = obtenerPregunta(preguntaMap, respuesta, codigo_pregunta);
 				respuesta.setPregunta(pregunta);
 			}
 		}
@@ -182,16 +190,25 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 		return valor >= 0;
 	}
 
-	private Pregunta obtenerPregunta(Map<String, Pregunta> preguntaMap, Respuesta respuesta, String enunciado) {
-		if (preguntaMap.containsKey(enunciado)) {
-			return preguntaMap.get(enunciado);
+	private Pregunta obtenerPregunta(Map<String, Pregunta> preguntaMap, Respuesta respuesta, String codigo) {
+		if (preguntaMap.containsKey(codigo)) {
+			return preguntaMap.get(codigo);
 		}
-		Pregunta pregunta = getPreguntaServicio().getPreguntaPorEnunciado(enunciado);
+		Pregunta pregunta = getPreguntaServicio().getPreguntaPorCodigo(codigo);
 		if (pregunta == null) {
-			throw new ServiceException("Error al buscar la pregunta: " + enunciado);
+			throw new ServiceException("Error al buscar la pregunta: " + codigo);
 		}
-		preguntaMap.put(enunciado, pregunta);
+		preguntaMap.put(codigo, pregunta);
 		return pregunta;
+	}
+
+	@Override
+	public RespuestaDTO getRespuestaDTOPorCodigo(String codigo) {
+		Respuesta respuesta = getRespuestaPorCodigo(codigo);
+		if (respuesta == null) {
+			throw new ServiceException("Error al obtener la respuesta: " + codigo);
+		}
+		return RespuestaMapper.entidadADTO(respuesta);
 	}
 
 	@Override
@@ -202,6 +219,15 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 		}
 		return RespuestaMapper.entidadADTO(respuesta);
 	}
+	
+	@Override
+	public Respuesta getRespuestaPorCodigo(String codigo) {
+		Respuesta respuesta = getRespuestaRepositorio().findByCodigo(codigo);
+		if (respuesta == null) {
+			throw new ServiceException("Error al obtener la respuesta: " + codigo);
+		}
+		return respuesta;
+	}
 
 	@Override
 	public Respuesta getRespuestaPorNombre(String nombre) {
@@ -211,7 +237,7 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 		}
 		return respuesta;
 	}
-
+	
 	@Override
 	public RespuestaDTO getRespuestaDTOPorID(Long id) {
 		Respuesta respuesta = getRespuestaRepositorio().findByOid(id);
@@ -224,6 +250,11 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	@Override
 	public void borrar(Long id) {
 		getRespuestaRepositorio().deleteById(id);
+	}
+	
+	@Override
+	public void borrar(String codigo) {
+		getRespuestaRepositorio().deleteByCodigo(codigo);
 	}
 
 	@Override

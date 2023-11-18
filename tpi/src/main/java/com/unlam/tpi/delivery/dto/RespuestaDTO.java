@@ -15,6 +15,8 @@ public class RespuestaDTO {
 	private Integer valor;
 
 	private Integer orden;
+	
+	private String codigo;
 
 	public Long getOid() {
 		return oid;
@@ -70,6 +72,14 @@ public class RespuestaDTO {
 
 	public void setInstrumento(String instrumento) {
 		this.instrumento = instrumento;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
 }

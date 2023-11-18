@@ -10,6 +10,9 @@ public interface PreguntaRepositorio extends JpaRepository<Pregunta, Long>{
 
 	public List<Pregunta> findByCategoria_Nombre(String categoria);
 	
-	public Pregunta findByEnunciado(String enunciado);
+	public Pregunta findByCodigo(String codigo);
 
+	public void deleteByCodigo(String codigo);
+	
+	public Pregunta  findByEnunciado(String enunciado);
 }

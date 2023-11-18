@@ -10,29 +10,28 @@ import org.springframework.web.multipart.MultipartFile;
 import com.unlam.tpi.core.modelo.Pregunta;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
 
+@Transactional
 public interface PreguntaServicio {
 
-	@Transactional
-    public void guardar(PreguntaDTO pregunta);
+	public void guardar(PreguntaDTO pregunta);
 
-	@Transactional
-    public PreguntaDTO getPreguntaDTOPorID(Long id);
+	public PreguntaDTO getPreguntaDTOPorID(Long id);
 
-	@Transactional
-    public void borrar(Long id);
+	public void borrar(Long id);
 
-	@Transactional
 	public List<PreguntaDTO> listar();
 
-	@Transactional
 	public List<PreguntaDTO> listarPorCategoria(String categoria);
 
-	@Transactional
 	public void cargaDesdeExcel(MultipartFile excelPregunta) throws IOException;
 
-	@Transactional
+	public PreguntaDTO getPreguntaDTOPorCodigo(String nombre);
+
+	public Pregunta getPreguntaPorCodigo(String pregunta);
+
+	void borrar(String codigo);
+
 	public PreguntaDTO getPreguntaDTOPorEnunciado(String nombre);
 
-	@Transactional
-	public Pregunta getPreguntaPorEnunciado(String pregunta);
+	public Pregunta getPreguntaPorEnunciado(String enunciado);
 }

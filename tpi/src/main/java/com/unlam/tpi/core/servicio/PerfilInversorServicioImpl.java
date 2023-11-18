@@ -164,7 +164,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	private PerfilInversor crearNuevoPerfilInversor(PerfilInversorDTO perfilInversorDTO) {
 		PerfilInversor perfilInversor = new PerfilInversor();
 		Usuario usuario = getUsuarioServicio()
-				.ObtenerUsuarioPorNombreUsuario(perfilInversorDTO.getUsuarioDTO().getNombreUsuario());
+				.obtenerUsuarioPorNombreUsuario(perfilInversorDTO.getUsuarioDTO().getNombreUsuario());
 		perfilInversor.setUsuario(usuario);
 		return perfilInversor;
 	}

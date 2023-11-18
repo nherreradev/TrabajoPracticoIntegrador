@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,7 @@ public class PortafolioSugerenciaServicioImpl implements PortafolioSugerenciaSer
 	private String url_net;
 
 	@Override
-	public String obtenerRecomendacion(String tipoPerfil, int idProducto) throws IOException {
+	public String obtenerRecomendacion(String tipoPerfil, int idProducto) throws IOException, KeyManagementException, NoSuchAlgorithmException {
 
 		StringBuilder response = null;
 		TrustAllCertificates.confiarEnCertificado();

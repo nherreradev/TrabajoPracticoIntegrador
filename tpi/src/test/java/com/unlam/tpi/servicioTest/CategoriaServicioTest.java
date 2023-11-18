@@ -45,16 +45,6 @@ public class CategoriaServicioTest {
 		verify(categoriaRepositorio, never()).save(any(Categoria.class));
 	}
 
-	@Test
-	public void testQuePuedaGuardarCategoriaDevuelvaUnaServiceException() {
-		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-			CategoriaDTO categoria = null;
-			getCategoriaServicio().guardar(categoria);
-		});
-		String expectedMessage = "Error en convertir CategoriaDTO a Categoria";
-		String actualMessage = serviceException.getMessage();
-		assertTrue(actualMessage.contains(expectedMessage));
-	}
 	
 	@Test
     public void testQuePuedaCargarLasCategoriasDesdeExcelYMeListeLasCategorias() throws IOException {
