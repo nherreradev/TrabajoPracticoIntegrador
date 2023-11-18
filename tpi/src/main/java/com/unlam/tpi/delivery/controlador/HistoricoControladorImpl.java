@@ -33,7 +33,7 @@ public class HistoricoControladorImpl implements HistoricoControlador{
 
             return new ResponseEntity<>("Request incorrecto", HttpStatus.BAD_REQUEST);
         }
-        String response = this.historicoServicio.GetHistoricoMongo(historicoRequestGET.getRango(), historicoRequestGET.getInstrumento());
+        String response = this.historicoServicio.getHistoricoMongo(historicoRequestGET.getRango(), historicoRequestGET.getInstrumento());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

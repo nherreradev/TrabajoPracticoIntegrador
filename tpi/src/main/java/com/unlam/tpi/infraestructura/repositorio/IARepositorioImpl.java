@@ -31,7 +31,9 @@ public class IARepositorioImpl implements IARepositorio {
 		// Condiciones para unir las tablas y filtrar
 		Predicate predicate = criteriaBuilder.and(criteriaBuilder.equal(ins1.get("categoriaPerfil"), tipoPerfil),
 				criteriaBuilder.equal(ins2.get("categoriaPerfil"), tipoPerfil),
-				criteriaBuilder.notEqual(ins2.get("oid"), ins1.get("oid")));
+				criteriaBuilder.notEqual(ins2.get("oid"), ins1.get("oid")),
+				criteriaBuilder.notEqual(ins1.get("categoriaInstrumento"), "cedears")
+				);
 
 		criteriaQuery.multiselect(ins2.get("oid").alias("producto"), ins1.get("oid").alias("co_producto"));
         criteriaQuery.where(predicate);
