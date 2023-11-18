@@ -1,6 +1,7 @@
 package com.unlam.tpi.delivery.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,6 +21,9 @@ public class HistoricoInstrumentoDTO {
 
 	@JsonProperty("minimo")
 	BigDecimal minimo;
+
+	@JsonProperty("fechaHora")
+	String fechaHora;
 
 	@JsonProperty("simbolo")
 	public String getSimbolo() {
@@ -64,6 +68,15 @@ public class HistoricoInstrumentoDTO {
 
 	public void setMinimo(BigDecimal minimo) {
 		this.minimo = minimo;
+	}
+
+	@JsonProperty("fechaHora")
+	public String getFechaHora() {
+		return fechaHora;
+	}
+
+	public void setFechaHora(String fechaHora) {
+		this.fechaHora = fechaHora;
 	}
 
 }

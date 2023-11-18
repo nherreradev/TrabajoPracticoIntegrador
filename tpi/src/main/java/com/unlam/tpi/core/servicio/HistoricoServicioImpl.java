@@ -2,7 +2,9 @@ package com.unlam.tpi.core.servicio;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,18 +47,18 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 	}
 
 	@Override
-	public String getHistoricoMongo(String rango, String instrumento) {
+	public String getHistoricoMongo(String rango, String instrumento, String simbolo) {
 		List<String> response = null;
 
 		switch (rango) {
 		case "mensual":
-			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("mensual", instrumento);
+			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("mensual", instrumento, simbolo);
 			return response.toString();
 		case "trimestral":
-			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("trimestral", instrumento);
+			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("trimestral", instrumento, simbolo);
 			return response.toString();
 		case "semestral":
-			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("semestral", instrumento);
+			response = this.historicoRepositorio.getInstrumentoPorRangoFechaSinId("semestral", instrumento, simbolo);
 			return response.toString();
 		default:
 			throw new IllegalArgumentException("Rango de fecha no válido: " + rango);
@@ -95,8 +97,15 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 			JsonPrimitive cierreAnterior = elemento.getAsJsonObject().getAsJsonPrimitive("cierreAnterior");
 			JsonPrimitive maximo = elemento.getAsJsonObject().getAsJsonPrimitive("maximo");
 			JsonPrimitive minimo = elemento.getAsJsonObject().getAsJsonPrimitive("minimo");
-			completarDTO(historicoInstrumentoDTO, apertura, cierreAnterior, maximo, minimo);
-			listaHistoricoDTO.add(historicoInstrumentoDTO);
+			JsonPrimitive fechahora = elemento.getAsJsonObject().getAsJsonPrimitive("fechaHora");
+
+			boolean contiene17 = fechahora.toString().contains("T17");
+
+			if (contiene17) {
+				completarDTO(historicoInstrumentoDTO, apertura, cierreAnterior, maximo, minimo, fechahora);
+				listaHistoricoDTO.add(historicoInstrumentoDTO);
+			}
+
 		}
 
 		this.historicoRepositorio.guardarHistoricoInstrumento(rango, instrumento, listaHistoricoDTO);
@@ -104,7 +113,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 	}
 
 	private void completarDTO(HistoricoInstrumentoDTO historicoInstrumentoDTO, JsonPrimitive apertura,
-			JsonPrimitive cierreAnterior, JsonPrimitive maximo, JsonPrimitive minimo) {
+			JsonPrimitive cierreAnterior, JsonPrimitive maximo, JsonPrimitive minimo, JsonPrimitive fechaHora) {
 		if (chequearJson(apertura)) {
 			historicoInstrumentoDTO.setApertura(apertura.getAsBigDecimal());
 
@@ -121,6 +130,11 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 			historicoInstrumentoDTO.setMinimo(minimo.getAsBigDecimal());
 
 		}
+
+		if (fechaHora != null && fechaHora.isString()) {
+			historicoInstrumentoDTO.setFechaHora(fechaHora.getAsString());
+		}
+
 	}
 
 	private boolean chequearJson(JsonPrimitive apertura) {
@@ -137,7 +151,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 	}
 
 	private ResponseEntity<String> realizarPeticionIOL(String url) {
-		String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxNzU5ODkxIiwiSUQiOiIxNzU5ODkxIiwianRpIjoiYzBkMWRjNjEtMTgzMy00ZGUyLWI1NzctNjlkNzRkNmYxYTU1IiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE3MDAyODkxMDgsImV4cCI6MTcwMDI5MDAwOCwiaWF0IjoxNzAwMjg5MTA4LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.V3XOQhTbKqVDSoPRALCCrSEEf6bkaQHg5Oq5mfZ6qTOyFEdZ5xg8Q7omI-NKNXtczhKqrOtUsEgcSUHjRY1pk_Jnv1EEx6pOPcu4wA2_q_5wdOiCBL0wnS4os6haMUr5wbLa9GBuu1Aq4kyO2dHQELeSXcc6wFQyKr1j4UwuG1i9DgtFRJ9R5rMt-ZsnmZhYtWE9LsO_9Vgb4964_GAZoJ-OCyLNZfuHupUj-YEjagu4Gdl-7mO_x_c89m1Ip8gUDxI_8JKpGKF4tDWi-TN9_UUqvax2Hpam-rljS19NnLjjJpLSIg3fxyuKR3sa6ggcZh9bkBUmwCviotPGLd4jdw";
+		String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxMjQ3ODkzIiwiSUQiOiIxMjQ3ODkzIiwianRpIjoiZGJkMDE1YTctY2I4OS00MjNhLWJmMTAtODI1NTVjMjlhMWI1IiwiY29uc3VtZXJfdHlwZSI6IjEiLCJ0aWVuZV9jdWVudGEiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYnVyc2F0aWwiOiJUcnVlIiwidGllbmVfcHJvZHVjdG9fYXBpIjoiVHJ1ZSIsInRpZW5lX1R5QyI6IlRydWUiLCJuYmYiOjE3MDAzMjk5OTYsImV4cCI6MTcwMDMzMDg5NiwiaWF0IjoxNzAwMzI5OTk2LCJpc3MiOiJJT0xPYXV0aFNlcnZlciIsImF1ZCI6IklPTE9hdXRoU2VydmVyIn0.bokM7KdlI-g4KyD-W4b9vMFiyo4OjrqoHlfDlqLVBJIMOahveAeaTQd5VtVta-zWZd-Pjq9culUnO6YTuaaGJmjG60D2b9B5kA2O7EY8BAO_Qd3TaoUbq4Qo4Qol3FuxsBkWFhZCZqKNiwkWW7QmiN7j4etiC8ThmXhoi7kU2398cgKqqG_soWlYG7N8bE49GrZDT_ludwOXrsppTnScidHxWGh6NNK8d-K5aVgvila84kK7QZwIMrfLXfmxBjBHsWACgw477FEmh6mILpk_VC7MLW0UI34sCTwymOLnM0NY1cS2Jf07iNC0mMhYNhcG9AK-FTXINh8RBZVV6-fC1g";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + token);
 		headers.setAccept(List.of(MediaType.APPLICATION_JSON));
@@ -151,7 +165,7 @@ public class HistoricoServicioImpl implements HistoricoServicio {
 	private String armarURL(FechaRequestHistorico fechaRequestHistorico, String mercado, String simbolo) {
 		return "https://api.invertironline.com/api/v2/" + mercado + "/Titulos/" + simbolo
 				+ "/Cotizacion/seriehistorica/" + fechaRequestHistorico.getFechaDesde() + "/"
-				+ fechaRequestHistorico.getMesesAtras() + "/ajustada";
+				+ fechaRequestHistorico.getMesesAtras() + "/sinajustar";
 	}
 
 	private String ObtenerMercado(String instrumento) {
