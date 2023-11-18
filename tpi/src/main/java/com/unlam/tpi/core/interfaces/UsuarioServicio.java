@@ -9,6 +9,7 @@ import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 public interface UsuarioServicio {
 
@@ -26,4 +27,5 @@ public interface UsuarioServicio {
 	void recuperarCuenta(Usuario usuario) throws NoSuchAlgorithmException, InvalidKeySpecException;
 	Usuario obtenerUsuarioPorToken(String token);
 	Boolean cambioPassword(PasswordDto passwordDto) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException;
+	List<Usuario> obtenerTodosLosUsuarios();
 }

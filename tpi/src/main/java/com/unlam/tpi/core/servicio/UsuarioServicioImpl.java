@@ -2,6 +2,7 @@ package com.unlam.tpi.core.servicio;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -168,6 +169,11 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	public void confirmarCuenta(Usuario usuario) {
 		usuario.setCuentaConfirmada(Boolean.TRUE);
 		this.usuarioRepositorio.save(usuario);
+	}
+
+	@Override
+	public List<Usuario> obtenerTodosLosUsuarios() {
+		return usuarioRepositorio.findAll();
 	}
 
 }
