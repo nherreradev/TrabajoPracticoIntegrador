@@ -50,6 +50,7 @@ class PosicionServicioTest {
 		orden.setSimboloInstrumento("AGRO");
 		orden.setSentido(OrdenConstantes.COMPRA);
 		orden.setCategoriaInstrumento("acciones");
+		orden.setUsuarioOid(1L);
 
 		Posicion posicion = new Posicion();
 		posicion.setCantidad(new BigDecimal(2000));
@@ -70,7 +71,7 @@ class PosicionServicioTest {
 
 		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
 
-		when(posicionRepositorio.getPosicionEnEfectivo()).thenReturn(listaPosiciones);
+		when(posicionRepositorio.getPosicionEnEfectivo(orden.getUsuarioOid())).thenReturn(listaPosiciones);
 
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);
 
@@ -110,7 +111,7 @@ class PosicionServicioTest {
 
 		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
 
-		when(posicionRepositorio.getPosicionEnEfectivo()).thenReturn(listaPosiciones);
+		when(posicionRepositorio.getPosicionEnEfectivo(1L)).thenReturn(listaPosiciones);
 
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);
 
@@ -127,6 +128,7 @@ class PosicionServicioTest {
 		orden.setSimboloInstrumento("AGRO");
 		orden.setSentido(OrdenConstantes.VENTA);
 		orden.setCategoriaInstrumento("acciones");
+		orden.setUsuarioOid(1L);
 
 		Posicion posicion = new Posicion();
 		posicion.setCantidad(new BigDecimal(1000));
@@ -148,7 +150,7 @@ class PosicionServicioTest {
 
 		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
 
-		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento()))
+		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento(), orden.getUsuarioOid()))
 				.thenReturn(listaPosiciones);
 
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);
@@ -166,6 +168,7 @@ class PosicionServicioTest {
 		orden.setSimboloInstrumento("AGRO");
 		orden.setSentido(OrdenConstantes.VENTA);
 		orden.setCategoriaInstrumento("acciones");
+		orden.setUsuarioOid(1L);
 
 		Posicion posicion = new Posicion();
 		posicion.setCantidad(new BigDecimal(800));
@@ -187,7 +190,7 @@ class PosicionServicioTest {
 
 		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
 
-		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento()))
+		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento(), orden.getUsuarioOid()))
 				.thenReturn(listaPosiciones);
 
 		PuedeOperarResultado puedeOperarResultado = posicionServicio.puedeOperar(orden);

@@ -80,7 +80,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 	public PuedeOperarResultado puedeOperar(Orden orden) {
 		PuedeOperarResultado puedeOperarResultado = new PuedeOperarResultado();
 		if (COMPRA.equals(orden.getSentido())) {
-			List<Posicion> posicionEfectivo = posicionRepositorio.getPosicionEnEfectivo();
+			List<Posicion> posicionEfectivo = posicionRepositorio.getPosicionEnEfectivo(orden.getUsuarioOid());
 			BigDecimal totalDisponibleEnEfectivo = this.calcularPosicionMoneda(posicionEfectivo);
 			completarPrecioDeLaOrden(orden);
 			BigDecimal montoOrden = orden.getPrecio().multiply(orden.getCantidad());
@@ -101,7 +101,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			}
 		} else {
 			List<Posicion> titulosEnPosicionLista = posicionRepositorio
-					.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento());
+					.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento(), orden.getUsuarioOid());
 			completarPrecioDeLaOrden(orden);
 			Map<String, BigDecimal> instrumentosPorCantidad = obtenerCantidadPorInstrumento(titulosEnPosicionLista);
 			BigDecimal cantidadTitulosAVender = orden.getCantidad();

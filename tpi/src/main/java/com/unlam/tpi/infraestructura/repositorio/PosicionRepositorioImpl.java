@@ -22,21 +22,22 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 	private EntityManager entityManager;
 
 	@Override
-	public List<Posicion> getPosicionEnEfectivo() {
+	public List<Posicion> getPosicionEnEfectivo(Long oidUsuario) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
 		Root<Posicion> root = criteriaQuery.from(Posicion.class);
 
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate esEfectivoPredicado = criteriaBuilder.equal(root.get("esEfectivo"), true);
+		Predicate usuarioPredicado = criteriaBuilder.equal(root.get("usuarioOid"), oidUsuario);
 
-		criteriaQuery.where(deletedPredicado, esEfectivoPredicado);
+		criteriaQuery.where(deletedPredicado, esEfectivoPredicado, usuarioPredicado);
 
 		return entityManager.createQuery(criteriaQuery).getResultList();
 	}
 
 	@Override
-	public List<Posicion> obtenerTodosLosMovimientosAsociadosAUnSimbolo(String simboloInstrumento) {
+	public List<Posicion> obtenerTodosLosMovimientosAsociadosAUnSimbolo(String simboloInstrumento, Long usuarioOid) {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
 		Root<Posicion> root = criteriaQuery.from(Posicion.class);
@@ -44,8 +45,9 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate simboloInstrumentoPredicado = criteriaBuilder.equal(root.get("simboloInstrumento"),
 				simboloInstrumento);
+		Predicate usuarioPredicado = criteriaBuilder.equal(root.get("usuarioOid"), usuarioOid);
 
-		criteriaQuery.where(deletedPredicado, simboloInstrumentoPredicado);
+		criteriaQuery.where(deletedPredicado, simboloInstrumentoPredicado, usuarioPredicado);
 
 		return entityManager.createQuery(criteriaQuery).getResultList();
 	}
