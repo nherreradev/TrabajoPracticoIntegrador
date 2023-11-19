@@ -182,13 +182,12 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 
 	@Override
 	public byte[] obtenerCertificado(String nombreUsuario) throws JRException, SQLException {
-
 		byte[] bytes = null;
-		URL propertiesStream = getClass().getResource("/jasper/perfil_inversor.jrxml");
-		URL propertiesStreamLogo = getClass().getResource("/jasper/MercadoJR-logo.png");
-		URL propertiesStreamAgregsivo = getClass().getResource("/jasper/cat_agresivo.jpg");
-		URL propertiesStreamModerado = getClass().getResource("/jasper/cat_moderado.jpg");
-		URL propertiesStreamConservador = getClass().getResource("/jasper/cat_conservador.jpg");
+		URL propertiesStream = getClass().getResource("/perfil_inversor.jrxml");
+		URL propertiesStreamLogo = getClass().getResource("/MercadoJR-logo.png");
+		URL propertiesStreamAgregsivo = getClass().getResource("/cat_agresivo.jpg");
+		URL propertiesStreamModerado = getClass().getResource("/cat_moderado.jpg");
+		URL propertiesStreamConservador = getClass().getResource("/cat_conservador.jpg");
 		JasperReport jasperReport = JasperCompileManager.compileReport(propertiesStream.getFile());
 		Map<String, Object> filterMap = new HashMap<>();
 		filterMap.put("p_nombre_usuario", nombreUsuario);

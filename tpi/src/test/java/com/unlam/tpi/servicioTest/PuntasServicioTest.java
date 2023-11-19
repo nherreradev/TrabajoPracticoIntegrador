@@ -1,6 +1,5 @@
 package com.unlam.tpi.servicioTest;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
@@ -14,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.unlam.tpi.core.interfaces.PuntasRepositorio;
 import com.unlam.tpi.core.modelo.Instrumento;
-import com.unlam.tpi.core.modelo.Posicion;
 import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.core.servicio.PuntasServicioImpl;
 
@@ -28,7 +26,7 @@ class PuntasServicioTest {
 	PuntasRepositorio puntasRepositorio;
 	
 	@Test
-	void testPuedoGuardarPuntas() {
+	public void testPuedoGuardarPuntas() {
 		
 		Instrumento instrumento =  new Instrumento();
 		Puntas puntas = new Puntas();
