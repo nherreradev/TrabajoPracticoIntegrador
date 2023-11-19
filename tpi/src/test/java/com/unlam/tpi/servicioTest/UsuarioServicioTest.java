@@ -55,24 +55,10 @@ public class UsuarioServicioTest {
         assertEquals(Boolean.TRUE, existe);
     }
 
-//    @Test
-//    public void quieroRegistrarUnNuevoUsuarioEnMiSistemaYLoRegistroExitosamente(){
-//        when(usuarioRepositorio.existsByEmail(USUARIO_REST.getEmail())).thenReturn(Boolean.FALSE);
-//        when(autenticacionService.GenerarTokenValidacionCuenta(USUARIO_REST.getEmail())).thenReturn(TOKEN);
-//        mailServicioImpl.prepararMailYEnviar(USUARIO_REST, TOKEN);
-//        assertNotNull(this.usuarioServicio.guardarUsuario(USUARIO_REST));
-//    }
-//    
     @Test
     public void deberiaGuardarUsuarioExitosamente() throws NoSuchAlgorithmException, InvalidKeySpecException {
-
-        // Configuración de mocks
         when(autenticacionService.GenerarTokenValidacionCuenta(USUARIO_REST.getEmail())).thenReturn(TOKEN);
-
-        // Llamada al método bajo prueba
         usuarioServicio.guardarUsuario(USUARIO_REST);
-
-        // Verificaciones
         verify(usuarioRepositorio, times(1)).save(USUARIO_EXISTENTE_NO_CONFIRMADO);
         verify(mailServicio, times(1)).prepararMailYEnviar(USUARIO_REST, TOKEN);
     }
