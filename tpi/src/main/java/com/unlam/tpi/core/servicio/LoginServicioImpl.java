@@ -27,11 +27,11 @@ public class LoginServicioImpl implements LoginServicio {
 	}
 
 	private TokenDTO getTokenLoginUsuario(UsuarioLogin usuarioLogin) {
-		Usuario usaurio = usuarioRepositorio.findByEmailAndPass(usuarioLogin.getEmail(), usuarioLogin.getPass());
-		if (usaurio == null) {
+		Usuario usuario = usuarioRepositorio.findByEmailAndPass(usuarioLogin.getEmail(), usuarioLogin.getPass());
+		if (usuario == null) {
 			throw new ServiceException("Usuario/Password invalidos ");
 		}
-		String token = this.autenticacionService.generarTokenLoginUsuario(UsuarioMapper.entidadADTO(usaurio));
+		String token = this.autenticacionService.generarTokenLoginUsuario(UsuarioMapper.entidadADTO(usuario));
 		TokenDTO tokenDTO = new TokenDTO(token);
 		return tokenDTO;
 	}

@@ -1,18 +1,32 @@
 package com.unlam.tpi.delivery.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UsuarioDTO {
 
+	@JsonProperty("oid")
 	private Long oid;
+	@JsonProperty("version")
 	private Integer version;
+	@JsonProperty("deleted")
 	private Boolean deleted = false;
+	@JsonProperty("username")
 	private String nombreUsuario;
+	@JsonProperty("nombre")
 	private String nombre;
+	@JsonProperty("apellido")
 	private String apellido;
+	@JsonProperty("email")
 	private String email;
+	@JsonProperty("pass")
 	private String pass;
+	@JsonProperty("cuentaConfirmada")
 	private Boolean cuentaConfirmada;
+	@JsonProperty("activo")
 	private Boolean activo;
+	@JsonProperty("premium")
 	private Boolean premium;
+	@JsonProperty("esAdministrador")
 	private Boolean esAdministrador;
 	
 	public UsuarioDTO() {
@@ -30,6 +44,7 @@ public class UsuarioDTO {
 		this.esAdministrador = esAdministrador;
 	}
 
+	@JsonProperty("username")
 	public String getNombreUsuario() {
 		return nombreUsuario;
 	}
@@ -38,6 +53,7 @@ public class UsuarioDTO {
 		this.nombreUsuario = nombreUsuario;
 	}
 
+	@JsonProperty("oid")
 	public Long getOid() {
 		return oid;
 	}
@@ -46,6 +62,7 @@ public class UsuarioDTO {
 		this.oid = oid;
 	}
 
+	@JsonProperty("version")
 	public Integer getVersion() {
 		return version;
 	}
@@ -54,6 +71,7 @@ public class UsuarioDTO {
 		this.version = version;
 	}
 
+	@JsonProperty("deleted")
 	public Boolean getDeleted() {
 		return deleted;
 	}
@@ -62,6 +80,7 @@ public class UsuarioDTO {
 		this.deleted = deleted;
 	}
 
+	@JsonProperty("nombre")
 	public String getNombre() {
 		return nombre;
 	}
@@ -70,6 +89,7 @@ public class UsuarioDTO {
 		this.nombre = nombre;
 	}
 
+	@JsonProperty("apellido")
 	public String getApellido() {
 		return apellido;
 	}
@@ -78,6 +98,7 @@ public class UsuarioDTO {
 		this.apellido = apellido;
 	}
 
+	@JsonProperty("email")
 	public String getEmail() {
 		return email;
 	}
@@ -86,6 +107,7 @@ public class UsuarioDTO {
 		this.email = email;
 	}
 
+	@JsonProperty("pass")
 	public String getPass() {
 		return pass;
 	}
@@ -94,6 +116,7 @@ public class UsuarioDTO {
 		this.pass = pass;
 	}
 
+	@JsonProperty("cuentaConfirmada")
 	public Boolean getCuentaConfirmada() {
 		return cuentaConfirmada;
 	}
@@ -102,6 +125,7 @@ public class UsuarioDTO {
 		this.cuentaConfirmada = cuentaConfirmada;
 	}
 
+	@JsonProperty("activo")
 	public Boolean getActivo() {
 		return activo;
 	}
@@ -110,6 +134,7 @@ public class UsuarioDTO {
 		this.activo = activo;
 	}
 
+	@JsonProperty("premium")
 	public Boolean getPremium() {
 		return premium;
 	}
@@ -118,6 +143,7 @@ public class UsuarioDTO {
 		this.premium = premium;
 	}
 
+	@JsonProperty("esAdministrador")
 	public Boolean getEsAdministrador() {
 		return esAdministrador;
 	}

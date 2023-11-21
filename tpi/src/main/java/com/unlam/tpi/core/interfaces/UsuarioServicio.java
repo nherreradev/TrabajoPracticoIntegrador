@@ -11,6 +11,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+@Transactional
 public interface UsuarioServicio {
 
 	void guardarUsuario(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException;
