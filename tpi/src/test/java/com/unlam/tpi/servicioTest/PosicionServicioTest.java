@@ -29,7 +29,7 @@ import com.unlam.tpi.core.modelo.Puntas;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
-import com.unlam.tpi.core.servicio.PanelPreciosImpl;
+import com.unlam.tpi.core.servicio.PanelesServicioImpl;
 import com.unlam.tpi.core.servicio.PosicionServicioImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,7 +69,7 @@ class PosicionServicioTest {
 
 		instrumento.setPuntas(puntas);
 
-		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
+		PanelesServicioImpl.panelAcciones.put("AGRO", instrumento);
 
 		when(posicionRepositorio.getPosicionEnEfectivo(orden.getUsuarioOid())).thenReturn(listaPosiciones);
 
@@ -109,7 +109,7 @@ class PosicionServicioTest {
 
 		instrumento.setPuntas(puntas);
 
-		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
+		PanelesServicioImpl.panelAcciones.put("AGRO", instrumento);
 
 		when(posicionRepositorio.getPosicionEnEfectivo(1L)).thenReturn(listaPosiciones);
 
@@ -148,7 +148,7 @@ class PosicionServicioTest {
 
 		instrumento.setPuntas(puntas);
 
-		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
+		PanelesServicioImpl.panelAcciones.put("AGRO", instrumento);
 
 		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento(), orden.getUsuarioOid()))
 				.thenReturn(listaPosiciones);
@@ -188,7 +188,7 @@ class PosicionServicioTest {
 
 		instrumento.setPuntas(puntas);
 
-		PanelPreciosImpl.panelAcciones.put("AGRO", instrumento);
+		PanelesServicioImpl.panelAcciones.put("AGRO", instrumento);
 
 		when(posicionRepositorio.obtenerTodosLosMovimientosAsociadosAUnSimbolo(orden.getSimboloInstrumento(), orden.getUsuarioOid()))
 				.thenReturn(listaPosiciones);

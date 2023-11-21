@@ -4,7 +4,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.interfaces.UsuarioControlador;
 import com.unlam.tpi.core.interfaces.UsuarioServicio;
 import com.unlam.tpi.core.modelo.ResponseAPI;
@@ -29,19 +27,6 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	ResponseAPI response = new ResponseAPI();
 	@Autowired
 	private UsuarioServicio usuarioServicio;
-	@Autowired
-	private AutenticacionService autenticacionService;
-
-	@Value("${dolar.prediccion.url}")
-	private String url_python;
-	@Value("${spring.datasource.url}")
-	private String url_bd;
-
-	@Override
-	@GetMapping("/index")
-	public String bienvenido() {
-		return "¡Bienvenido al índice de la API! 28/10 14:36 test deploy ....a " + url_python + "\n" + url_bd;
-	}
 
 	@Override
 	@PostMapping("/guardar-usuario")

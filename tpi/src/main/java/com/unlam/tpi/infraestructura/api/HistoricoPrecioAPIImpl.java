@@ -20,7 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.unlam.tpi.core.interfaces.HistoricoPrecioAPI;
-import com.unlam.tpi.core.interfaces.ListaPreciosIOL;
+import com.unlam.tpi.core.interfaces.ListaPreciosAPI;
 import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 import com.unlam.tpi.core.modelo.HistoricoInstrumento;
 import com.unlam.tpi.core.modelo.Instrumento;
@@ -34,7 +34,7 @@ public class HistoricoPrecioAPIImpl implements HistoricoPrecioAPI {
 	HistoricoRepositorio historicoRepositorio;
 	
 	@Autowired
-	ListaPreciosIOL listaPreciosIOl;
+	ListaPreciosAPI listaPreciosIOl;
 
 	@Autowired
 	private final RestTemplate restTemplate;
@@ -149,7 +149,7 @@ public class HistoricoPrecioAPIImpl implements HistoricoPrecioAPI {
 
 	private List<String> obtenerSimbolosDeInstrumentos(String tipoInstrumento) {
 		List<String> ArraySimbolos = new ArrayList<>();
-		List<Instrumento> listaInstrumentos = listaPreciosIOl.getListaPrecioMongo(tipoInstrumento);
+		List<Instrumento> listaInstrumentos = listaPreciosIOl.getListaPrecio(tipoInstrumento);
 		for (Instrumento instrumento : listaInstrumentos) {
 			if (instrumento.getPuntas() != null) {
 				ArraySimbolos.add(instrumento.getSimbolo());

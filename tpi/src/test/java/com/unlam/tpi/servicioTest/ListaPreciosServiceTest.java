@@ -21,30 +21,19 @@ import com.unlam.tpi.infraestructura.api.ListaPreciosAPIImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class ListaPreciosServiceTest {
-    private final RestTemplate restTemplate = new RestTemplate();
+	
     @InjectMocks
-    private ListaPreciosAPIImpl lp = new ListaPreciosAPIImpl(restTemplate);
-    @Mock
-    private PanelesServicioImpl ps = new PanelesServicioImpl();
-    private static final String MERCADOJR_URL_ACCIONES = "https://api.mercadojunior.com.ar/list/precios/acciones";
-    private static final String MERCADOJR_URL_BONOS = "https://api.mercadojunior.com.ar/list/precios/bonos";
-    private static final String IOL_ACCIONES = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=acciones&cotizacionInstrumentoModel.pais=argentina";
-    private static final String IOL_BONOS = "https://api.invertironline.com/api/v2/Cotizaciones/todos/argentina/Todos?cotizacionInstrumentoModel.instrumento=titulosPublicos&cotizacionInstrumentoModel.pais=argentina";
-
+    private ListaPreciosAPIImpl listaPreciosAPI;
+    
     @Test
     public void ValidoQueElRequestParaObtenerAccionesMeDevuelvaStatusOK (){
         Map<String, Boolean> expect = new HashMap<>();
         expect.put("acciones", true);
         ResponseEntity<String> mockResponse = new ResponseEntity<>("", HttpStatus.OK);
 
-        lp = mock(ListaPreciosAPIImpl.class);
-        ps = mock(PanelesServicioImpl.class);
+        when(listaPreciosAPI.validateResponse(mockResponse, "acciones")).thenReturn(expect);
 
-        when(ps.getInstrumentos(MERCADOJR_URL_ACCIONES)).thenReturn(mockResponse);
-        when(lp.validateResponse(mockResponse, "acciones")).thenReturn(expect);
-
-        ResponseEntity<String> ResponseAcciones = ps.getInstrumentos(MERCADOJR_URL_ACCIONES) ;
-        Map<String, Boolean> ResponseOk = lp.validateResponse(ResponseAcciones, "acciones");
+        Map<String, Boolean> ResponseOk = listaPreciosAPI.validateResponse(ResponseAcciones, "acciones");
 
         assertEquals(true, ResponseOk.get("acciones"));
         assertEquals(HttpStatus.OK, ResponseAcciones.getStatusCode());
@@ -56,14 +45,10 @@ public class ListaPreciosServiceTest {
         expect.put("acciones", true);
         ResponseEntity<String> mockResponse = new ResponseEntity<>("", HttpStatus.OK);
 
-        lp = mock(ListaPreciosAPIImpl.class);
-        ps = mock(PanelesServicioImpl.class);
+        when(listaPreciosAPI.validateResponse(mockResponse, "acciones")).thenReturn(expect);
 
-        when(ps.getInstrumentos(MERCADOJR_URL_BONOS)).thenReturn(mockResponse);
-        when(lp.validateResponse(mockResponse, "acciones")).thenReturn(expect);
-
-        ResponseEntity<String> ResponseAcciones = ps.getInstrumentos(MERCADOJR_URL_BONOS) ;
-        Map<String, Boolean> ResponseOk = lp.validateResponse(ResponseAcciones, "acciones");
+        ResponseEntity<String> ResponseAcciones = listaPreciosAPI.getInstrumentos(MERCADOJR_URL_BONOS) ;
+        Map<String, Boolean> ResponseOk = listaPreciosAPI.validateResponse(ResponseAcciones, "acciones");
 
         assertEquals(true, ResponseOk.get("acciones"));
         assertEquals(HttpStatus.OK, ResponseAcciones.getStatusCode());

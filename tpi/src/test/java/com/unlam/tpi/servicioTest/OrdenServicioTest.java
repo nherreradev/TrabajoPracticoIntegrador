@@ -1,6 +1,8 @@
 package com.unlam.tpi.servicioTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -10,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 
 import com.unlam.tpi.core.interfaces.OrdenRepositorio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
@@ -18,7 +19,6 @@ import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.servicio.OrdenServicioImpl;
-import com.unlam.tpi.delivery.dto.OrdenDTO;
 
 @ExtendWith(MockitoExtension.class)
 class OrdenServicioTest {
@@ -35,15 +35,12 @@ class OrdenServicioTest {
 	@Test
 	void testPuedoCrearUnaOrden() {
 
-		OrdenDTO ordenDTO = new OrdenDTO();
-		ordenDTO.setCantidad(new BigDecimal(2));
-		ordenDTO.setPrecio(new BigDecimal(1000));
-		ordenDTO.setSimboloInstrumento("TGNO4");
-		ordenDTO.setSentido("venta");
-		ordenDTO.setCategoriaInstrumento("acciones");
-
-		ModelMapper modelMapper = new ModelMapper();
-		Orden orden = modelMapper.map(ordenDTO, Orden.class);
+		Orden orden = new Orden();
+		orden.setCantidad(new BigDecimal(2));
+		orden.setPrecio(new BigDecimal(1000));
+		orden.setSimboloInstrumento("TGNO4");
+		orden.setSentido("venta");
+		orden.setCategoriaInstrumento("acciones");
 
 		PuedeOperarResultado puedeOperarResultado = new PuedeOperarResultado();
 		puedeOperarResultado.setPuedeOperar(true);
@@ -53,22 +50,19 @@ class OrdenServicioTest {
 
 		when(ordenRepositorio.save(orden)).thenReturn(orden);
 
-		assertNotNull(ordenServicioImpl.crearOrden(ordenDTO));
+		assertNotNull(ordenServicioImpl.crearOrden(orden));
 
 	}
 
 	@Test
 	void testPuedoOperarSiLaValidacionDePuedeOperarEsPositiva() {
 
-		OrdenDTO ordenDTO = new OrdenDTO();
-		ordenDTO.setCantidad(new BigDecimal(2));
-		ordenDTO.setPrecio(new BigDecimal(1000));
-		ordenDTO.setSimboloInstrumento("TGNO4");
-		ordenDTO.setSentido("venta");
-		ordenDTO.setCategoriaInstrumento("acciones");
-
-		ModelMapper modelMapper = new ModelMapper();
-		Orden orden = modelMapper.map(ordenDTO, Orden.class);
+		Orden orden = new Orden();
+		orden.setCantidad(new BigDecimal(2));
+		orden.setPrecio(new BigDecimal(1000));
+		orden.setSimboloInstrumento("TGNO4");
+		orden.setSentido("venta");
+		orden.setCategoriaInstrumento("acciones");
 
 		PuedeOperarResultado puedeOperarResultado = new PuedeOperarResultado();
 		puedeOperarResultado.setPuedeOperar(true);
@@ -85,15 +79,12 @@ class OrdenServicioTest {
 	@Test
 	void testNoPuedoOperarSiLaValidacionDePuedeOperarEsNegativa() {
 
-		OrdenDTO ordenDTO = new OrdenDTO();
-		ordenDTO.setCantidad(new BigDecimal(2));
-		ordenDTO.setPrecio(new BigDecimal(1000));
-		ordenDTO.setSimboloInstrumento("TGNO4");
-		ordenDTO.setSentido("venta");
-		ordenDTO.setCategoriaInstrumento("acciones");
-
-		ModelMapper modelMapper = new ModelMapper();
-		Orden orden = modelMapper.map(ordenDTO, Orden.class);
+		Orden orden = new Orden();
+		orden.setCantidad(new BigDecimal(2));
+		orden.setPrecio(new BigDecimal(1000));
+		orden.setSimboloInstrumento("TGNO4");
+		orden.setSentido("venta");
+		orden.setCategoriaInstrumento("acciones");
 
 		PuedeOperarResultado puedeOperarResultado = new PuedeOperarResultado();
 		puedeOperarResultado.setPuedeOperar(false);

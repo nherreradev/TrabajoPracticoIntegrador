@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import com.unlam.tpi.core.interfaces.HistoricoPrecioAPI;
-import com.unlam.tpi.core.interfaces.ListaPreciosIOL;
+import com.unlam.tpi.core.interfaces.ListaPreciosAPI;
 import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 import com.unlam.tpi.core.servicio.HistoricoServicioImpl;
 
@@ -30,7 +30,7 @@ public class HistoricoServicioTest {
 	private HistoricoPrecioAPI historicoPrecioAPI;
 
 	@Mock
-	private ListaPreciosIOL listaPreciosIOl;
+	private ListaPreciosAPI listaPreciosIOl;
 	
     @Mock
     private RestTemplate restTemplate;

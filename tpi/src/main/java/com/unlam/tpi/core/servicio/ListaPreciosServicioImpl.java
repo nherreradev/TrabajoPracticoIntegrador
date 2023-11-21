@@ -5,24 +5,24 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.unlam.tpi.core.interfaces.ListaPreciosIOL;
+import com.unlam.tpi.core.interfaces.ListaPreciosAPI;
+import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.core.modelo.Instrumento;
-import com.unlam.tpi.delivery.dto.InstrumentoDTO;
 
 @Service
 public class ListaPreciosServicioImpl implements ListaPreciosServicio{
 
 	@Autowired
-	ListaPreciosIOL listaPreciosIOL;
+	ListaPreciosAPI listaPreciosApi;
 	
 	@Override
 	public void guardarListaPrecios(String titulo, String token) {
-		listaPreciosIOL.guardarListaPrecios(titulo, token);
+		listaPreciosApi.guardarListaPrecios(titulo, token);
 	}
 
 	@Override
-	public List<Instrumento> getListaPrecioMongo(String titulo) {
-		return listaPreciosIOL.getListaPrecioMongo(titulo);
+	public List<Instrumento> getListaPrecio(String titulo) {
+		return listaPreciosApi.getListaPrecio(titulo);
 	}
 	
 	

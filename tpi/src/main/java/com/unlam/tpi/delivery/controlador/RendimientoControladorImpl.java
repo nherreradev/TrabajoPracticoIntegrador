@@ -16,11 +16,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.interfaces.RendimientoControlador;
-import com.unlam.tpi.core.modelo.RendimientoRequest;
-import com.unlam.tpi.delivery.dto.UsuarioDTO;
-import com.unlam.tpi.core.modelo.HistoricoRendimientos;
 import com.unlam.tpi.core.modelo.HistoricoRendimientosResponse;
 import com.unlam.tpi.core.modelo.RendimientoActualResponse;
+import com.unlam.tpi.core.modelo.RendimientoRequest;
+import com.unlam.tpi.delivery.dto.UsuarioDTO;
 
 @CrossOrigin
 @RestController

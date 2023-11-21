@@ -11,10 +11,10 @@ import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.interfaces.MailServicio;
 import com.unlam.tpi.core.interfaces.UsuarioRepositorio;
 import com.unlam.tpi.core.interfaces.UsuarioServicio;
+import com.unlam.tpi.core.modelo.JWTRest;
 import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
-import com.unlam.tpi.delivery.dto.JWTRestDTO;
 import com.unlam.tpi.delivery.dto.PasswordDto;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
 import com.unlam.tpi.delivery.dto.UsuarioMapper;
@@ -53,6 +53,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	public Boolean existeEmail(String email) {
 		return this.usuarioRepositorio.existsByEmail(email);
 	}
+
 	@Override
 	public Boolean existeNombreUsuario(String nombreUsuario) {
 		return this.usuarioRepositorio.existsByNombreUsuario(nombreUsuario);
@@ -62,12 +63,11 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	public Usuario obtenerUsuarioPorEmail(String email) {
 		return this.usuarioRepositorio.getUsuarioByEmail(email);
 	}
-	
+
 	@Override
 	public Usuario obtenerUsuarioPorToken(String token) {
 		return this.usuarioRepositorio.getUsuarioByTokenValidacion(token);
 	}
-	
 
 	@Override
 	public Usuario obtenerUsuarioPorNombreUsuario(String nombreUsuario) {
@@ -89,7 +89,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public boolean usuarioValidadoPorPrimeraVez(String token) {
-		JWTRestDTO res = this.autenticacionService.obtenerClaimsToken(token);
+		JWTRest res = this.autenticacionService.obtenerClaimsToken(token);
 		if (res.getEmailUsuario() != null) {
 			Usuario buscado = obtenerUsuarioPorEmail(res.getEmailUsuario());
 			buscado.setCuentaConfirmada(Boolean.TRUE);
@@ -101,7 +101,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public Boolean elUsuarioFueYaEstaValidado(String token) {
-		JWTRestDTO UsuarioToken = autenticacionService.obtenerClaimsToken(token);
+		JWTRest UsuarioToken = autenticacionService.obtenerClaimsToken(token);
 		Usuario usuario = usuarioRepositorio.getUsuarioByEmail(UsuarioToken.getEmailUsuario());
 		return usuario.getCuentaConfirmada();
 	}
@@ -131,7 +131,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		}
 		return responseAPI.MensajeDeErrorEnRequest();
 	}
-	
+
 	@Override
 	public void recuperarCuenta(Usuario usuario) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		if (!existeEmail(usuario.getEmail()))
@@ -143,7 +143,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			buscado.setCuentaConfirmada(Boolean.FALSE);
 			buscado.setTokenValidacion(token);
 			this.usuarioRepositorio.save(buscado);
-			this.mailServicio.envioMailRecuperacionCuenta(buscado.getNombre(),buscado.getEmail(), token);
+			this.mailServicio.envioMailRecuperacionCuenta(buscado.getNombre(), buscado.getEmail(), token);
 		}
 	}
 
@@ -161,8 +161,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		this.usuarioRepositorio.save(usuario);
 		return Boolean.TRUE;
 	}
-	
-	
+
 	@Override
 	public void confirmarCuenta(Usuario usuario) {
 		usuario.setCuentaConfirmada(Boolean.TRUE);

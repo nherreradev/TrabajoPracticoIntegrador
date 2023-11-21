@@ -10,6 +10,7 @@ import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.core.modelo.UsuarioLogin;
 import com.unlam.tpi.delivery.dto.TokenDTO;
+import com.unlam.tpi.delivery.dto.UsuarioMapper;
 
 @Service
 public class LoginServicioImpl implements LoginServicio {
@@ -30,7 +31,7 @@ public class LoginServicioImpl implements LoginServicio {
 		if (usaurio == null) {
 			throw new ServiceException("Usuario/Password invalidos ");
 		}
-		String token = this.autenticacionService.generarTokenLoginUsuario(usaurio);
+		String token = this.autenticacionService.generarTokenLoginUsuario(UsuarioMapper.entidadADTO(usaurio));
 		TokenDTO tokenDTO = new TokenDTO(token);
 		return tokenDTO;
 	}

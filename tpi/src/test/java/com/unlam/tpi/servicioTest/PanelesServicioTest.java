@@ -16,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
-import com.unlam.tpi.core.interfaces.ListaPreciosIOL;
-import com.unlam.tpi.core.interfaces.PanelPrecios;
+import com.unlam.tpi.core.interfaces.ListaPreciosAPI;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.Puntas;
@@ -33,16 +32,13 @@ class PanelesServicioTest {
 	RestTemplate restTemplate;
 
 	@Mock
-	PanelPrecios panelPrecios;
-
-	@Mock
 	InstrumentoServicio instrumentoServicio;
 
 	@Mock
 	PosicionServicio posicionServicio;
 	
 	@Mock
-	ListaPreciosIOL listaPreciosServicio;
+	ListaPreciosAPI listaPreciosServicio;
 
 
 	@Test

@@ -9,8 +9,6 @@ import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.delivery.dto.OrdenDTO;
-import com.unlam.tpi.delivery.dto.OrdenMapper;
 
 @Service
 public class OrdenServicioImpl implements OrdenServicio {
@@ -22,12 +20,11 @@ public class OrdenServicioImpl implements OrdenServicio {
 	PosicionServicio posicionServicio;
 
 	@Override
-	public void capturarOrden(OrdenDTO ordenDTO) {
-		crearOrden(ordenDTO);
+	public void capturarOrden(Orden orden) {
+		crearOrden(orden);
 	}
 
-	public Orden crearOrden(OrdenDTO ordenDTO) {
-		Orden orden = OrdenMapper.ordenDTOAOrden(ordenDTO);
+	public Orden crearOrden(Orden orden) {
 		preCreacion(orden);
 		return ordenRepositorio.save(orden);
 	}

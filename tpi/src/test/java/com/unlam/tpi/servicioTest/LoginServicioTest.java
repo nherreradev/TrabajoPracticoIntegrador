@@ -26,6 +26,7 @@ import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.core.modelo.UsuarioLogin;
 import com.unlam.tpi.core.servicio.LoginServicioImpl;
 import com.unlam.tpi.delivery.dto.TokenDTO;
+import com.unlam.tpi.delivery.dto.UsuarioDTO;
 
 @ExtendWith(MockitoExtension.class)
 public class LoginServicioTest {
@@ -54,16 +55,20 @@ public class LoginServicioTest {
 		usuario.setEmail("usuariotest@dominio.com");
 		usuario.setPass("123456ASD");
 
+		UsuarioDTO usuarioDTO = new UsuarioDTO();
+		usuario.setEmail("usuariotest@dominio.com");
+		usuario.setPass("123456ASD");
+
 		TokenDTO tokenDTO = new TokenDTO("testToken");
 
 		when(usuarioRepositorio.findByEmailAndPass("usuariotest@dominio.com", "123456ASD")).thenReturn(usuario);
 
-		when(autenticacionService.generarTokenLoginUsuario(usuario)).thenReturn("testToken");
+		when(autenticacionService.generarTokenLoginUsuario(usuarioDTO)).thenReturn("testToken");
 
 		TokenDTO resultTokenDTO = loginServicio.IniciarSesion(usuarioLogin);
 
 		verify(usuarioRepositorio, times(1)).findByEmailAndPass("usuariotest@dominio.com", "123456ASD");
-		verify(autenticacionService, times(1)).generarTokenLoginUsuario(usuario);
+		verify(autenticacionService, times(1)).generarTokenLoginUsuario(usuarioDTO);
 
 		assertEquals(tokenDTO.getToken(), resultTokenDTO.getToken());
 	}

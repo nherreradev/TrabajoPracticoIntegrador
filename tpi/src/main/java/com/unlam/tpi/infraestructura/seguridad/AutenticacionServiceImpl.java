@@ -1,4 +1,4 @@
-package com.unlam.tpi.core.servicio;
+package com.unlam.tpi.infraestructura.seguridad;
 
 import java.security.spec.KeySpec;
 import java.util.Base64;
@@ -10,9 +10,8 @@ import javax.crypto.spec.PBEKeySpec;
 import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.core.interfaces.AutenticacionService;
+import com.unlam.tpi.core.modelo.JWTRest;
 import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.core.modelo.Usuario;
-import com.unlam.tpi.delivery.dto.JWTRestDTO;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
 import com.unlam.tpi.delivery.dto.UsuarioMapper;
 
@@ -35,7 +34,7 @@ public class AutenticacionServiceImpl implements AutenticacionService {
 	}
 
 	@Override
-	public String generarTokenLoginUsuario(Usuario usuario) {
+	public String generarTokenLoginUsuario(UsuarioDTO usuario) {
 		String jwt = Jwts.builder().setSubject("usuario").claim("nombreUsuario", usuario.getNombreUsuario())
 				.claim("nombre", usuario.getNombre()).claim("apellido", usuario.getEmail())
 				.claim("premium", usuario.getPremium()).claim("email", usuario.getEmail())
@@ -69,11 +68,10 @@ public class AutenticacionServiceImpl implements AutenticacionService {
 	}
 
 	@Override
-	public JWTRestDTO obtenerClaimsToken(String token) {
-		JWTRestDTO jwtRestDTO = new JWTRestDTO();
+	public JWTRest obtenerClaimsToken(String token) {
+		JWTRest jwtRestDTO = new JWTRest();
 		String tokenDeserializado = UsuarioMapper.ObtenerBodyToken(token);
 		Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(tokenDeserializado).getBody();
-
 		String accion = claims.get("accion", String.class);
 		String mail = claims.get("mail", String.class);
 		Boolean estaValidado = claims.get("validado", Boolean.class);

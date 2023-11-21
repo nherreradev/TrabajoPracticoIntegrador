@@ -1,17 +1,11 @@
 package com.unlam.tpi.core.servicio;
 
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.unlam.tpi.core.interfaces.GeneracionJasper;
 import com.unlam.tpi.core.interfaces.PerfilInversorRepositorio;
 import com.unlam.tpi.core.interfaces.PerfilInversorServicio;
 import com.unlam.tpi.core.interfaces.UsuarioServicio;
@@ -24,12 +18,6 @@ import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;
 import com.unlam.tpi.delivery.dto.TipoPerfilInversor;
 import com.unlam.tpi.delivery.dto.UsuarioMapper;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperRunManager;
-
 @Service
 public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 
@@ -40,7 +28,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	private UsuarioServicio usuarioServicio;
 
 	@Autowired
-	private SessionFactory sessionFactory;
+	private GeneracionJasper generacionJasper;
 
 	@Override
 	public PerfilInversorDTO resultadoPerfilSubjetivo(PerfilInversorDTO perfilInversorDTO) {
@@ -181,23 +169,8 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	}
 
 	@Override
-	public byte[] obtenerCertificado(String nombreUsuario) throws JRException, SQLException {
-		byte[] bytes = null;
-		URL propertiesStream = getClass().getResource("/perfil_inversor.jrxml");
-		URL propertiesStreamLogo = getClass().getResource("/MercadoJR-logo.png");
-		URL propertiesStreamAgregsivo = getClass().getResource("/cat_agresivo.jpg");
-		URL propertiesStreamModerado = getClass().getResource("/cat_moderado.jpg");
-		URL propertiesStreamConservador = getClass().getResource("/cat_conservador.jpg");
-		JasperReport jasperReport = JasperCompileManager.compileReport(propertiesStream.getFile());
-		Map<String, Object> filterMap = new HashMap<>();
-		filterMap.put("p_nombre_usuario", nombreUsuario);
-		filterMap.put("p_logo_path", propertiesStreamLogo.getFile());
-		filterMap.put("p_cat_agresivo_path", propertiesStreamAgregsivo.getFile());
-		filterMap.put("p_cat_moderado_path", propertiesStreamModerado.getFile());
-		filterMap.put("p_cat_conservador_path", propertiesStreamConservador.getFile());
-		JasperFillManager.fillReport(jasperReport, filterMap, getConnection());
-		bytes = JasperRunManager.runReportToPdf(jasperReport, filterMap);
-		return bytes;
+	public byte[] obtenerCertificado(String nombreUsuario) {
+		return getGeneracionJasper().obtenerCertificado(nombreUsuario);
 	}
 
 	@Override
@@ -233,18 +206,20 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 		this.perfilInversorRepositorio = perfilInversorRepositorio;
 	}
 
-	private Connection getConnection() throws SQLException {
-		Connection connection = sessionFactory.getSessionFactoryOptions().getServiceRegistry()
-				.getService(ConnectionProvider.class).getConnection();
-		return connection;
-	}
-
 	public UsuarioServicio getUsuarioServicio() {
 		return usuarioServicio;
 	}
 
 	public void setUsuarioServicio(UsuarioServicio usuarioServicio) {
 		this.usuarioServicio = usuarioServicio;
+	}
+	
+	public GeneracionJasper getGeneracionJasper() {
+		return generacionJasper;
+	}
+
+	public void setGeneracionJasper(GeneracionJasper generacionJasper) {
+		this.generacionJasper = generacionJasper;
 	}
 
 	@Override

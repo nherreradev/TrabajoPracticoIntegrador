@@ -1,4 +1,4 @@
-package com.unlam.tpi.core.servicio;
+package com.unlam.tpi.core.interfaces;
 
 import java.util.List;
 
@@ -8,5 +8,5 @@ public interface ListaPreciosServicio {
 
 	public void guardarListaPrecios(String titulo, String token);
 
-	public List<Instrumento> getListaPrecioMongo(String titulo);
+	public List<Instrumento> getListaPrecio(String titulo);
 }

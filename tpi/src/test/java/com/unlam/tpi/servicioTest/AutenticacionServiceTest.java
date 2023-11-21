@@ -12,9 +12,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.unlam.tpi.core.modelo.Usuario;
-import com.unlam.tpi.core.servicio.AutenticacionServiceImpl;
 import com.unlam.tpi.delivery.dto.JWTRestDTO;
+import com.unlam.tpi.delivery.dto.UsuarioDTO;
+import com.unlam.tpi.infraestructura.seguridad.AutenticacionServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class AutenticacionServiceTest {
@@ -33,7 +33,7 @@ public class AutenticacionServiceTest {
 
 	@Test
 	void generarTokenLoginUsuario() throws NoSuchAlgorithmException, InvalidKeySpecException {
-		Usuario usuario = Mockito.mock(Usuario.class);
+		UsuarioDTO usuario = Mockito.mock(UsuarioDTO.class);
 		Mockito.lenient().when(usuario.getNombreUsuario()).thenReturn("usuariotest");
 		Mockito.lenient().when(usuario.getNombre()).thenReturn("Usuario");
 		Mockito.lenient().when(usuario.getApellido()).thenReturn("Test");

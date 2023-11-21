@@ -1,9 +1,9 @@
 package com.unlam.tpi.core.interfaces;
 
-import com.unlam.tpi.delivery.dto.OrdenDTO;
+import com.unlam.tpi.core.modelo.Orden;
 
 public interface OrdenServicio {
 
-	void capturarOrden(OrdenDTO orden);
+	void capturarOrden(Orden orden);
 
 }

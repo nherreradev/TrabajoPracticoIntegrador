@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.Puntas;
-import com.unlam.tpi.core.servicio.PanelPreciosImpl;
+import com.unlam.tpi.core.servicio.PanelesServicioImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class PanelPreciosServicioTest {
@@ -25,7 +25,7 @@ public class PanelPreciosServicioTest {
 	private Instrumento instrumentoMock;
 
 	@InjectMocks
-	private PanelPreciosImpl panelPrecios;
+	private PanelesServicioImpl panelPrecios;
 
 	@Test
 	public void agregarInstrumentosAlPanelDeBonos() {
@@ -40,8 +40,8 @@ public class PanelPreciosServicioTest {
 
 		panelPrecios.agregarInstrumentosAlPanelDeBonos(instrumentos);
 
-		assertEquals(1, PanelPreciosImpl.panelBonos.size());
-		assertEquals(instrumentoMock, PanelPreciosImpl.panelBonos.get("GD30"));
+		assertEquals(1, PanelesServicioImpl.panelBonos.size());
+		assertEquals(instrumentoMock, PanelesServicioImpl.panelBonos.get("GD30"));
 	}
 
 	@Test
@@ -57,8 +57,8 @@ public class PanelPreciosServicioTest {
 
 		panelPrecios.agregarInstrumentosAlPanelDeCedears(instrumentos);
 
-		assertEquals(1, PanelPreciosImpl.panelCedears.size());
-		assertEquals(instrumentoMock, PanelPreciosImpl.panelCedears.get("AAPL"));
+		assertEquals(1, PanelesServicioImpl.panelCedears.size());
+		assertEquals(instrumentoMock, PanelesServicioImpl.panelCedears.get("AAPL"));
 	}
 
 }

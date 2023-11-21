@@ -12,12 +12,19 @@ import com.unlam.tpi.delivery.dto.PasswordDto;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 
 public interface UsuarioControlador {
-	public String bienvenido();
 	public ResponseEntity<ResponseAPI> RegistrarUsuario(UsuarioRestDTO usuarioRestDTO) throws Exception;
+
 	public ResponseEntity<ResponseAPI> ModificarUsuario(Usuario usuario);
-	ResponseEntity<Usuario> ObtenerDatosUsuarioPorEmail(String email);
-	ResponseEntity<ResponseAPI> DarUsuarioDeBaja(Usuario usuario);
-	ResponseEntity<ResponseAPI> ActivarCuenta(String token) throws JsonProcessingException;
-	ResponseEntity<ResponseAPI> RecuperarCuenta(Usuario usuario) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException;
-	ResponseEntity<ResponseAPI> cambiarPassword(PasswordDto passwordDto) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException;
+
+	public ResponseEntity<Usuario> ObtenerDatosUsuarioPorEmail(String email);
+
+	public ResponseEntity<ResponseAPI> DarUsuarioDeBaja(Usuario usuario);
+
+	public ResponseEntity<ResponseAPI> ActivarCuenta(String token) throws JsonProcessingException;
+
+	public ResponseEntity<ResponseAPI> RecuperarCuenta(Usuario usuario)
+			throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException;
+
+	public ResponseEntity<ResponseAPI> cambiarPassword(PasswordDto passwordDto)
+			throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException;
 }

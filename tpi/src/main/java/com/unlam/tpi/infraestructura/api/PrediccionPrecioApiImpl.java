@@ -57,14 +57,14 @@ public class PrediccionPrecioApiImpl implements PrediccionPrecioApi{
 			if (response.getStatusCode() != HttpStatus.OK) {
 				throw new ServiceException("Error realizando la consulta a la API Prediccion de doalar");
 			}
-			PrediccionPrecio prediccionPrecioDTO;
+			PrediccionPrecio prediccionPrecio;
 			try {
-				prediccionPrecioDTO = (PrediccionPrecio) getMapper()
+				prediccionPrecio = (PrediccionPrecio) getMapper()
 						.readerFor(PrediccionPrecio.class).readValue(response.getBody());
 			} catch (JsonProcessingException e) {
 				throw new ServiceException("Error realizando la consulta a la API Prediccion de doalar", e);
 			}
-			return prediccionPrecioDTO;
+			return prediccionPrecio;
 	}
 
 	public static ObjectMapper getMapper() {

@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
 import com.unlam.tpi.core.interfaces.PriceListController;
 import com.unlam.tpi.core.modelo.Instrumento;
-import com.unlam.tpi.core.servicio.ListaPreciosServicio;
 
 @RestController
 @RequestMapping("list")
@@ -34,7 +34,7 @@ public class PrecioListaControllerImpl implements PriceListController {
     @Override
     @GetMapping("/precios/{titulo}")
     public ResponseEntity<List<Instrumento>> ObtenerPrecios(@PathVariable String titulo) {
-    	List<Instrumento> response = listaPreciosServicio.getListaPrecioMongo(titulo);
+    	List<Instrumento> response = listaPreciosServicio.getListaPrecio(titulo);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

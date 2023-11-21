@@ -24,10 +24,10 @@ import com.unlam.tpi.core.interfaces.ListaPreciosRepository;
 import com.unlam.tpi.core.modelo.Instrumento;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.InstrumentoMapper;
-import com.unlam.tpi.core.interfaces.ListaPreciosIOL;
+import com.unlam.tpi.core.interfaces.ListaPreciosAPI;
 
 @Service
-public class ListaPreciosAPIImpl implements ListaPreciosIOL {
+public class ListaPreciosAPIImpl implements ListaPreciosAPI {
 
 	@Autowired
 	private ListaPreciosRepository listaPreciosRepository;
@@ -125,7 +125,7 @@ public class ListaPreciosAPIImpl implements ListaPreciosIOL {
 	}
 
 	@Override
-	public List<Instrumento> getListaPrecioMongo(String instrumento) {
+	public List<Instrumento> getListaPrecio(String instrumento) {
 		String resultadoFinalJSON = null;
 		List<String> res = null;
 		res = this.listaPreciosRepository.getAllWithoutID(instrumento);
