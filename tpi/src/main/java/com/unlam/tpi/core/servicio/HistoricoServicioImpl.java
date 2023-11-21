@@ -3,12 +3,14 @@ package com.unlam.tpi.core.servicio;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.unlam.tpi.core.interfaces.HistoricoPrecioAPI;
 import com.unlam.tpi.core.interfaces.HistoricoServicio;
 import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 import com.unlam.tpi.core.modelo.HistoricoInstrumento;
 
+@Service
 public class HistoricoServicioImpl implements HistoricoServicio {
 
 	@Autowired
