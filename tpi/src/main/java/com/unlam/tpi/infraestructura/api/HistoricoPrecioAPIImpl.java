@@ -67,7 +67,8 @@ public class HistoricoPrecioAPIImpl implements HistoricoPrecioAPI {
 		}
 	}
 
-	private void guardarTransaccion(String rango, String instrumento, String historico, String simbolo) {
+	@Override
+	public void guardarTransaccion(String rango, String instrumento, String historico, String simbolo) {
 		HashSet<HistoricoInstrumentoDTO> listaHistoricoDTO = new HashSet<>();
 		JsonArray jsonArray = JsonParser.parseString(historico).getAsJsonArray();
 		convertirJsonAHistoricoDTO(simbolo, listaHistoricoDTO, jsonArray);

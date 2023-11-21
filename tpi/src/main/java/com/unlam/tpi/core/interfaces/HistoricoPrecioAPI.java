@@ -9,4 +9,8 @@ public interface HistoricoPrecioAPI {
 	List<HistoricoInstrumento> getHistoricoMongo(String rango, String instrumento, String simbolo);
 
 	void guardarHistorico(FechaRequestHistorico fechaRequestHistorico, String instrumento);
+	
+	public void guardarTransaccion(String rango, String instrumento, String historico, String simbolo);
+	
+	
 }
