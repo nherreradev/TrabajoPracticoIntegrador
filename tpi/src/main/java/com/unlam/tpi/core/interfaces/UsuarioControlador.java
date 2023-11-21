@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.PasswordDto;
+import com.unlam.tpi.delivery.dto.UsuarioDTO;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 
 public interface UsuarioControlador {
@@ -16,7 +17,7 @@ public interface UsuarioControlador {
 
 	public ResponseEntity<ResponseAPI> ModificarUsuario(Usuario usuario);
 
-	public ResponseEntity<Usuario> ObtenerDatosUsuarioPorEmail(String email);
+	public ResponseEntity<UsuarioDTO> ObtenerDatosUsuarioPorEmail(String email);
 
 	public ResponseEntity<ResponseAPI> DarUsuarioDeBaja(Usuario usuario);
 

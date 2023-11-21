@@ -37,18 +37,26 @@ public class HistoricoRendimientoServicioImpl implements HistoricoRendimientoSer
 				.obtenerRendimientosHistoricosPorSimbolo(simboloInstrumento, usuarioOid);
 		if (listaHistoricoRendimientos != null && !listaHistoricoRendimientos.isEmpty()) {
 			for (HistoricoRendimientos historicoRendimientos : listaHistoricoRendimientos) {
-				HistoricoRendimientosResponse historicoRendimientosResponse = new HistoricoRendimientosResponse();
-				historicoRendimientosResponse.setSimbolo(historicoRendimientos.getSimbolo());
-				historicoRendimientosResponse.setRendimientoTotal(historicoRendimientos.getRendimientoTotal());
-				historicoRendimientosResponse
-						.setRendimientoTotalPorcentaje(historicoRendimientos.getRendimientoTotalPorcentaje());
-				historicoRendimientosResponse.setFecha(historicoRendimientos.getFecha());
-				historicoRendimientosResponse.setCantidadDeTitulos(historicoRendimientos.getCantidadDeTitulos());
-				historicoRendimientosResponse.setValorInversion(historicoRendimientos.getValorInversion());
+				HistoricoRendimientosResponse historicoRendimientosResponse = crearHistoricoRendimientoResponse(
+						listaHistoricoRendimientosResponse, historicoRendimientos);
 				listaHistoricoRendimientosResponse.add(historicoRendimientosResponse);
 			}
 		}
 		return listaHistoricoRendimientosResponse;
+	}
+
+	private HistoricoRendimientosResponse crearHistoricoRendimientoResponse(
+			List<HistoricoRendimientosResponse> listaHistoricoRendimientosResponse,
+			HistoricoRendimientos historicoRendimientos) {
+		HistoricoRendimientosResponse historicoRendimientosResponse = new HistoricoRendimientosResponse();
+		historicoRendimientosResponse.setSimbolo(historicoRendimientos.getSimbolo());
+		historicoRendimientosResponse.setRendimientoTotal(historicoRendimientos.getRendimientoTotal());
+		historicoRendimientosResponse
+				.setRendimientoTotalPorcentaje(historicoRendimientos.getRendimientoTotalPorcentaje());
+		historicoRendimientosResponse.setFecha(historicoRendimientos.getFecha());
+		historicoRendimientosResponse.setCantidadDeTitulos(historicoRendimientos.getCantidadDeTitulos());
+		historicoRendimientosResponse.setValorInversion(historicoRendimientos.getValorInversion());
+		return historicoRendimientosResponse;
 	}
 
 }

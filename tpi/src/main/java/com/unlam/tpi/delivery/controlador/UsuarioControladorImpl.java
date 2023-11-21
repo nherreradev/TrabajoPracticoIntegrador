@@ -19,6 +19,8 @@ import com.unlam.tpi.core.interfaces.UsuarioServicio;
 import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.PasswordDto;
+import com.unlam.tpi.delivery.dto.UsuarioDTO;
+import com.unlam.tpi.delivery.dto.UsuarioMapper;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 
 @RestController
@@ -41,10 +43,10 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 
 	@Override
 	@GetMapping("/obtener-usuario/{email}")
-	public ResponseEntity<Usuario> ObtenerDatosUsuarioPorEmail(@PathVariable String email) {
+	public ResponseEntity<UsuarioDTO> ObtenerDatosUsuarioPorEmail(@PathVariable String email) {
 		Usuario usuario = this.usuarioServicio.obtenerUsuarioPorEmail(email);
 		return (usuario == null) ? new ResponseEntity<>(HttpStatus.BAD_REQUEST)
-				: new ResponseEntity<>(usuario, HttpStatus.OK);
+				: new ResponseEntity<>(UsuarioMapper.entidadADTO(usuario), HttpStatus.OK);
 	}
 
 	@Override
@@ -64,8 +66,6 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	@Override
 	@PostMapping("/activar-cuenta")
 	public ResponseEntity<ResponseAPI> ActivarCuenta(@RequestBody String token) throws JsonProcessingException {
-		// TODO: terminar token, buscar por mail y verificar si ya fue activada la
-		// cuenta
 		if (usuarioServicio.elUsuarioFueYaEstaValidado(token)) {
 			return new ResponseEntity<>(response.RecursoYaExistente(), response.RecursoYaExistente().getStatus());
 		}

@@ -60,7 +60,11 @@ public class RecomendacionPortafolioApiImpl implements RecomendacionPortafolioAP
 		int idProductoAEnviar = 0;
 		if (idProducto == 0) {
 			Instrumento instrumentoPorPerfil = instrumentoServicio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);
-			idProductoAEnviar = instrumentoPorPerfil.getOid().intValue();
+			if (instrumentoPorPerfil != null && instrumentoPorPerfil.getOid() != null) {
+				idProductoAEnviar = instrumentoPorPerfil.getOid().intValue();
+			}else {
+				idProductoAEnviar = idProducto;
+			}
 		} else {
 			idProductoAEnviar = idProducto;
 		}

@@ -40,15 +40,14 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 	public void persistirInstrumentos(List<Instrumento> listaInstrumentos) {
 		for (Instrumento instrumento : listaInstrumentos) {
 			BigDecimal variacion = instrumento.getVariacionPorcentual();
-			if (variacion.compareTo(new BigDecimal(-2)) >= 0 && variacion.compareTo(new BigDecimal(2)) <= 0) {
+			if (esConservador(variacion)) {
 				instrumento.setCategoriaPerfil("Conservador");
-			} else if (variacion.compareTo(new BigDecimal(-5)) >= 0 && variacion.compareTo(new BigDecimal(5)) <= 0) {
+			} else if (esModerado(variacion)) {
 				instrumento.setCategoriaPerfil("Moderado");
 			} else {
 				instrumento.setCategoriaPerfil("Agresivo");
 			}
 			Instrumento instrumentoBuscado = instrumentoRepositorio.encontrarPorSimbolo(instrumento.getSimbolo());
-
 			if (instrumentoBuscado != null) {
 				instrumentoBuscado.setCategoriaPerfil(instrumento.getCategoriaPerfil());
 				instrumentoBuscado.setVariacionPorcentual(instrumento.getVariacionPorcentual());
@@ -57,6 +56,14 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 				instrumentoRepositorio.save(instrumento);
 			}
 		}
+	}
+
+	private boolean esModerado(BigDecimal variacion) {
+		return variacion.compareTo(new BigDecimal(-5)) >= 0 && variacion.compareTo(new BigDecimal(5)) <= 0;
+	}
+
+	private boolean esConservador(BigDecimal variacion) {
+		return variacion.compareTo(new BigDecimal(-2)) >= 0 && variacion.compareTo(new BigDecimal(2)) <= 0;
 	}
 
 	@Override

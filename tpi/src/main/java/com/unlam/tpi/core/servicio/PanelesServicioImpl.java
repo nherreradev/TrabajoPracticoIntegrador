@@ -44,8 +44,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
 		Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-		List<Instrumento> listaInstrumentos = listaPrecioServicio
-				.getListaPrecio(PanelesDePreciosConstantes.ACCIONES);
+		List<Instrumento> listaInstrumentos = listaPrecioServicio.getListaPrecio(PanelesDePreciosConstantes.ACCIONES);
 		determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosAccionesAux);
 		recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
 		listaInstrumentosAccionesAux.addAll(listaInstrumentos);
@@ -69,8 +68,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	@Override
 	public Map<String, Instrumento> getPanelDeCedears() {
 		Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-		List<Instrumento> listaInstrumentos = listaPrecioServicio
-				.getListaPrecio(PanelesDePreciosConstantes.CEDEARS);
+		List<Instrumento> listaInstrumentos = listaPrecioServicio.getListaPrecio(PanelesDePreciosConstantes.CEDEARS);
 		determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosCedearsAux);
 		recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
 		listaInstrumentosCedearsAux.addAll(listaInstrumentos);
@@ -84,8 +82,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 		for (Instrumento instrumento : listaInstrumentos) {
 			if (instrumento.getFlashVenta() != 0) {
 				for (Posicion posicion : posicionTotal) {
-					if (posicion.getSimboloInstrumento() != null && instrumento.getSimbolo() != null
-							&& !posicion.getEsEfectivo()) {
+					if (esTitulo(instrumento, posicion)) {
 						if (posicion.getSimboloInstrumento().equals(instrumento.getSimbolo())) {
 							posicion.setPrecioActualDeVenta(
 									instrumento.getPuntas() != null ? instrumento.getPuntas().getPrecioVenta() : null);
@@ -95,6 +92,11 @@ public class PanelesServicioImpl implements PanelesServicio {
 				}
 			}
 		}
+	}
+
+	private boolean esTitulo(Instrumento instrumento, Posicion posicion) {
+		return posicion.getSimboloInstrumento() != null && instrumento.getSimbolo() != null
+				&& !posicion.getEsEfectivo();
 	}
 
 	public void determinarFlashDeCompraVenta(Map<String, Instrumento> mapaInstrumentosAux,
@@ -113,39 +115,28 @@ public class PanelesServicioImpl implements PanelesServicio {
 						if (instrumentoAux.getPuntas() != null) {
 							BigDecimal precioCompraViejo = instrumentoAux.getPuntas().getPrecioCompra();
 							int comparacion = precioCompraNuevo.compareTo(precioCompraViejo);
-
-							// Establecer el valor de flash en función de la comparación
-							if (comparacion > 0) {
-								// El precio subió
-								instrumento.setFlashCompra(1);
-							} else if (comparacion < 0) {
-								// El precio bajó
-								instrumento.setFlashCompra(-1);
-							} else {
-								// El precio se mantuvo igual
-								instrumento.setFlashCompra(0);
-							}
+							instrumento.setFlashCompra(getValorFlash(comparacion));
 						}
 					}
 					if (instrumentoAux != null) {
 						if (instrumentoAux.getPuntas() != null) {
 							BigDecimal precioVentaViejo = instrumentoAux.getPuntas().getPrecioVenta();
 							int comparacion = precioVentaNuevo.compareTo(precioVentaViejo);
-
-							if (comparacion > 0) {
-								// El precio subió
-								instrumento.setFlashVenta(1);
-							} else if (comparacion < 0) {
-								// El precio bajó
-								instrumento.setFlashVenta(-1);
-							} else {
-								// El precio se mantuvo igual
-								instrumento.setFlashVenta(0);
-							}
+							instrumento.setFlashVenta(getValorFlash(comparacion));
 						}
 					}
 				}
 			}
+		}
+	}
+
+	private int getValorFlash(int comparacion) {
+		if (comparacion > 0) {
+			return 1;
+		} else if (comparacion < 0) {
+			return -1;
+		} else {
+			return 0;
 		}
 	}
 
