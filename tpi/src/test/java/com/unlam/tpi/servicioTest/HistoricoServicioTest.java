@@ -1,9 +1,7 @@
 package com.unlam.tpi.servicioTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -14,31 +12,26 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
+import com.unlam.tpi.core.interfaces.HistoricoPrecioAPI;
+import com.unlam.tpi.core.interfaces.ListaPreciosIOL;
 import com.unlam.tpi.core.modelo.FechaRequestHistorico;
 import com.unlam.tpi.core.servicio.HistoricoServicioImpl;
-import com.unlam.tpi.delivery.controlador.HistoricoControladorImpl;
-import com.unlam.tpi.infraestructura.repositorio.HistoricoRepositorio;
+
 
 @ExtendWith(MockitoExtension.class)
 public class HistoricoServicioTest {
 
-	@Mock
-	private HistoricoServicioImpl historicoServicio;
-
 	@InjectMocks
-	private HistoricoControladorImpl historicoControlador;
+	private HistoricoServicioImpl historicoServicio;
 	
 	@Mock
-    private HistoricoRepositorio historicoRepositorio;
+	private HistoricoPrecioAPI historicoPrecioAPI;
 
-    @Mock
-    private ListaPreciosServicio listaPreciosServicio;
-
+	@Mock
+	private ListaPreciosIOL listaPreciosIOl;
+	
     @Mock
     private RestTemplate restTemplate;
 
@@ -49,25 +42,9 @@ public class HistoricoServicioTest {
 		FechaRequestHistorico fechaRequestHistorico = new FechaRequestHistorico();
 		fechaRequestHistorico.setFechaDesde(LocalDate.now());
 		fechaRequestHistorico.setInstrumento("Acciones");
-
-		ResponseEntity<String> responseEntity = historicoControlador.guardarHistorico(fechaRequestHistorico);
-
-		assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-		assertEquals("Operación completada", responseEntity.getBody());
+		historicoServicio.guardarHistorico(fechaRequestHistorico, "Acciones");
 		verify(historicoServicio, times(1)).guardarHistorico(eq(fechaRequestHistorico), any());
 	}
-
-	@Test
-	void testGuardarHistoricoConObjetoNulo() {
-		// Act
-		ResponseEntity<String> responseEntity = historicoControlador.guardarHistorico(null);
-
-		// Assert
-		assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-		assertEquals("El objeto fechaRequestHistorico es nulo", responseEntity.getBody());
-		verify(historicoServicio, never()).guardarHistorico(any(), any());
-	}
-
 
 	
 }

@@ -22,25 +22,19 @@ public class HistoricoRendimientoServicioImpl implements HistoricoRendimientoSer
 
 	@Override
 	public void guardar(HistoricoRendimientos historicoRendimientos) {
-
 		List<HistoricoRendimientos> historicoRendimientoBuscado = historicoRendimientoRepositorio
 				.buscarPorSimboloYFecha(historicoRendimientos.getSimbolo(), historicoRendimientos.getFecha());
-
 		if (historicoRendimientoBuscado != null && historicoRendimientoBuscado.isEmpty()) {
 			historicoRendimientoRepositorio.save(historicoRendimientos);
 		}
-
 	}
 
 	@Override
 	public List<HistoricoRendimientosResponse> obtenerRendimientosHistoricosPorSimbolo(String simboloInstrumento,
 			Long usuarioOid) {
-
 		List<HistoricoRendimientosResponse> listaHistoricoRendimientosResponse = new ArrayList<>();
-
 		List<HistoricoRendimientos> listaHistoricoRendimientos = historicoRendimientoRepositorio
 				.obtenerRendimientosHistoricosPorSimbolo(simboloInstrumento, usuarioOid);
-
 		if (listaHistoricoRendimientos != null && !listaHistoricoRendimientos.isEmpty()) {
 			for (HistoricoRendimientos historicoRendimientos : listaHistoricoRendimientos) {
 				HistoricoRendimientosResponse historicoRendimientosResponse = new HistoricoRendimientosResponse();
@@ -51,11 +45,9 @@ public class HistoricoRendimientoServicioImpl implements HistoricoRendimientoSer
 				historicoRendimientosResponse.setFecha(historicoRendimientos.getFecha());
 				historicoRendimientosResponse.setCantidadDeTitulos(historicoRendimientos.getCantidadDeTitulos());
 				historicoRendimientosResponse.setValorInversion(historicoRendimientos.getValorInversion());
-
 				listaHistoricoRendimientosResponse.add(historicoRendimientosResponse);
 			}
 		}
-
 		return listaHistoricoRendimientosResponse;
 	}
 

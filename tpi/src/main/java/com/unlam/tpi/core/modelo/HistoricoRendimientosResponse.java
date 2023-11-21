@@ -1,10 +1,7 @@
 package com.unlam.tpi.core.modelo;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import javax.persistence.Column;
 
 public class HistoricoRendimientosResponse {
 

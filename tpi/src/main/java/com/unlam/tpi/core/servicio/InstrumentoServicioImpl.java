@@ -1,7 +1,6 @@
 package com.unlam.tpi.core.servicio;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -9,16 +8,12 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.unlam.tpi.core.interfaces.HistoricoServicio;
+import com.unlam.tpi.core.interfaces.HistoricoPrecioAPI;
 import com.unlam.tpi.core.interfaces.InstrumentoRepositorio;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PuntasServicio;
-import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
+import com.unlam.tpi.core.modelo.HistoricoInstrumento;
 import com.unlam.tpi.core.modelo.Instrumento;
-import com.unlam.tpi.delivery.dto.InstrumentoMapper;
 
 @Service
 @Transactional
@@ -31,39 +26,13 @@ public class InstrumentoServicioImpl implements InstrumentoServicio {
 	PuntasServicio puntasServicio;
 
 	@Autowired
-	HistoricoServicio historicoServicio;
+	HistoricoPrecioAPI historicoServicio;
 
 	@Override
-	public List<HistoricoInstrumentoRespuesta> getHistoricoInstrumento(String simbolo) {
-
+	public List<HistoricoInstrumento> getHistoricoInstrumento(String simbolo) {
 		Instrumento instrumento = obtenerInstrumentoPorSimbolo(simbolo);
-
-		List<HistoricoInstrumentoRespuesta> listaHistoricoInstrumentoRespuesta = new ArrayList<>();
-
-		String json = historicoServicio.getHistoricoMongo("mensual", instrumento.getCategoriaInstrumento(), simbolo);
-
-		JsonArray historicoArray = InstrumentoMapper.armarHistoricoArray(json);
-
-		for (JsonElement elemento : historicoArray) {
-			HistoricoInstrumentoRespuesta historicoInstrumentoRespuesta = new HistoricoInstrumentoRespuesta();
-			JsonObject objeto = elemento.getAsJsonObject();
-
-			String tiempo = objeto.get("fecha").getAsString();
-			String precioDeApertura = objeto.get("apertura").getAsString();
-			String maximo = objeto.get("maximo").getAsString();
-			String minimo = objeto.get("minimo").getAsString();
-			String precioDeCierre = objeto.get("cierre").getAsString();
-
-			historicoInstrumentoRespuesta = new HistoricoInstrumentoRespuesta();
-			historicoInstrumentoRespuesta.setTiempo(tiempo);
-			historicoInstrumentoRespuesta.setPrecioDeApertura(precioDeApertura);
-			historicoInstrumentoRespuesta.setMaximo(maximo);
-			historicoInstrumentoRespuesta.setMinimo(minimo);
-			historicoInstrumentoRespuesta.setPrecioDeCierre(precioDeCierre);
-
-			listaHistoricoInstrumentoRespuesta.add(historicoInstrumentoRespuesta);
-		}
-
+		List<HistoricoInstrumento> listaHistoricoInstrumentoRespuesta = historicoServicio
+				.getHistoricoMongo("mensual", instrumento.getCategoriaInstrumento(), simbolo);
 		return listaHistoricoInstrumentoRespuesta;
 	}
 

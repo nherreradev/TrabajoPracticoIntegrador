@@ -7,7 +7,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.interfaces.MailServicio;
 import com.unlam.tpi.core.interfaces.UsuarioRepositorio;
@@ -40,7 +39,6 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		this.mailServicio.prepararMailYEnviar(usuarioRestDTO, token);
 	}
 
-	// TODO agregar nickname
 	private Usuario crearUsuario(UsuarioRestDTO usuarioRestDTO, String token) {
 		Usuario usuario = UsuarioMapper.UsuarioRest2UsuarioModel(usuarioRestDTO);
 		usuario.setTokenValidacion(token);
@@ -90,7 +88,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public boolean usuarioValidadoPorPrimeraVez(String token) throws JsonProcessingException {
+	public boolean usuarioValidadoPorPrimeraVez(String token) {
 		JWTRestDTO res = this.autenticacionService.obtenerClaimsToken(token);
 		if (res.getEmailUsuario() != null) {
 			Usuario buscado = obtenerUsuarioPorEmail(res.getEmailUsuario());
@@ -102,7 +100,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public Boolean elUsuarioFueYaEstaValidado(String token) throws JsonProcessingException {
+	public Boolean elUsuarioFueYaEstaValidado(String token) {
 		JWTRestDTO UsuarioToken = autenticacionService.obtenerClaimsToken(token);
 		Usuario usuario = usuarioRepositorio.getUsuarioByEmail(UsuarioToken.getEmailUsuario());
 		return usuario.getCuentaConfirmada();
@@ -150,7 +148,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public Boolean cambioPassword(PasswordDto passwordDto) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException {
+	public Boolean cambioPassword(PasswordDto passwordDto) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		Usuario usuario = obtenerUsuarioPorToken(passwordDto.getToken());
 		if (usuario == null) {
 			return Boolean.FALSE;

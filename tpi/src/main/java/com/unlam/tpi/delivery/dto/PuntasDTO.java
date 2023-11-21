@@ -1,4 +1,4 @@
-package com.unlam.tpi.core.modelo;
+package com.unlam.tpi.delivery.dto;
 
 import java.math.BigDecimal;
 
@@ -10,33 +10,23 @@ import javax.persistence.Table;
 
 import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 
-@Entity
-@Table(name = "PUNTAS")
-public class Puntas extends ObjetoPersistente {
+public class PuntasDTO {
 
-	private static final long serialVersionUID = 1L;
+	private InstrumentoDTO instrumento;
 
-	@OneToOne
-	@JoinColumn(name = "INSTRUMENTO_ID", referencedColumnName = "oid_")
-	private Instrumento instrumento;
-
-	@Column(name = "CANTIDAD_COMPRA")
 	private int cantidadCompra;
 
-	@Column(name = "PRECIO_COMPRA")
 	private BigDecimal precioCompra;
 
-	@Column(name = "CANTIDAD_VENTA")
 	private int cantidadVenta;
 
-	@Column(name = "PRECIO_VENTA")
 	private BigDecimal precioVenta;
 
-	public Instrumento getInstrumento() {
+	public InstrumentoDTO getInstrumento() {
 		return instrumento;
 	}
 
-	public void setInstrumento(Instrumento instrumento) {
+	public void setInstrumento(InstrumentoDTO instrumento) {
 		this.instrumento = instrumento;
 	}
 

@@ -13,8 +13,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import com.unlam.tpi.core.interfaces.AutenticacionService;
-import com.unlam.tpi.core.servicio.MailServicioImpl;
 import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
+import com.unlam.tpi.infraestructura.api.MailServicioImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class MailServicioTest {

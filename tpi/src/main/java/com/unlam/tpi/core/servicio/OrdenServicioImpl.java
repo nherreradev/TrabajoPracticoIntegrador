@@ -1,6 +1,5 @@
 package com.unlam.tpi.core.servicio;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +10,7 @@ import com.unlam.tpi.core.modelo.Orden;
 import com.unlam.tpi.core.modelo.PuedeOperarResultado;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.delivery.dto.OrdenDTO;
+import com.unlam.tpi.delivery.dto.OrdenMapper;
 
 @Service
 public class OrdenServicioImpl implements OrdenServicio {
@@ -27,8 +27,7 @@ public class OrdenServicioImpl implements OrdenServicio {
 	}
 
 	public Orden crearOrden(OrdenDTO ordenDTO) {
-		ModelMapper modelMapper = new ModelMapper();
-		Orden orden = modelMapper.map(ordenDTO, Orden.class);
+		Orden orden = OrdenMapper.ordenDTOAOrden(ordenDTO);
 		preCreacion(orden);
 		return ordenRepositorio.save(orden);
 	}

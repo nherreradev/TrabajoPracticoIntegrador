@@ -1,4 +1,4 @@
-package com.unlam.tpi.core.modelo;
+package com.unlam.tpi.delivery.dto;
 
 import java.math.BigDecimal;
 
@@ -10,76 +10,52 @@ import javax.persistence.Table;
 
 import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 
-@Entity
-@Table(name = "INSTRUMENTO")
-public class Instrumento extends ObjetoPersistente {
+public class InstrumentoDTO extends ObjetoPersistente {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "SIMBOLO")
 	private String simbolo;
 
-	@Column(name = "CATEGORIA_INSTRUMENTO")
 	private String categoriaInstrumento;
 
-	@Column(name = "CATEGORIA_PERFIL")
 	private String categoriaPerfil;
 
-	@OneToOne(mappedBy = "instrumento", cascade = CascadeType.ALL)
-	private Puntas puntas;
+	private PuntasDTO puntas;
 
-	@Column(name = "ULTIMO_PRECIO")
 	private BigDecimal ultimoPrecio;
 
-	@Column(name = "VARIACION_PORCENTUAL")
 	private BigDecimal variacionPorcentual;
 
-	@Column(name = "APERTURA")
 	private BigDecimal apertura;
 
-	@Column(name = "MAXIMO")
 	private BigDecimal maximo;
 
-	@Column(name = "MINIMO")
 	private BigDecimal minimo;
 
-	@Column(name = "ULTIMO_CIERRE")
 	private BigDecimal ultimoCierre;
 
-	@Column(name = "VOLUMEN")
 	private BigDecimal volumen;
 
-	@Column(name = "CANTIDAD_OPERACIONES")
 	private int cantidadOperaciones;
 
-	@Column(name = "FECHA")
 	private String fecha;
 
-	@Column(name = "TIPO_OPCION")
 	private String tipoOpcion;
 
-	@Column(name = "PRECIO_EJERCICIO")
 	private BigDecimal precioEjercicio;
 
-	@Column(name = "FECHA_VENCIMIENTO")
 	private String fechaVencimiento;
 
-	@Column(name = "MERCADO")
 	private String mercado;
 
-	@Column(name = "MONEDA")
 	private String moneda;
 
-	@Column(name = "DESCRIPCION")
 	private String descripcion;
 
-	@Column(name = "PLAZO")
 	private String plazo;
 
-	@Column(name = "LAMINA_MINIMA")
 	private int laminaMinima;
 
-	@Column(name = "LOTE")
 	private int lote;
 
 	private int flashCompra = 0;
@@ -253,11 +229,11 @@ public class Instrumento extends ObjetoPersistente {
 		this.lote = lote;
 	}
 
-	public Puntas getPuntas() {
+	public PuntasDTO getPuntas() {
 		return puntas;
 	}
 
-	public void setPuntas(Puntas puntas) {
+	public void setPuntas(PuntasDTO puntas) {
 		this.puntas = puntas;
 	}
 

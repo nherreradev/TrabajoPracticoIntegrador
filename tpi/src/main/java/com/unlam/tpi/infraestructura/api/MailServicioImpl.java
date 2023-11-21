@@ -1,4 +1,4 @@
-package com.unlam.tpi.core.servicio;
+package com.unlam.tpi.infraestructura.api;
 
 import com.unlam.tpi.core.interfaces.AutenticacionService;
 import org.springframework.beans.factory.annotation.Autowired;

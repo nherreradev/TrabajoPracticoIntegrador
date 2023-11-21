@@ -16,14 +16,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.unlam.tpi.core.servicio.ListaPreciosServicioImpl;
 import com.unlam.tpi.core.servicio.PanelesServicioImpl;
+import com.unlam.tpi.infraestructura.api.ListaPreciosAPIImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class ListaPreciosServiceTest {
     private final RestTemplate restTemplate = new RestTemplate();
     @InjectMocks
-    private ListaPreciosServicioImpl lp = new ListaPreciosServicioImpl(restTemplate);
+    private ListaPreciosAPIImpl lp = new ListaPreciosAPIImpl(restTemplate);
     @Mock
     private PanelesServicioImpl ps = new PanelesServicioImpl();
     private static final String MERCADOJR_URL_ACCIONES = "https://api.mercadojunior.com.ar/list/precios/acciones";
@@ -37,7 +37,7 @@ public class ListaPreciosServiceTest {
         expect.put("acciones", true);
         ResponseEntity<String> mockResponse = new ResponseEntity<>("", HttpStatus.OK);
 
-        lp = mock(ListaPreciosServicioImpl.class);
+        lp = mock(ListaPreciosAPIImpl.class);
         ps = mock(PanelesServicioImpl.class);
 
         when(ps.getInstrumentos(MERCADOJR_URL_ACCIONES)).thenReturn(mockResponse);
@@ -56,7 +56,7 @@ public class ListaPreciosServiceTest {
         expect.put("acciones", true);
         ResponseEntity<String> mockResponse = new ResponseEntity<>("", HttpStatus.OK);
 
-        lp = mock(ListaPreciosServicioImpl.class);
+        lp = mock(ListaPreciosAPIImpl.class);
         ps = mock(PanelesServicioImpl.class);
 
         when(ps.getInstrumentos(MERCADOJR_URL_BONOS)).thenReturn(mockResponse);

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.core.interfaces.InstrumentoControlador;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
-import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
+import com.unlam.tpi.core.modelo.HistoricoInstrumento;
 
 @CrossOrigin
 @RestController
@@ -24,8 +24,8 @@ public class InstrumentoControladorImpl implements InstrumentoControlador {
 	
 	@Override
 	@GetMapping("/historico/{simbolo}")
-	public ResponseEntity<List<HistoricoInstrumentoRespuesta>> getHistoricoDeInstrumento(@PathVariable String simbolo) {
-		List<HistoricoInstrumentoRespuesta> historicoInstrumentoRespuesta = instrumentoServicio.getHistoricoInstrumento(simbolo);
+	public ResponseEntity<List<HistoricoInstrumento>> getHistoricoDeInstrumento(@PathVariable String simbolo) {
+		List<HistoricoInstrumento> historicoInstrumentoRespuesta = instrumentoServicio.getHistoricoInstrumento(simbolo);
 		return ResponseEntity.ok(historicoInstrumentoRespuesta);
 	}
 

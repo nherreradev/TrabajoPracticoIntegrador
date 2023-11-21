@@ -4,10 +4,10 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.unlam.tpi.delivery.dto.PrediccionPrecioDTO;
+import com.unlam.tpi.core.modelo.PrediccionPrecio;
 
 public interface PrediccionPreciosControlador {
 
-	ResponseEntity<PrediccionPrecioDTO> getDolar() throws JsonMappingException, JsonProcessingException;
+	ResponseEntity<PrediccionPrecio> getDolar() throws JsonMappingException, JsonProcessingException;
 
 }

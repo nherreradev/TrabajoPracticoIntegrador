@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.unlam.tpi.core.modelo.HistoricoInstrumentoRespuesta;
+import com.unlam.tpi.core.modelo.HistoricoInstrumento;
 
 public interface InstrumentoControlador {
 
-	public ResponseEntity<List<HistoricoInstrumentoRespuesta>> getHistoricoDeInstrumento(String simbolo);
+	public ResponseEntity<List<HistoricoInstrumento>> getHistoricoDeInstrumento(String simbolo);
 
 }

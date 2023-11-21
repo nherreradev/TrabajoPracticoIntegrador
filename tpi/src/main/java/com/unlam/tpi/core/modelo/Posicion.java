@@ -1,7 +1,6 @@
 package com.unlam.tpi.core.modelo;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -74,7 +73,7 @@ public class Posicion extends ObjetoPersistente {
 
 	@Column(name = "PRECIO_AL_MOMENTO_DE_COMPRA")
 	private BigDecimal precioAlMomentoDeCompra;
-	
+
 	@Column(name = "LIQUIDO_EXISTENCIA_DEL_SIMBOLO")
 	private Boolean liquidoExistenciaDelSimbolo;
 
@@ -181,7 +180,5 @@ public class Posicion extends ObjetoPersistente {
 	public void setLiquidoExistenciaDelSimbolo(Boolean liquidoExistenciaDelSimbolo) {
 		this.liquidoExistenciaDelSimbolo = liquidoExistenciaDelSimbolo;
 	}
-	
-	
 
 }

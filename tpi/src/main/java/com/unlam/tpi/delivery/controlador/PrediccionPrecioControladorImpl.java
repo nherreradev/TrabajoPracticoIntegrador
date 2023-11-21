@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.unlam.tpi.core.interfaces.PrediccionPrecioServicio;
 import com.unlam.tpi.core.interfaces.PrediccionPreciosControlador;
-import com.unlam.tpi.delivery.dto.PrediccionPrecioDTO;
+import com.unlam.tpi.core.modelo.PrediccionPrecio;
 
 @CrossOrigin
 @RestController
@@ -23,7 +23,7 @@ public class PrediccionPrecioControladorImpl implements PrediccionPreciosControl
 	
 	@Override
 	@GetMapping("/dolar")
-	public ResponseEntity<PrediccionPrecioDTO> getDolar() throws JsonMappingException, JsonProcessingException {
+	public ResponseEntity<PrediccionPrecio> getDolar() throws JsonMappingException, JsonProcessingException {
 		return ResponseEntity.ok(prediccionPreciosServicio.obtenerCotizacionDolar());
 	}
 }

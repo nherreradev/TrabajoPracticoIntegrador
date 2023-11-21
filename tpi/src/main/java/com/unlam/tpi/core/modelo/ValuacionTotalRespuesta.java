@@ -3,28 +3,18 @@ package com.unlam.tpi.core.modelo;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@JsonInclude(JsonInclude.Include.ALWAYS)
 public class ValuacionTotalRespuesta {
 
-	@JsonProperty("totalCartera")
 	private String totalCartera;
 
-	@JsonProperty("totalInstrumentos")
 	private String totalInstrumentos;
-	
-	@JsonProperty("totalMonedas")
+
 	private String totalMonedas;
-	
-	@JsonProperty("procentajeGananciaPerdida")
+
 	private String procentajeGananciaPerdida;
 
-	@JsonProperty("cantidadPorInstrumento")
 	private Map<String, BigDecimal> cantidadPorInstrumento;
 
-	@JsonProperty("totalCartera")
 	public String getTotalCartera() {
 		return totalCartera;
 	}
@@ -33,7 +23,6 @@ public class ValuacionTotalRespuesta {
 		this.totalCartera = totalCartera;
 	}
 
-	@JsonProperty("totalInstrumentos")
 	public String getTotalInstrumentos() {
 		return totalInstrumentos;
 	}
@@ -42,7 +31,6 @@ public class ValuacionTotalRespuesta {
 		this.totalInstrumentos = totalInstrumentos;
 	}
 
-	@JsonProperty("totalMonedas")
 	public String getTotalMonedas() {
 		return totalMonedas;
 	}
@@ -51,7 +39,6 @@ public class ValuacionTotalRespuesta {
 		this.totalMonedas = totalMonedas;
 	}
 
-	@JsonProperty("cantidadPorInstrumento")
 	public Map<String, BigDecimal> getCantidadPorInstrumento() {
 		return cantidadPorInstrumento;
 	}
@@ -60,7 +47,6 @@ public class ValuacionTotalRespuesta {
 		this.cantidadPorInstrumento = cantidadPorInstrumento;
 	}
 
-	@JsonProperty("procentajeGananciaPerdida")
 	public String getProcentajeGananciaPerdida() {
 		return procentajeGananciaPerdida;
 	}
@@ -68,7 +54,5 @@ public class ValuacionTotalRespuesta {
 	public void setProcentajeGananciaPerdida(String procentajeGananciaPerdida) {
 		this.procentajeGananciaPerdida = procentajeGananciaPerdida;
 	}
-	
-	
 
 }

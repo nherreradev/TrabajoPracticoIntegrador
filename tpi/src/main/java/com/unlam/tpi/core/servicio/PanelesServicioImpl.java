@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
-import com.unlam.tpi.core.interfaces.ListaPreciosServicio;
+import com.unlam.tpi.core.interfaces.ListaPreciosIOL;
 import com.unlam.tpi.core.interfaces.PanelPrecios;
 import com.unlam.tpi.core.interfaces.PanelesServicio;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
@@ -38,7 +38,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	PuntasServicio puntasServicio;
 
 	@Autowired
-	ListaPreciosServicio listaPrecioServicio;
+	ListaPreciosIOL listaPrecioServicio;
 
 	public static List<Instrumento> listaInstrumentosAccionesAux = new ArrayList<>();
 	public static List<Instrumento> listaInstrumentosBonosAux = new ArrayList<>();
@@ -62,12 +62,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	@Override
 	public Map<String, Instrumento> getPanelDeAcciones() {
 		Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			String listaPreciosJson = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.ACCIONES);
-		List<Instrumento> listaInstrumentos = InstrumentoMapper
-				.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
-		for (Instrumento instrumento : listaInstrumentos) {
-			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
-		}
+		List<Instrumento> listaInstrumentos = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.ACCIONES);
 		determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosAccionesAux);
 		recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
 		listaInstrumentosAccionesAux.addAll(listaInstrumentos);
@@ -79,12 +74,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	@Override
 	public Map<String, Instrumento> getPanelDeBonos() {
 		Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			String listaPreciosJson = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.BONOS);
-		List<Instrumento> listaInstrumentos = InstrumentoMapper
-				.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
-		for (Instrumento instrumento : listaInstrumentos) {
-			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.BONOS);
-		}
+		List<Instrumento> listaInstrumentos = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.BONOS);
 		determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosBonosAux);
 		recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
 		listaInstrumentosBonosAux.addAll(listaInstrumentos);
@@ -96,12 +86,7 @@ public class PanelesServicioImpl implements PanelesServicio {
 	@Override
 	public Map<String, Instrumento> getPanelDeCedears() {
 		Map<String, Instrumento> mapaInstrumentosAux = new HashMap<>();
-			String listaPreciosJson = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.CEDEARS);
-		List<Instrumento> listaInstrumentos = InstrumentoMapper
-				.convertirListaDeJsonAListaDeIntrumentos(listaPreciosJson);
-		for (Instrumento instrumento : listaInstrumentos) {
-			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.CEDEARS);
-		}
+		List<Instrumento> listaInstrumentos = listaPrecioServicio.getListaPrecioMongo(PanelesDePreciosConstantes.CEDEARS);
 		determinarFlashDeCompraVenta(mapaInstrumentosAux, listaInstrumentos, listaInstrumentosCedearsAux);
 		recalcularPosicionTotalSegunVariacionDePrecios(listaInstrumentos);
 		listaInstrumentosCedearsAux.addAll(listaInstrumentos);

@@ -17,7 +17,8 @@ public class InstrumentoMapper {
 	
 	private static ModelMapper mapper = new ModelMapper();
 
-	public static List<Instrumento> convertirListaDeJsonAListaDeIntrumentos(String listaPreciosJson) {
+	public static List<Instrumento> convertirListaDeJsonAListaDeIntrumentos(String listaPreciosJson,
+			String categoriaInstrumento) {
 		List<Instrumento> listaInstrumentos = new ArrayList<>();
 		if (listaPreciosJson == null) {
 			return listaInstrumentos;
@@ -28,7 +29,7 @@ public class InstrumentoMapper {
 		for (int i = 0; i < titulos.size(); i++) {
 			JsonObject jsonInstrumento = titulos.get(i).getAsJsonObject();
 			Instrumento instrumento = gson.fromJson(jsonInstrumento, Instrumento.class);
-			instrumento.setCategoriaInstrumento(PanelesDePreciosConstantes.ACCIONES);
+			instrumento.setCategoriaInstrumento(categoriaInstrumento);
 			listaInstrumentos.add(instrumento);
 		}
 		return listaInstrumentos;

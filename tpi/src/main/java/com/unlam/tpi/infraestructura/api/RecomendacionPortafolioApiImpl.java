@@ -1,14 +1,10 @@
-package com.unlam.tpi.core.servicio;
+package com.unlam.tpi.infraestructura.api;
 
 import java.io.FileWriter;
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Tuple;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,14 +14,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.unlam.tpi.core.interfaces.IARepositorio;
-import com.unlam.tpi.core.interfaces.IAServicio;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PortafolioSugerenciaServicio;
+import com.unlam.tpi.core.interfaces.RecomendacionPortafolioAPI;
 import com.unlam.tpi.core.modelo.Instrumento;
+import com.unlam.tpi.core.modelo.ServiceException;
 
 @Service
-@Transactional
-public class IAServicioImpl implements IAServicio {
+public class RecomendacionPortafolioApiImpl implements RecomendacionPortafolioAPI {
 
 	@Autowired
 	IARepositorio iARepositorio;
@@ -37,17 +33,21 @@ public class IAServicioImpl implements IAServicio {
 	PortafolioSugerenciaServicio portafolioSugerenciaServicio;
 
 	@Override
-	public void generarTXT(String tipo) throws IOException {
-		List<Tuple> result = iARepositorio.generarTxt(tipo);
-		FileWriter fileWriter;
-		fileWriter = new FileWriter(tipo + ".txt");
-		fileWriter.write("ProductID\tProductID_Copurchased\n");
-		for (Tuple tuple : result) {
-			String producto = tuple.get("producto").toString();
-			String coProducto = tuple.get("co_producto").toString();
-			fileWriter.write(producto + "\t" + coProducto + "\n");
+	public void generarTXT(String tipo) {
+		try {
+			List<Tuple> result = iARepositorio.generarTxt(tipo);
+			FileWriter fileWriter;
+			fileWriter = new FileWriter(tipo + ".txt");
+			fileWriter.write("ProductID\tProductID_Copurchased\n");
+			for (Tuple tuple : result) {
+				String producto = tuple.get("producto").toString();
+				String coProducto = tuple.get("co_producto").toString();
+				fileWriter.write(producto + "\t" + coProducto + "\n");
+			}
+			fileWriter.close();
+		} catch (Exception e) {
+			throw new ServiceException("Error al generar el txt de recomendacion", e);
 		}
-		fileWriter.close();
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class IAServicioImpl implements IAServicio {
 	}
 
 	@Override
-	public List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+	public List<Instrumento> obtenerPortafolioSugerido(String tipoPerfil, int idProducto) {
 		int idProductoAEnviar = 0;
 		if (idProducto == 0) {
 			Instrumento instrumentoPorPerfil = instrumentoServicio.obtenerInstrumentoPorTipoPerfil(tipoPerfil);

@@ -1,7 +1,6 @@
 package com.unlam.tpi.core.modelo;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -13,6 +12,8 @@ import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 @Entity
 @Table(name = "HISTORICO_RENDIMIENTOS")
 public class HistoricoRendimientos extends ObjetoPersistente {
+
+	private static final long serialVersionUID = 1L;
 
 	@Column(name = "SIMBOLO")
 	String simbolo;

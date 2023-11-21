@@ -3,8 +3,8 @@ package com.unlam.tpi.servicioTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.unlam.tpi.core.interfaces.PrediccionPrecioApi;
+import com.unlam.tpi.core.modelo.PrediccionPrecio;
 import com.unlam.tpi.core.servicio.PrediccionPrecioServicioImpl;
-import com.unlam.tpi.delivery.dto.PrediccionPrecioDTO;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,9 +26,9 @@ public class PrediccionPrecioServicioTest {
 
 	@Test
 	public void obtenerCotizacionDolar() throws JsonMappingException, JsonProcessingException {
-		PrediccionPrecioDTO prediccionPrecioDTOEsperado = new PrediccionPrecioDTO();
+		PrediccionPrecio prediccionPrecioDTOEsperado = new PrediccionPrecio();
 		when(prediccionPrecioApiMock.obtenerPrecio()).thenReturn(prediccionPrecioDTOEsperado);
-		PrediccionPrecioDTO resultado = prediccionPrecioServicio.obtenerCotizacionDolar();
+		PrediccionPrecio resultado = prediccionPrecioServicio.obtenerCotizacionDolar();
 		assertEquals(prediccionPrecioDTOEsperado, resultado);
 	}
 }

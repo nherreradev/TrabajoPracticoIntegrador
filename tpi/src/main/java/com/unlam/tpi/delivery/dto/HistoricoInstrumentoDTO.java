@@ -1,8 +1,6 @@
 package com.unlam.tpi.delivery.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;

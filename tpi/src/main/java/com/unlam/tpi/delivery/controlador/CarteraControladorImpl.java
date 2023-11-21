@@ -33,10 +33,8 @@ public class CarteraControladorImpl implements CarteraControlador {
 	@GetMapping("/valuacion/total")
 	public ResponseEntity<ValuacionTotalRespuesta> getValuacionTotal(
 			@RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException {
-		
 		String token = getToken(headerAuthorization);
 		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
-		
 		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal(usuario.getOid());
 		return ResponseEntity.ok(valuacionTotalRespuesta);
 	}

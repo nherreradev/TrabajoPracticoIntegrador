@@ -1,8 +1,8 @@
-package com.unlam.tpi.delivery.dto;
+package com.unlam.tpi.core.modelo;
 
 import java.math.BigDecimal;
 
-public class PrecioDTO {
+public class Precio {
 
 	private String fecha;
 	private BigDecimal precio;

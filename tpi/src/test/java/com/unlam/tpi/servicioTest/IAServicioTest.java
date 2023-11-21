@@ -17,13 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.unlam.tpi.core.interfaces.InstrumentoServicio;
 import com.unlam.tpi.core.interfaces.PortafolioSugerenciaServicio;
 import com.unlam.tpi.core.modelo.Instrumento;
-import com.unlam.tpi.core.servicio.IAServicioImpl;
+import com.unlam.tpi.infraestructura.api.RecomendacionPortafolioApiImpl;
 
 @ExtendWith(MockitoExtension.class)
 class IAServicioTest {
 
 	@InjectMocks
-	IAServicioImpl IAServicioImpl;
+	RecomendacionPortafolioApiImpl IAServicioImpl;
 
 	@Mock
 	InstrumentoServicio instrumentoServicio;

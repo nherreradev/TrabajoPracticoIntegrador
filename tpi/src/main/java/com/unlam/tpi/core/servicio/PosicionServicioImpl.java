@@ -1,7 +1,6 @@
 package com.unlam.tpi.core.servicio;
 
 import static com.unlam.tpi.core.modelo.OrdenConstantes.COMPRA;
-import static com.unlam.tpi.infraestructura.helpers.CalculosHabituales.esMasGrandeQue;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,7 +33,6 @@ import com.unlam.tpi.core.modelo.RendimientoResponse;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
-import com.unlam.tpi.infraestructura.helpers.CalculosHabituales;
 
 @Service
 public class PosicionServicioImpl implements PosicionServicio {
@@ -114,7 +112,7 @@ public class PosicionServicioImpl implements PosicionServicio {
 			BigDecimal titulosQueMeQuedarianEnCartera = totalTitulosEnPosicion.subtract(cantidadTitulosAVender);
 
 			if (instrumentosPorCantidad.containsKey(orden.getSimboloInstrumento())) {
-				if (CalculosHabituales.esMasGrandeQue(cantidadTitulosAVender, totalTitulosEnPosicion)) {
+				if (esMasGrandeQue(cantidadTitulosAVender, totalTitulosEnPosicion)) {
 					puedeOperarResultado.setPuedeOperar(false);
 					puedeOperarResultado.setDisponible(totalTitulosEnPosicion);
 				} else {
@@ -539,6 +537,10 @@ public class PosicionServicioImpl implements PosicionServicio {
 		}
 
 		return listaFiltrada;
+	}
+	
+	public Boolean esMasGrandeQue(BigDecimal v1, BigDecimal v2) {
+		return (v1 != null && v2 != null) ? v1.compareTo(v2) > 0 : Boolean.FALSE;
 	}
 
 }

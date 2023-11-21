@@ -1,6 +1,5 @@
 package com.unlam.tpi.infraestructura.api;
 
-import java.io.IOException;
 import java.net.URI;
 
 import javax.annotation.PostConstruct;
@@ -18,12 +17,11 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.unlam.tpi.core.interfaces.PrediccionPrecioApi;
+import com.unlam.tpi.core.modelo.PrediccionPrecio;
 import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.delivery.dto.PrediccionPrecioDTO;
 
 @Service
 public class PrediccionPrecioApiImpl implements PrediccionPrecioApi{
@@ -53,15 +51,19 @@ public class PrediccionPrecioApiImpl implements PrediccionPrecioApi{
 	}
 	
 	@Override
-	public PrediccionPrecioDTO obtenerPrecio() throws JsonMappingException, JsonProcessingException {
+	public PrediccionPrecio obtenerPrecio(){
 			RequestEntity<Object> requestEntity = new RequestEntity<>(HttpMethod.GET, URI.create(dolarUrl));
 			ResponseEntity<String> response = restTemplate.exchange(dolarUrl, HttpMethod.GET, requestEntity, String.class);
-
 			if (response.getStatusCode() != HttpStatus.OK) {
 				throw new ServiceException("Error realizando la consulta a la API Prediccion de doalar");
 			}
-			PrediccionPrecioDTO prediccionPrecioDTO = (PrediccionPrecioDTO) getMapper()
-					.readerFor(PrediccionPrecioDTO.class).readValue(response.getBody());
+			PrediccionPrecio prediccionPrecioDTO;
+			try {
+				prediccionPrecioDTO = (PrediccionPrecio) getMapper()
+						.readerFor(PrediccionPrecio.class).readValue(response.getBody());
+			} catch (JsonProcessingException e) {
+				throw new ServiceException("Error realizando la consulta a la API Prediccion de doalar", e);
+			}
 			return prediccionPrecioDTO;
 	}
 
