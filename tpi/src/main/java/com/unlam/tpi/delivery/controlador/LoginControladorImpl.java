@@ -32,7 +32,7 @@ public class LoginControladorImpl implements LoginControlador {
 			TokenDTO tokenERROR = new TokenDTO();
 			return ResponseEntity.badRequest().body(tokenERROR);
 		}
-		TokenDTO Token = this.loginServicio.IniciarSesion(usuarioLogin);
+		TokenDTO Token = this.loginServicio.iniciarSesion(usuarioLogin);
 		return ResponseEntity.ok(Token);
 	}
 

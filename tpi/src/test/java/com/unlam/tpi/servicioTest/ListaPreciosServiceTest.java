@@ -1,6 +1,6 @@
 package com.unlam.tpi.servicioTest;
 
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
