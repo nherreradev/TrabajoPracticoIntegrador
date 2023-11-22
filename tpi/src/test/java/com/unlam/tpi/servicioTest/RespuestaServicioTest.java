@@ -29,8 +29,6 @@ import com.unlam.tpi.core.modelo.TipoComponente;
 import com.unlam.tpi.core.servicio.RespuestaServicioImpl;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
 import com.unlam.tpi.delivery.dto.PreguntaMapper;
-import com.unlam.tpi.delivery.dto.RespuestaDTO;
-import com.unlam.tpi.delivery.dto.RespuestaMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class RespuestaServicioTest {
