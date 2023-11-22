@@ -27,8 +27,6 @@ public class IARepositorioImpl implements IARepositorio {
 		CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
 		Root<Instrumento> ins1 = criteriaQuery.from(Instrumento.class);
 		Root<Instrumento> ins2 = criteriaQuery.from(Instrumento.class);
-
-		// Condiciones para unir las tablas y filtrar
 		Predicate predicate = criteriaBuilder.and(criteriaBuilder.equal(ins1.get("categoriaPerfil"), tipoPerfil),
 				criteriaBuilder.equal(ins2.get("categoriaPerfil"), tipoPerfil),
 				criteriaBuilder.notEqual(ins2.get("oid"), ins1.get("oid")));

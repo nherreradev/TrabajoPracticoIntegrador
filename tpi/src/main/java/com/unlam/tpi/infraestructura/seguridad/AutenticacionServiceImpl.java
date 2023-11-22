@@ -13,7 +13,6 @@ import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.modelo.JWTRest;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
-import com.unlam.tpi.delivery.dto.UsuarioMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -27,7 +26,7 @@ public class AutenticacionServiceImpl implements AutenticacionService {
 	private static String SECRET_KEY = "Fd/sUclIKu1QgBgPkrMdeuoBppm+3tK8cSH97SI0rp0=";
 
 	@Override
-	public String GenerarTokenValidacionCuenta(String email){
+	public String generarTokenValidacionCuenta(String email){
 		String jwt = Jwts.builder().setSubject("usuario").claim("accion", "tokenValidacionCuenta")
 				.claim("mail", email).signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
 		return jwt;
@@ -46,7 +45,7 @@ public class AutenticacionServiceImpl implements AutenticacionService {
 
 	
 	@Override
-	public String GenerarSecretJWT() {
+	public String generarSecretJWT() {
 		try {
 			String secretKeyString = "tpi_registro";
 			String salt = UUID.randomUUID().toString();

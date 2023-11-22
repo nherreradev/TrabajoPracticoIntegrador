@@ -26,18 +26,13 @@ public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomi
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
 		Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate simboloInstrumentoPredicado = criteriaBuilder.equal(root.get("simbolo"), simbolo);
-
 		criteriaQuery.where(deletedPredicado, simboloInstrumentoPredicado);
-
 		List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
-
 		if (resultados.isEmpty()) {
 			return null;
 		}
-
 		return resultados.get(0);
 	}
 
@@ -46,20 +41,14 @@ public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomi
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
 		Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
-
 		criteriaQuery.where(deletedPredicado);
-
 		TypedQuery<Instrumento> query = entityManager.createQuery(criteriaQuery);
 		query.setMaxResults(4);
-
 		List<Instrumento> resultados = query.getResultList();
-
 		if (resultados.isEmpty()) {
 			return null;
 		}
-
 		return resultados;
 	}
 
@@ -68,18 +57,13 @@ public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomi
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
 		Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate oidPredicado = criteriaBuilder.equal(root.get("oid"), coProductoID);
-
 		criteriaQuery.where(deletedPredicado, oidPredicado);
-
 		List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
-
 		if (resultados.isEmpty()) {
 			return null;
 		}
-
 		return resultados.get(0);
 	}
 
@@ -88,18 +72,13 @@ public class InstrumentoRepositorioImpl implements InstrumentoRepositorioCustomi
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Instrumento> criteriaQuery = criteriaBuilder.createQuery(Instrumento.class);
 		Root<Instrumento> root = criteriaQuery.from(Instrumento.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate oidPredicado = criteriaBuilder.equal(root.get("categoriaPerfil"), tipoPerfil);
-
 		criteriaQuery.where(deletedPredicado, oidPredicado);
-
 		List<Instrumento> resultados = entityManager.createQuery(criteriaQuery).getResultList();
-
 		if (resultados.isEmpty()) {
 			return null;
 		}
-
 		return resultados.get(0);
 	}
 

@@ -57,7 +57,7 @@ public class UsuarioServicioTest {
 
     @Test
     public void deberiaGuardarUsuarioExitosamente() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        when(autenticacionService.GenerarTokenValidacionCuenta(USUARIO_EXISTENTE_NO_CONFIRMADO.getEmail())).thenReturn(TOKEN);
+        when(autenticacionService.generarTokenValidacionCuenta(USUARIO_EXISTENTE_NO_CONFIRMADO.getEmail())).thenReturn(TOKEN);
         usuarioServicio.guardarUsuario(USUARIO_EXISTENTE_NO_CONFIRMADO);
         verify(usuarioRepositorio, times(1)).save(USUARIO_EXISTENTE_NO_CONFIRMADO);
         verify(mailServicio, times(1)).prepararMailYEnviar(USUARIO_EXISTENTE_NO_CONFIRMADO, TOKEN);

@@ -25,13 +25,10 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
 		Root<Posicion> root = criteriaQuery.from(Posicion.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate esEfectivoPredicado = criteriaBuilder.equal(root.get("esEfectivo"), true);
 		Predicate usuarioPredicado = criteriaBuilder.equal(root.get("usuarioOid"), oidUsuario);
-
 		criteriaQuery.where(deletedPredicado, esEfectivoPredicado, usuarioPredicado);
-
 		return entityManager.createQuery(criteriaQuery).getResultList();
 	}
 
@@ -40,14 +37,11 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
 		Root<Posicion> root = criteriaQuery.from(Posicion.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate simboloInstrumentoPredicado = criteriaBuilder.equal(root.get("simboloInstrumento"),
 				simboloInstrumento);
 		Predicate usuarioPredicado = criteriaBuilder.equal(root.get("usuarioOid"), usuarioOid);
-
 		criteriaQuery.where(deletedPredicado, simboloInstrumentoPredicado, usuarioPredicado);
-
 		return entityManager.createQuery(criteriaQuery).getResultList();
 	}
 
@@ -56,13 +50,10 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
 		Root<Posicion> root = criteriaQuery.from(Posicion.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate usuarioIdPredicado = criteriaBuilder.equal(root.get("usuarioOid"), oidUsuario);
 		Predicate conceptoPredicado = criteriaBuilder.equal(root.get("concepto"), concepto);
-
 		criteriaQuery.where(deletedPredicado, usuarioIdPredicado, conceptoPredicado);
-
 		List<Posicion> listaPosicion = entityManager.createQuery(criteriaQuery).getResultList();
 		if (listaPosicion.size() == 0) {
 			return null;
@@ -76,13 +67,10 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
 		Root<Posicion> root = criteriaQuery.from(Posicion.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate noEsEfectivoPredicado = criteriaBuilder.equal(root.get("esEfectivo"), false);
 		Predicate usuarioPredicado = criteriaBuilder.equal(root.get("usuarioOid"), usuarioOid);
-
 		criteriaQuery.where(deletedPredicado, noEsEfectivoPredicado, usuarioPredicado);
-
 		return entityManager.createQuery(criteriaQuery).getResultList();
 	}
 
@@ -91,11 +79,8 @@ public class PosicionRepositorioImpl implements PosicionRepositorioCustomizada {
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Posicion> criteriaQuery = criteriaBuilder.createQuery(Posicion.class);
 		Root<Posicion> root = criteriaQuery.from(Posicion.class);
-
 		Predicate filtroUsuario = criteriaBuilder.equal(root.get("usuarioOid"), oidUsuario);
-
 		criteriaQuery.where(filtroUsuario);
-
 		return entityManager.createQuery(criteriaQuery).getResultList();
 	}
 

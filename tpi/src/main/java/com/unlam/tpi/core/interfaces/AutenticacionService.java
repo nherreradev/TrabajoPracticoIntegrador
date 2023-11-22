@@ -11,8 +11,8 @@ public interface AutenticacionService {
 
     Usuario obtenerDatosUsuarioByToken(String token);
 
-	String GenerarTokenValidacionCuenta(String email);
+	String generarTokenValidacionCuenta(String email);
 
-	String GenerarSecretJWT();
+	String generarSecretJWT();
 
 }

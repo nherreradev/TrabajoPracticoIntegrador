@@ -27,7 +27,7 @@ public class AutenticacionServiceTest {
 
 	@Test
 	void generarTokenValidacionCuenta() throws NoSuchAlgorithmException, InvalidKeySpecException {
-		String token = autenticacionService.GenerarTokenValidacionCuenta("usuariotest@gmail.com");
+		String token = autenticacionService.generarTokenValidacionCuenta("usuariotest@gmail.com");
 		assertEquals(true, token.length() > 0);
 	}
 

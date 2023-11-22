@@ -26,13 +26,10 @@ public class HistoricoRendimientoRepositorioImpl implements HistoricoRendimiento
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<HistoricoRendimientos> criteriaQuery = criteriaBuilder.createQuery(HistoricoRendimientos.class);
 		Root<HistoricoRendimientos> root = criteriaQuery.from(HistoricoRendimientos.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate simboloPredicado = criteriaBuilder.equal(root.get("simbolo"), simbolo);
 		Predicate fechaPredicado = criteriaBuilder.equal(root.get("fecha"), fecha);
-
 		criteriaQuery.where(deletedPredicado, simboloPredicado, fechaPredicado);
-
 		return entityManager.createQuery(criteriaQuery).getResultList();
 	}
 
@@ -42,13 +39,10 @@ public class HistoricoRendimientoRepositorioImpl implements HistoricoRendimiento
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<HistoricoRendimientos> criteriaQuery = criteriaBuilder.createQuery(HistoricoRendimientos.class);
 		Root<HistoricoRendimientos> root = criteriaQuery.from(HistoricoRendimientos.class);
-
 		Predicate deletedPredicado = criteriaBuilder.equal(root.get("deleted"), false);
 		Predicate simboloPredicado = criteriaBuilder.equal(root.get("simbolo"), simboloInstrumento);
 		Predicate usuarioPredicado = criteriaBuilder.equal(root.get("usuarioOid"), usuarioOid);
-
 		criteriaQuery.where(deletedPredicado, simboloPredicado, usuarioPredicado);
-
 		return entityManager.createQuery(criteriaQuery).getResultList();
 	}
 

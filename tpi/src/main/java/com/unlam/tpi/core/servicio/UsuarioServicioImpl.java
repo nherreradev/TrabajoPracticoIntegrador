@@ -27,7 +27,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
 	@Override
 	public void guardarUsuario(Usuario usuario) {
-		String token = this.autenticacionService.GenerarTokenValidacionCuenta(usuario.getEmail());
+		String token = this.autenticacionService.generarTokenValidacionCuenta(usuario.getEmail());
 		crearUsuario(usuario, token);
 		this.usuarioRepositorio.save(usuario);
 		this.mailServicio.prepararMailYEnviar(usuario, token);
@@ -121,7 +121,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			return;
 		Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
 		if (buscado != null) {
-			String token = this.autenticacionService.GenerarSecretJWT();
+			String token = this.autenticacionService.generarSecretJWT();
 			buscado.setActivo(Boolean.FALSE);
 			buscado.setCuentaConfirmada(Boolean.FALSE);
 			buscado.setTokenValidacion(token);
@@ -136,7 +136,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 		if (usuario == null) {
 			return Boolean.FALSE;
 		}
-		String newToken = this.autenticacionService.GenerarSecretJWT();
+		String newToken = this.autenticacionService.generarSecretJWT();
 		usuario.setCuentaConfirmada(Boolean.TRUE);
 		usuario.setActivo(Boolean.TRUE);
 		usuario.setPass(newPassword);
