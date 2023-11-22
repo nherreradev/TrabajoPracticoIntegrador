@@ -45,7 +45,6 @@ public class CategoriaServicioTest {
 		verify(categoriaRepositorio, never()).save(any(Categoria.class));
 	}
 
-	
 	@Test
     public void testQuePuedaCargarLasCategoriasDesdeExcelYMeListeLasCategorias() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelCategoria", "pregunta.xls", "application/x-xlsx",
@@ -74,26 +73,6 @@ public class CategoriaServicioTest {
  		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
-	
-	@Test
-	public void testQuePuedaObtenerUnaCategoriaDTOPorNombre() {
-		CategoriaDTO categoria = new CategoriaDTO();
-		categoria.setNombre("CategoriaPrueba");
-		categoria.setDescripcion("Esto es un test");
-		getCategoriaServicio().guardar(categoria);
-		when(categoriaRepositorio.findByNombre("CategoriaPrueba")).thenReturn(CategoriaMapper.dTOaEntidad(categoria));
-		assertNotNull(getCategoriaServicio().getCategoriaDTOPorNombre("CategoriaPrueba"));
-	}
-	
-	@Test
-	public void testQueBusqueUnaCategoriaPorNombreYNoLaEncuentre() {
-		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-			getCategoriaServicio().getCategoriaDTOPorNombre("Noexiste");
-		});
-		String expectedMessage = "Error al obtener la categoria por nombre";
-		String actualMessage = serviceException.getMessage();
-		assertTrue(actualMessage.contains(expectedMessage));
-	}
 	
 	public CategoriaServicio getCategoriaServicio() {
 		return categoriaServicio;

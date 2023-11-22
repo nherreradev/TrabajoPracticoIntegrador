@@ -2,7 +2,7 @@ package com.unlam.tpi.delivery.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UsuarioRestDTO {
+public class UsuarioRest {
 
     @JsonProperty("nombre")
     private String nombre;
@@ -16,7 +16,7 @@ public class UsuarioRestDTO {
     private String pass;
 
 
-	public UsuarioRestDTO(String nombre, String apellido, String nombreUsuario, String email, String pass) {
+	public UsuarioRest(String nombre, String apellido, String nombreUsuario, String email, String pass) {
 		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -25,7 +25,7 @@ public class UsuarioRestDTO {
 		this.pass = pass;
 	}
 
-	public UsuarioRestDTO() {}
+	public UsuarioRest() {}
 	
 	public String getNombre() {
         return nombre;

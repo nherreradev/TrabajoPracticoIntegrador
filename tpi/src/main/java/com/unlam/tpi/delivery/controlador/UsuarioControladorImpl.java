@@ -21,7 +21,7 @@ import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.PasswordDto;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
 import com.unlam.tpi.delivery.dto.UsuarioMapper;
-import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
+import com.unlam.tpi.delivery.dto.UsuarioRest;
 
 @RestController
 @RequestMapping("/api")
@@ -32,12 +32,12 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 
 	@Override
 	@PostMapping("/guardar-usuario")
-	public ResponseEntity<ResponseAPI> RegistrarUsuario(@RequestBody UsuarioRestDTO usuarioRegistro) throws Exception {
+	public ResponseEntity<ResponseAPI> RegistrarUsuario(@RequestBody UsuarioRest usuarioRegistro) throws Exception {
 		if (this.usuarioServicio.existeEmail(usuarioRegistro.getEmail())
 				|| this.usuarioServicio.existeNombreUsuario(usuarioRegistro.getNombreUsuario()))
 			return new ResponseEntity<>(response.RecursoYaExistente(), response.RecursoYaExistente().getStatus());
 		else
-			this.usuarioServicio.guardarUsuario(usuarioRegistro);
+			this.usuarioServicio.guardarUsuario(UsuarioMapper.UsuarioRest2UsuarioModel(usuarioRegistro));
 		return new ResponseEntity<>(response.MensajeDeExito(), response.MensajeDeExito().getStatus());
 	}
 
@@ -66,10 +66,10 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 	@Override
 	@PostMapping("/activar-cuenta")
 	public ResponseEntity<ResponseAPI> ActivarCuenta(@RequestBody String token) throws JsonProcessingException {
-		if (usuarioServicio.elUsuarioFueYaEstaValidado(token)) {
+		if (usuarioServicio.elUsuarioFueYaEstaValidado(UsuarioMapper.ObtenerBodyToken(token))) {
 			return new ResponseEntity<>(response.RecursoYaExistente(), response.RecursoYaExistente().getStatus());
 		}
-		if (!this.usuarioServicio.usuarioValidadoPorPrimeraVez(token)) {
+		if (!this.usuarioServicio.usuarioValidadoPorPrimeraVez(UsuarioMapper.ObtenerBodyToken(token))) {
 			return new ResponseEntity<>(response.MensajeDeErrorEnRequest(),
 					response.MensajeDeErrorEnRequest().getStatus());
 		}
@@ -78,8 +78,9 @@ public class UsuarioControladorImpl implements UsuarioControlador {
 
 	@Override
 	@PostMapping("/cambiar-password")
-	public ResponseEntity<ResponseAPI> cambiarPassword(@RequestBody PasswordDto passwordDto) throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException {
-		if (!this.usuarioServicio.cambioPassword(passwordDto)) {
+	public ResponseEntity<ResponseAPI> cambiarPassword(@RequestBody PasswordDto passwordDto)
+			throws JsonProcessingException, NoSuchAlgorithmException, InvalidKeySpecException {
+		if (!this.usuarioServicio.cambioPassword(passwordDto.getNewPassword(), passwordDto.getToken())) {
 			return new ResponseEntity<>(response.MensajeDeErrorEnRequest(),
 					response.MensajeDeErrorEnRequest().getStatus());
 		}

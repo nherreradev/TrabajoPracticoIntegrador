@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.modelo.JWTRest;
 import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.delivery.dto.UsuarioDTO;
+import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.UsuarioMapper;
 
 import io.jsonwebtoken.Claims;
@@ -34,7 +34,7 @@ public class AutenticacionServiceImpl implements AutenticacionService {
 	}
 
 	@Override
-	public String generarTokenLoginUsuario(UsuarioDTO usuario) {
+	public String generarTokenLoginUsuario(Usuario usuario) {
 		String jwt = Jwts.builder().setSubject("usuario").claim("nombreUsuario", usuario.getNombreUsuario())
 				.claim("nombre", usuario.getNombre()).claim("apellido", usuario.getEmail())
 				.claim("premium", usuario.getPremium()).claim("email", usuario.getEmail())
@@ -69,23 +69,22 @@ public class AutenticacionServiceImpl implements AutenticacionService {
 
 	@Override
 	public JWTRest obtenerClaimsToken(String token) {
-		JWTRest jwtRestDTO = new JWTRest();
-		String tokenDeserializado = UsuarioMapper.ObtenerBodyToken(token);
-		Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(tokenDeserializado).getBody();
+		JWTRest jwtRest = new JWTRest();
+		Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
 		String accion = claims.get("accion", String.class);
 		String mail = claims.get("mail", String.class);
 		Boolean estaValidado = claims.get("validado", Boolean.class);
 		String password = claims.get("pass", String.class);
-		jwtRestDTO.setAccion(accion);
-		jwtRestDTO.setEmailUsuario(mail);
-		jwtRestDTO.setEstaValidado(estaValidado);
-		jwtRestDTO.setPass(password);
-		return jwtRestDTO;
+		jwtRest.setAccion(accion);
+		jwtRest.setEmailUsuario(mail);
+		jwtRest.setEstaValidado(estaValidado);
+		jwtRest.setPass(password);
+		return jwtRest;
 	}
 
 	@Override
-	public UsuarioDTO obtenerDatosUsuarioByToken(String token) {
-		UsuarioDTO usuario = new UsuarioDTO();
+	public Usuario obtenerDatosUsuarioByToken(String token) {
+		Usuario usuario = new Usuario();
 		Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
 		usuario.setOid(claims.get("oid", Long.class));
 		usuario.setEmail(claims.get("email", String.class));

@@ -27,6 +27,7 @@ import com.unlam.tpi.core.interfaces.PreguntaServicio;
 import com.unlam.tpi.core.interfaces.SeccionServicio;
 import com.unlam.tpi.core.modelo.Pregunta;
 import com.unlam.tpi.core.modelo.ServiceException;
+import com.unlam.tpi.core.modelo.TipoComponente;
 import com.unlam.tpi.core.servicio.PreguntaServicioImpl;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
 import com.unlam.tpi.delivery.dto.CategoriaMapper;
@@ -35,7 +36,6 @@ import com.unlam.tpi.delivery.dto.PreguntaMapper;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
 import com.unlam.tpi.delivery.dto.SeccionDTO;
 import com.unlam.tpi.delivery.dto.SeccionMapper;
-import com.unlam.tpi.delivery.dto.TipoComponente;
 
 @ExtendWith(MockitoExtension.class)
 public class PreguntaServicioTest {

@@ -1,44 +1,37 @@
 package com.unlam.tpi.core.interfaces;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import com.unlam.tpi.core.modelo.PerfilInversor;
-import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
-
-import net.sf.jasperreports.engine.JRException;
 
 public interface PerfilInversorServicio {
 
 	@Transactional
-	public PerfilInversorDTO resultadoPerfilSubjetivo(PerfilInversorDTO perfilInversorDTO);
+	public PerfilInversor resultadoPerfilSubjetivo(PerfilInversor perfilInversorDTO);
 
 	@Transactional
-	public PerfilInversorDTO resultadoNivelConocimiento(PerfilInversorDTO perfilInversorDTO);
+	public PerfilInversor resultadoNivelConocimiento(PerfilInversor perfilInversorDTO);
 
 	@Transactional
-	public PerfilInversorDTO resultadoPerfilInversor(PerfilInversorDTO perfilInversorDTO);
+	public PerfilInversor resultadoPerfilInversor(PerfilInversor perfilInversorDTO);
 	
 	@Transactional
-	public void guardar(PerfilInversorDTO perfilInversorDTO);
-
-	@Transactional
-	public PerfilInversorDTO obtener(Long id);
+	public PerfilInversor obtener(Long id);
 
 	@Transactional
 	public void borrar(Long id);
 
 	@Transactional
-	public List<PerfilInversorDTO> listar();
+	public List<PerfilInversor> listar();
 
 	@Transactional
-	public byte[] obtenerCertificado(String nombreUsuario) throws JRException, SQLException;
+	public byte[] obtenerCertificado(String nombreUsuario);
 
 	@Transactional
 	public PerfilInversor guardar(PerfilInversor perfilInversor);
 
-	public PerfilInversorDTO listarporUsuario(Long id);
+	public PerfilInversor listarporUsuario(Long id);
 
 }

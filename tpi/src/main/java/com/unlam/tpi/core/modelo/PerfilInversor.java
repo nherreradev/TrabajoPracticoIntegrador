@@ -10,8 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;
-import com.unlam.tpi.delivery.dto.TipoPerfilInversor;
 import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 
 @Entity
@@ -83,10 +81,6 @@ public class PerfilInversor extends ObjetoPersistente {
 
 	public void setPerfilInversor(TipoPerfilInversor perfilInversor) {
 		this.perfilInversor = perfilInversor;
-	}
-
-	public Integer getResultadoPerfilado() {
-		return toleranciaRiesgo + nivelConocimiento / 2;
 	}
 
 	public Usuario getUsuario() {

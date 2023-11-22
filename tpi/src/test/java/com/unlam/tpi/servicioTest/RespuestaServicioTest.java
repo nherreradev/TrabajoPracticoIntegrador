@@ -25,12 +25,12 @@ import com.unlam.tpi.core.interfaces.RespuestaRepositorio;
 import com.unlam.tpi.core.interfaces.RespuestaServicio;
 import com.unlam.tpi.core.modelo.Respuesta;
 import com.unlam.tpi.core.modelo.ServiceException;
+import com.unlam.tpi.core.modelo.TipoComponente;
 import com.unlam.tpi.core.servicio.RespuestaServicioImpl;
 import com.unlam.tpi.delivery.dto.PreguntaDTO;
 import com.unlam.tpi.delivery.dto.PreguntaMapper;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
 import com.unlam.tpi.delivery.dto.RespuestaMapper;
-import com.unlam.tpi.delivery.dto.TipoComponente;
 
 @ExtendWith(MockitoExtension.class)
 public class RespuestaServicioTest {
@@ -46,7 +46,7 @@ public class RespuestaServicioTest {
 
 	@Test
 	public void testQuePuedaGuardarRespuestaYLaObtenga() {
-		RespuestaDTO respuesta = new RespuestaDTO();
+		Respuesta respuesta = new Respuesta();
 		respuesta.setCodigo("RA");
 		respuesta.setNombre("Respuesta A");
 		respuesta.setValor(10);
@@ -58,18 +58,18 @@ public class RespuestaServicioTest {
 	public void testQuePuedaCargarLasRespuestaDesdeExcelYLasListe() throws IOException {
 		MockMultipartFile excelFile = new MockMultipartFile("excelRespuesta", "pregunta.xls", "application/x-xlsx",
 				new ClassPathResource("pregunta.xlsx").getInputStream());
-		RespuestaDTO respuesta = new RespuestaDTO();
+		Respuesta respuesta = new Respuesta();
 		respuesta.setCodigo("RR");
 		respuesta.setNombre("R1");
 		respuesta.setInstrumento("A");
 		respuesta.setValor(10);
 		respuesta.setOrden(1);
-		List<RespuestaDTO> dtoRespuestas = new ArrayList<>();
+		List<Respuesta> dtoRespuestas = new ArrayList<>();
 		dtoRespuestas.add(respuesta);
 		when(respuestaRepositorio.findByCodigoAndInstrumento("R1", "A"))
-				.thenReturn(RespuestaMapper.dTOaEntidad(respuesta));
+				.thenReturn(respuesta);
 		when(preguntaServicio.getPreguntaPorCodigo("A1")).thenReturn(PreguntaMapper.dTOaEntidad(crearPreguntaDTO()));
-		when(respuestaRepositorio.findAll()).thenReturn(RespuestaMapper.traductorDeListaDTOaEntidad(dtoRespuestas));
+		when(respuestaRepositorio.findAll()).thenReturn(dtoRespuestas);
 		getRespuestaServicio().cargaDesdeExcel(excelFile);
 		assertNotNull(getRespuestaServicio().listar());
 	}
@@ -98,7 +98,7 @@ public class RespuestaServicioTest {
 	public void testQueBusqueUnaRespuestaPorNombreYNoLaEncuentre() {
 		String nombre = "Noexiste";
 		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-			getRespuestaServicio().getRespuestaDTOPorCodigo(nombre);
+			getRespuestaServicio().getRespuestaPorCodigo(nombre);
 		});
 		String expectedMessage = "Error al obtener la respuesta: " + nombre;
 		String actualMessage = serviceException.getMessage();

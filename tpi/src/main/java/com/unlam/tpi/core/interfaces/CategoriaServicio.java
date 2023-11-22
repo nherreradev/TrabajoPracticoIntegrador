@@ -8,28 +8,19 @@ import javax.transaction.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.core.modelo.Categoria;
-import com.unlam.tpi.delivery.dto.CategoriaDTO;
 
+@Transactional
 public interface CategoriaServicio {
 
-	@Transactional
-	public void guardar(CategoriaDTO categoria);
+	public void guardar(Categoria categoria);
 
-	@Transactional
-	public CategoriaDTO getCategoriaDTOPorID(Long id);
+	public Categoria getCategoriaPorID(Long id);
 
-	@Transactional
 	public void borrar(Long id);
 
-	@Transactional
-	public List<CategoriaDTO> listar();
+	public List<Categoria> listar();
 
-	@Transactional
 	public void cargaDesdeExcel(MultipartFile excelcategoria) throws IOException;
 	
-	@Transactional
-	public CategoriaDTO getCategoriaDTOPorNombre(String nombre);
-
-	@Transactional
 	public Categoria getCategoriaPorNombre(String nombre);
 }

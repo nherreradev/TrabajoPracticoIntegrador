@@ -1,4 +1,4 @@
-package com.unlam.tpi.delivery.dto;
+package com.unlam.tpi.core.modelo;
 
 public enum TipoPerfilInversor {
 

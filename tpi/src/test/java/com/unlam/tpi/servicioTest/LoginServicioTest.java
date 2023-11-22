@@ -20,7 +20,6 @@ import com.unlam.tpi.core.interfaces.UsuarioRepositorio;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.core.modelo.UsuarioLogin;
 import com.unlam.tpi.core.servicio.LoginServicioImpl;
-import com.unlam.tpi.delivery.dto.TokenDTO;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,19 +29,18 @@ public class LoginServicioTest {
 
 	@Mock
 	private AutenticacionService autenticacionService;
-	
+
 	@Mock
 	private LoginAuthentication loginAuthentication;
 
 	@InjectMocks
 	private LoginServicioImpl loginServicio;
-	
+
 	@BeforeEach
 	void setUp() {
 		MockitoAnnotations.openMocks(this);
 	}
 
-	
 	@Test
 	public void iniciarSesion() throws NoSuchAlgorithmException, InvalidKeySpecException {
 
@@ -58,13 +56,11 @@ public class LoginServicioTest {
 		usuarioDTO.setEmail("usuariotest@dominio.com");
 		usuarioDTO.setPass("123456ASD");
 
-		TokenDTO tokenDTO = new TokenDTO("testToken");
+		when(loginAuthentication.iniciarSesion(usuarioLogin)).thenReturn("testToken");
 
-		when(loginAuthentication.iniciarSesion(usuarioLogin)).thenReturn(tokenDTO);
+		String resultToken = loginServicio.iniciarSesion(usuarioLogin);
 
-		TokenDTO resultTokenDTO = loginServicio.iniciarSesion(usuarioLogin);
-
-		assertEquals(tokenDTO.getToken(), resultTokenDTO.getToken());
+		assertEquals("testToken", resultToken);
 	}
 
 }

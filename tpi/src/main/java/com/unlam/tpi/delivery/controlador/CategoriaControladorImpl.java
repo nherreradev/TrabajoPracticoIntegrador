@@ -17,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.unlam.tpi.core.interfaces.CategoriaControlador;
 import com.unlam.tpi.core.interfaces.CategoriaServicio;
+import com.unlam.tpi.core.modelo.Categoria;
 import com.unlam.tpi.delivery.dto.CategoriaDTO;
+import com.unlam.tpi.delivery.dto.CategoriaMapper;
 
 @RestController
 @RequestMapping("/api/categoria")
@@ -28,7 +30,8 @@ public class CategoriaControladorImpl implements CategoriaControlador {
 	
 	@Override
 	@PostMapping("/guardar")
-	public ResponseEntity<String> guardar(@RequestBody CategoriaDTO categoria) {
+	public ResponseEntity<String> guardar(@RequestBody CategoriaDTO categoriaDTO) {
+		Categoria categoria = CategoriaMapper.dTOaEntidad(categoriaDTO);
 		getCategoriaServicio().guardar(categoria);
 		return ResponseEntity.ok("Categoria Guardada");
 	}
@@ -42,7 +45,7 @@ public class CategoriaControladorImpl implements CategoriaControlador {
 	@Override
 	@GetMapping("/obtener")
 	public CategoriaDTO obtener(Long id) {
-		return getCategoriaServicio().getCategoriaDTOPorID(id);
+		return CategoriaMapper.entidadADTO(getCategoriaServicio().getCategoriaPorID(id));
 	}
 
 	@Override
@@ -54,7 +57,7 @@ public class CategoriaControladorImpl implements CategoriaControlador {
 	@Override
 	@GetMapping("/listar")
 	public List<CategoriaDTO> listar() {
-		return getCategoriaServicio().listar();
+		return  CategoriaMapper.entidadDTOLista(getCategoriaServicio().listar());
 	}
 
 	public CategoriaServicio getCategoriaServicio() {

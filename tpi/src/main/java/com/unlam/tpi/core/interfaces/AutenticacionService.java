@@ -1,15 +1,15 @@
 package com.unlam.tpi.core.interfaces;
 
 import com.unlam.tpi.core.modelo.JWTRest;
-import com.unlam.tpi.delivery.dto.UsuarioDTO;
+import com.unlam.tpi.core.modelo.Usuario;
 
 public interface AutenticacionService {
 
-    String generarTokenLoginUsuario(UsuarioDTO usuario);
+    String generarTokenLoginUsuario(Usuario usuario);
 
     JWTRest obtenerClaimsToken(String token);
 
-    UsuarioDTO obtenerDatosUsuarioByToken(String token);
+    Usuario obtenerDatosUsuarioByToken(String token);
 
 	String GenerarTokenValidacionCuenta(String email);
 

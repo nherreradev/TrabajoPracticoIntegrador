@@ -5,10 +5,9 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
 
 public class UsuarioMapper {
@@ -27,22 +26,18 @@ public class UsuarioMapper {
 		return usuarios.stream().map(usuario -> mapper.map(usuario, CategoriaDTO.class)).collect(Collectors.toList());
 	}
 
-	public static Usuario UsuarioRest2UsuarioModel(UsuarioRestDTO usuarioRestDTO) {
+	public static Usuario UsuarioRest2UsuarioModel(UsuarioRest usuarioRestDTO) {
 		return mapper.map(usuarioRestDTO, Usuario.class);
 	}
 	
 	public static String ObtenerBodyToken(String token) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode jsonNode = null;
 		try {
-			jsonNode = objectMapper.readTree(token);
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JsonNode jsonNode = objectMapper.readTree(token);
+			return jsonNode.get("token").asText();
+		} catch (Exception e) {
+			throw new ServiceException("Error al convertir a json");
 		}
-		return jsonNode.get("token").asText();
+		
 	}
 }

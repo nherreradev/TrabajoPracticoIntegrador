@@ -15,8 +15,8 @@ import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.interfaces.CarteraControlador;
 import com.unlam.tpi.core.interfaces.PosicionServicio;
 import com.unlam.tpi.core.modelo.RequestCargaDeDinero;
+import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.core.modelo.ValuacionTotalRespuesta;
-import com.unlam.tpi.delivery.dto.UsuarioDTO;
 
 @CrossOrigin
 @RestController
@@ -34,7 +34,7 @@ public class CarteraControladorImpl implements CarteraControlador {
 	public ResponseEntity<ValuacionTotalRespuesta> getValuacionTotal(
 			@RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException {
 		String token = getToken(headerAuthorization);
-		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
+		Usuario usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
 		ValuacionTotalRespuesta valuacionTotalRespuesta = posicionServicio.getValuacionTotal(usuario.getOid());
 		return ResponseEntity.ok(valuacionTotalRespuesta);
 	}
@@ -43,7 +43,7 @@ public class CarteraControladorImpl implements CarteraControlador {
 	@PostMapping("/acreditar/dinero")
 	public ResponseEntity<String> acreditarDinero(@RequestHeader("Authorization") String headerAuthorization, @RequestBody RequestCargaDeDinero request) throws JsonProcessingException {
 		String token = getToken(headerAuthorization);
-		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
+		Usuario usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
 		request.setUsuarioOid(usuario.getOid());	
 		posicionServicio.acreditarDinero(request);
 		return ResponseEntity.ok("Dinero acreditado correctamente");

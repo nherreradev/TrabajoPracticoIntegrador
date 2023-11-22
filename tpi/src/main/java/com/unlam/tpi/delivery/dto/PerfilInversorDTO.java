@@ -1,5 +1,8 @@
 package com.unlam.tpi.delivery.dto;
 
+import com.unlam.tpi.core.modelo.TipoNivelConocimiento;
+import com.unlam.tpi.core.modelo.TipoPerfilInversor;
+
 public class PerfilInversorDTO {
 
 	private Long oid;

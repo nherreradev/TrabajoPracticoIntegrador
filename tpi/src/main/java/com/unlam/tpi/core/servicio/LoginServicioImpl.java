@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.unlam.tpi.core.interfaces.LoginAuthentication;
 import com.unlam.tpi.core.interfaces.LoginServicio;
 import com.unlam.tpi.core.modelo.UsuarioLogin;
-import com.unlam.tpi.delivery.dto.TokenDTO;
 
 @Service
 public class LoginServicioImpl implements LoginServicio {
@@ -15,7 +14,7 @@ public class LoginServicioImpl implements LoginServicio {
 	LoginAuthentication loginAuthentication;
 
 	@Override
-	public TokenDTO iniciarSesion(UsuarioLogin usuarioLogin) {
+	public String iniciarSesion(UsuarioLogin usuarioLogin) {
 		return loginAuthentication.iniciarSesion(usuarioLogin);
 	}
 

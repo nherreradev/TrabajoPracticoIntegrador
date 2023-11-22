@@ -13,7 +13,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import com.unlam.tpi.core.interfaces.AutenticacionService;
-import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
+import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.infraestructura.api.MailServicioImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,12 +31,12 @@ public class MailServicioTest {
 	@Test
 	public void prepararMailYEnviar() {
 
-		UsuarioRestDTO usuarioRestDTO = new UsuarioRestDTO();
-		usuarioRestDTO.setNombre("usuario");
-		usuarioRestDTO.setEmail("usuario@dominio.com");
+		Usuario usuario= new Usuario();
+		usuario.setNombre("usuario");
+		usuario.setEmail("usuario@dominio.com");
 		String token = "testToken";
 
-		mailServicio.prepararMailYEnviar(usuarioRestDTO, token);
+		mailServicio.prepararMailYEnviar(usuario, token);
 
 		verify(emailSender, times(1)).send(any(SimpleMailMessage.class));
 	}

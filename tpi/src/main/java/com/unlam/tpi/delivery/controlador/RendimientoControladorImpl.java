@@ -19,7 +19,7 @@ import com.unlam.tpi.core.interfaces.RendimientoControlador;
 import com.unlam.tpi.core.modelo.HistoricoRendimientosResponse;
 import com.unlam.tpi.core.modelo.RendimientoActualResponse;
 import com.unlam.tpi.core.modelo.RendimientoRequest;
-import com.unlam.tpi.delivery.dto.UsuarioDTO;
+import com.unlam.tpi.core.modelo.Usuario;
 
 @CrossOrigin
 @RestController
@@ -28,42 +28,44 @@ public class RendimientoControladorImpl implements RendimientoControlador {
 
 	@Autowired
 	PosicionServicio posicionServicio;
-	
+
 	@Autowired
 	AutenticacionService autenticacionServicio;
 
 	@Override
 	@GetMapping("/instrumentos/actual")
-	public ResponseEntity<RendimientoActualResponse> calcularRendimientoInstrumentosEnCarteraDiaDeHoy( 
+	public ResponseEntity<RendimientoActualResponse> calcularRendimientoInstrumentosEnCarteraDiaDeHoy(
 			@RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException {
 		String token = headerAuthorization.replaceAll("Bearer ", "");
-		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
+		Usuario usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
 		RendimientoActualResponse rendimientoActualResponse = posicionServicio
 				.calcularRendimientoActual(usuario.getOid());
 		return ResponseEntity.ok(rendimientoActualResponse);
 	}
-	
+
 	@Override
 	@PostMapping("/instrumentos/historico")
 	public ResponseEntity<List<HistoricoRendimientosResponse>> calcularRendimientoInstrumentosHistorico(
-			@RequestBody RendimientoRequest request, @RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException {
+			@RequestBody RendimientoRequest request, @RequestHeader("Authorization") String headerAuthorization)
+			throws JsonProcessingException {
 		String token = headerAuthorization.replaceAll("Bearer ", "");
-		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
-		List<HistoricoRendimientosResponse> listaDeRendimientosHistoricos = posicionServicio.obtenerRendimientosHistoricosPorSimbolo(request.getSimboloInstrumento(), usuario.getOid());
+		Usuario usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
+		List<HistoricoRendimientosResponse> listaDeRendimientosHistoricos = posicionServicio
+				.obtenerRendimientosHistoricosPorSimbolo(request.getSimboloInstrumento(), usuario.getOid());
 		return ResponseEntity.ok(listaDeRendimientosHistoricos);
 	}
-	
+
 	@Override
 	@PostMapping("/dia/guardar")
-	public ResponseEntity<String> guardarRendimientoDiario(
-			@RequestBody RendimientoRequest request, @RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException {
+	public ResponseEntity<String> guardarRendimientoDiario(@RequestBody RendimientoRequest request,
+			@RequestHeader("Authorization") String headerAuthorization) throws JsonProcessingException {
 		String token = headerAuthorization.replaceAll("Bearer ", "");
-		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
-		RendimientoActualResponse rendimientoActualResponse = posicionServicio.calcularRendimientoActual(usuario.getOid());
-		posicionServicio.guardarCierresDiarios(rendimientoActualResponse.getRendimientosActuales(), usuario.getOid());;
+		Usuario usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
+		RendimientoActualResponse rendimientoActualResponse = posicionServicio
+				.calcularRendimientoActual(usuario.getOid());
+		posicionServicio.guardarCierresDiarios(rendimientoActualResponse.getRendimientosActuales(), usuario.getOid());
+		;
 		return ResponseEntity.ok("Rendimiento guardado correctamente");
 	}
-	
-	
 
 }

@@ -75,7 +75,7 @@ public class SeccionServicioTest {
 	@Test
 	public void testQueBusqueUnaSeccionPorNombreYNoLaEncuentre() {
 		ServiceException serviceException = assertThrows(ServiceException.class, () -> {
-			getSeccionServicio().getSeccionDTOPorNombre("Noexiste");
+			getSeccionServicio().getSeccionPorNombre("Noexiste");
 		});
 		String expectedMessage = "Error al obtener la seccion por nombre";
 		String actualMessage = serviceException.getMessage();
@@ -84,11 +84,11 @@ public class SeccionServicioTest {
 
 	@Test
 	public void testQuePuedaObtenerUnaSeccionPorNombre() {
-		SeccionDTO seccion = new SeccionDTO();
+		Seccion seccion = new Seccion();
 		seccion.setNombre("SeccionPrueba");
 		seccion.setDescripcion("Esto es un test");
 		getSeccionServicio().guardar(seccion);
-		when(seccionRepositorio.findByNombre("SeccionPrueba")).thenReturn(SeccionMapper.dTOaEntidad(seccion));
+		when(seccionRepositorio.findByNombre("SeccionPrueba")).thenReturn(seccion);
 		assertNotNull(getSeccionServicio().getSeccionPorNombre("SeccionPrueba"));
 	}
 

@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.unlam.tpi.delivery.dto.TipoComponente;
 import com.unlam.tpi.infraestructura.arquitectura.ObjetoPersistente;
 
 @Entity

@@ -1,7 +1,5 @@
 package com.unlam.tpi.core.servicio;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +13,6 @@ import com.unlam.tpi.core.modelo.JWTRest;
 import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.ServiceException;
 import com.unlam.tpi.core.modelo.Usuario;
-import com.unlam.tpi.delivery.dto.PasswordDto;
-import com.unlam.tpi.delivery.dto.UsuarioDTO;
-import com.unlam.tpi.delivery.dto.UsuarioMapper;
-import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
 
 @Service
 public class UsuarioServicioImpl implements UsuarioServicio {
@@ -32,21 +26,19 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	MailServicio mailServicio;
 
 	@Override
-	public void guardarUsuario(UsuarioRestDTO usuarioRestDTO) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		String token = this.autenticacionService.GenerarTokenValidacionCuenta(usuarioRestDTO.getEmail());
-		Usuario nuevo = crearUsuario(usuarioRestDTO, token);
-		this.usuarioRepositorio.save(nuevo);
-		this.mailServicio.prepararMailYEnviar(usuarioRestDTO, token);
+	public void guardarUsuario(Usuario usuario) {
+		String token = this.autenticacionService.GenerarTokenValidacionCuenta(usuario.getEmail());
+		crearUsuario(usuario, token);
+		this.usuarioRepositorio.save(usuario);
+		this.mailServicio.prepararMailYEnviar(usuario, token);
 	}
 
-	private Usuario crearUsuario(UsuarioRestDTO usuarioRestDTO, String token) {
-		Usuario usuario = UsuarioMapper.UsuarioRest2UsuarioModel(usuarioRestDTO);
+	private void crearUsuario(Usuario usuario, String token) {
 		usuario.setTokenValidacion(token);
 		usuario.setCuentaConfirmada(Boolean.FALSE);
 		usuario.setActivo(Boolean.TRUE);
 		usuario.setPremium(Boolean.FALSE);
 		usuario.setEsAdministrador(Boolean.FALSE);
-		return usuario;
 	}
 
 	@Override
@@ -76,15 +68,6 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 			throw new ServiceException("Usuario no encontrado: " + nombreUsuario);
 		}
 		return usaurio;
-	}
-
-	@Override
-	public UsuarioDTO obtenerUsuarioDTOPorNombreUsuario(String nombreUsuario) {
-		Usuario usaurio = obtenerUsuarioPorNombreUsuario(nombreUsuario);
-		if (usaurio == null) {
-			throw new ServiceException("Error obteniendo el usuario: " + nombreUsuario);
-		}
-		return UsuarioMapper.entidadADTO(usaurio);
 	}
 
 	@Override
@@ -133,7 +116,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public void recuperarCuenta(Usuario usuario) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public void recuperarCuenta(Usuario usuario) {
 		if (!existeEmail(usuario.getEmail()))
 			return;
 		Usuario buscado = this.usuarioRepositorio.getUsuarioByEmail(usuario.getEmail());
@@ -148,16 +131,16 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 	}
 
 	@Override
-	public Boolean cambioPassword(PasswordDto passwordDto) throws NoSuchAlgorithmException, InvalidKeySpecException {
-		Usuario usuario = obtenerUsuarioPorToken(passwordDto.getToken());
+	public Boolean cambioPassword(String newPassword, String token) {
+		Usuario usuario = obtenerUsuarioPorToken(token);
 		if (usuario == null) {
 			return Boolean.FALSE;
 		}
-		String token = this.autenticacionService.GenerarSecretJWT();
+		String newToken = this.autenticacionService.GenerarSecretJWT();
 		usuario.setCuentaConfirmada(Boolean.TRUE);
 		usuario.setActivo(Boolean.TRUE);
-		usuario.setPass(passwordDto.getNewPassword());
-		usuario.setTokenValidacion(token);
+		usuario.setPass(newPassword);
+		usuario.setTokenValidacion(newToken);
 		this.usuarioRepositorio.save(usuario);
 		return Boolean.TRUE;
 	}

@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.unlam.tpi.core.interfaces.RespuestaControlador;
 import com.unlam.tpi.core.interfaces.RespuestaServicio;
 import com.unlam.tpi.delivery.dto.RespuestaDTO;
+import com.unlam.tpi.delivery.dto.RespuestaMapper;
 
 @RestController
 @RequestMapping("/api/respuesta")
@@ -27,7 +28,7 @@ public class RespuestaControladorImpl implements RespuestaControlador {
 	@Override
 	@PostMapping(value = "/guardar", consumes = "application/json", produces = "application/json")
 	public void guardar(RespuestaDTO respuesta) {
-		getRespuestaServicio().guardar(respuesta);
+		getRespuestaServicio().guardar(RespuestaMapper.dTOaEntidad(respuesta));
 	}
 
 	@Override
@@ -39,13 +40,13 @@ public class RespuestaControladorImpl implements RespuestaControlador {
 	@Override
 	@GetMapping("/obtener")
 	public RespuestaDTO obtener(Long id) {
-		return getRespuestaServicio().getRespuestaDTOPorID(id);
+		return RespuestaMapper.entidadADTO(getRespuestaServicio().getRespuestaPorID(id));
 	}
 
 	@Override
 	@GetMapping("/obtener-codigo")
 	public RespuestaDTO obtener(String codigo) {
-		return getRespuestaServicio().getRespuestaDTOPorCodigo(codigo);
+		return RespuestaMapper.entidadADTO(getRespuestaServicio().getRespuestaPorCodigo(codigo));
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class RespuestaControladorImpl implements RespuestaControlador {
 	@Override
 	@GetMapping("/listar")
 	public List<RespuestaDTO> listar() {
-		return getRespuestaServicio().listar();
+		return RespuestaMapper.entidadDTOLista(getRespuestaServicio().listar());
 	}
 
 	public RespuestaServicio getRespuestaServicio() {

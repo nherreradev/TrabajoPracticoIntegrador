@@ -11,12 +11,9 @@ import com.unlam.tpi.core.interfaces.PerfilInversorServicio;
 import com.unlam.tpi.core.interfaces.UsuarioServicio;
 import com.unlam.tpi.core.modelo.PerfilInversor;
 import com.unlam.tpi.core.modelo.ServiceException;
+import com.unlam.tpi.core.modelo.TipoNivelConocimiento;
+import com.unlam.tpi.core.modelo.TipoPerfilInversor;
 import com.unlam.tpi.core.modelo.Usuario;
-import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
-import com.unlam.tpi.delivery.dto.PerfilInversorMapper;
-import com.unlam.tpi.delivery.dto.TipoNivelConocimiento;
-import com.unlam.tpi.delivery.dto.TipoPerfilInversor;
-import com.unlam.tpi.delivery.dto.UsuarioMapper;
 
 @Service
 public class PerfilInversorServicioImpl implements PerfilInversorServicio {
@@ -31,16 +28,16 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	private GeneracionJasper generacionJasper;
 
 	@Override
-	public PerfilInversorDTO resultadoPerfilSubjetivo(PerfilInversorDTO perfilInversorDTO) {
-		validacionPerfilSubjetivo(perfilInversorDTO);
-		TipoPerfilInversor tipoPerfilInversor = calcularPerfilInversor(perfilInversorDTO.getHorizonteTemporal(),
-				perfilInversorDTO.getToleranciaRiesgo());
-		PerfilInversor perfilInversor = crearPerfilInversorSubjetivo(perfilInversorDTO, tipoPerfilInversor);
-		return PerfilInversorMapper.entidadADTO(perfilInversor);
+	public PerfilInversor resultadoPerfilSubjetivo(PerfilInversor perfilInversor) {
+		validacionPerfilSubjetivo(perfilInversor);
+		TipoPerfilInversor tipoPerfilInversor = calcularPerfilInversor(perfilInversor.getHorizonteTemporal(),
+				perfilInversor.getToleranciaRiesgo());
+		PerfilInversor perfilInversorSubjetivo = crearPerfilInversorSubjetivo(perfilInversor, tipoPerfilInversor);
+		return perfilInversorSubjetivo;
 	}
 
-	private void validacionPerfilSubjetivo(PerfilInversorDTO perfilInversorDTO) {
-		if (perfilInversorDTO.getUsuarioDTO() == null) {
+	private void validacionPerfilSubjetivo(PerfilInversor perfilInversorDTO) {
+		if (perfilInversorDTO.getUsuario() == null) {
 			throw new ServiceException("Error al obtener obtener el usuario");
 		}
 		if (perfilInversorDTO.getToleranciaRiesgo() == null) {
@@ -76,20 +73,19 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	}
 
 	@Override
-	public PerfilInversorDTO resultadoNivelConocimiento(PerfilInversorDTO perfilInversorDTO) {
-		validacionNivelConocimiento(perfilInversorDTO);
-		TipoNivelConocimiento tipoNivelConocimiento = obtenerNivelConocimiento(perfilInversorDTO);
-		perfilInversorDTO.setTipoNivelConocimiento(tipoNivelConocimiento);
-		guardar(perfilInversorDTO);
-		return perfilInversorDTO;
+	public PerfilInversor resultadoNivelConocimiento(PerfilInversor perfilInversor) {
+		validacionNivelConocimiento(perfilInversor);
+		TipoNivelConocimiento tipoNivelConocimiento = obtenerNivelConocimiento(perfilInversor);
+		perfilInversor.setTipoNivelConocimiento(tipoNivelConocimiento);
+		return guardar(perfilInversor);
 	}
 
-	private TipoNivelConocimiento obtenerNivelConocimiento(PerfilInversorDTO perfilObjetivoDTO) {
-		if (perfilObjetivoDTO.getNivelConocimiento() <= 15) {
+	private TipoNivelConocimiento obtenerNivelConocimiento(PerfilInversor perfilObjetivo) {
+		if (perfilObjetivo.getNivelConocimiento() <= 15) {
 			return TipoNivelConocimiento.PRINCIPIANTE;
-		} else if (perfilObjetivoDTO.getNivelConocimiento() <= 30) {
+		} else if (perfilObjetivo.getNivelConocimiento() <= 30) {
 			return TipoNivelConocimiento.INTERMEDIO;
-		} else if (perfilObjetivoDTO.getNivelConocimiento() <= 35) {
+		} else if (perfilObjetivo.getNivelConocimiento() <= 35) {
 			return TipoNivelConocimiento.AVANZADO;
 		} else {
 			return TipoNivelConocimiento.EXPERTO;
@@ -97,70 +93,67 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	}
 
 	@Override
-	public PerfilInversorDTO resultadoPerfilInversor(PerfilInversorDTO perfilInversorDTO) {
-		validacionNivelConocimiento(perfilInversorDTO);
-		TipoPerfilInversor tipoPerfilInversor = calcularPerfilInversor(perfilInversorDTO.getHorizonteTemporal(),
-				perfilInversorDTO.getResultadoPerfilado());
-		TipoNivelConocimiento tipoNivelConocimiento = obtenerNivelConocimiento(perfilInversorDTO);
-		PerfilInversor perfilInversor = crearPerfilInversorObjetivo(perfilInversorDTO, tipoPerfilInversor,
+	public PerfilInversor resultadoPerfilInversor(PerfilInversor perfilInversor) {
+		validacionNivelConocimiento(perfilInversor);
+		TipoPerfilInversor tipoPerfilInversor = calcularPerfilInversor(perfilInversor.getHorizonteTemporal(),
+				calcularPerfilInverso(perfilInversor.getToleranciaRiesgo(), perfilInversor.getNivelConocimiento()));
+		TipoNivelConocimiento tipoNivelConocimiento = obtenerNivelConocimiento(perfilInversor);
+		PerfilInversor perfilInversorObjetivo = crearPerfilInversorObjetivo(perfilInversor, tipoPerfilInversor,
 				tipoNivelConocimiento);
-		return PerfilInversorMapper.entidadADTO(perfilInversor);
+		return perfilInversorObjetivo;
 	}
 
-	private void validacionNivelConocimiento(PerfilInversorDTO perfilInversorDTO) {
-		validacionPerfilSubjetivo(perfilInversorDTO);
-		if (perfilInversorDTO.getNivelConocimiento() == null) {
+	private void validacionNivelConocimiento(PerfilInversor perfilInversor) {
+		validacionPerfilSubjetivo(perfilInversor);
+		if (perfilInversor.getNivelConocimiento() == null) {
 			throw new ServiceException("Error al obtener el nivel de conocimiento");
 		}
 	}
 
-	private PerfilInversor crearPerfilInversorSubjetivo(PerfilInversorDTO perfilInversorDTO,
-			TipoPerfilInversor tipoPerfilInversor) {
-		PerfilInversor perfilInversor = crearPerfilInversor(perfilInversorDTO, tipoPerfilInversor);
-		perfilInversor.setTipoPerfilSubjetivo(tipoPerfilInversor);
-		perfilInversor = guardar(perfilInversor);
-		return perfilInversor;
-	}
-
-	private PerfilInversor crearPerfilInversorObjetivo(PerfilInversorDTO perfilInversorDTO,
-			TipoPerfilInversor tipoPerfilInversor, TipoNivelConocimiento tipoNivelConocimiento) {
-		PerfilInversor perfilInversor = crearPerfilInversor(perfilInversorDTO, tipoPerfilInversor);
-		perfilInversor.setNivelConocimiento(perfilInversorDTO.getNivelConocimiento());
-		perfilInversor.setTipoNivelConocimiento(tipoNivelConocimiento);
-		perfilInversor = guardar(perfilInversor);
-		return perfilInversor;
-	}
-
-	private PerfilInversor crearPerfilInversor(PerfilInversorDTO perfilInversorDTO,
-			TipoPerfilInversor tipoPerfilInversor) {
-		PerfilInversor perfilInversor = obtenerPerfilInversorPorNombreDeUsuario(perfilInversorDTO);
-		if (perfilInversor == null) {
-			perfilInversor = crearNuevoPerfilInversor(perfilInversorDTO);
+	private Integer calcularPerfilInverso(Integer toleranciaRiesgo, Integer nivelConocimiento) {
+		if (toleranciaRiesgo != null && nivelConocimiento != null) {
+			return (toleranciaRiesgo + nivelConocimiento) / 2;
 		}
-		perfilInversor.setPerfilInversor(tipoPerfilInversor);
-		perfilInversor.setToleranciaRiesgo(perfilInversorDTO.getToleranciaRiesgo());
-		perfilInversor.setHorizonteTemporal(perfilInversorDTO.getHorizonteTemporal());
-		return perfilInversor;
+		return 0;
+	}
+	
+	private PerfilInversor crearPerfilInversorSubjetivo(PerfilInversor perfilInversor,
+			TipoPerfilInversor tipoPerfilInversor) {
+		PerfilInversor perfilInversorSubjetivo = crearPerfilInversor(perfilInversor, tipoPerfilInversor);
+		perfilInversorSubjetivo.setTipoPerfilSubjetivo(tipoPerfilInversor);
+		return guardar(perfilInversorSubjetivo);
 	}
 
-	private PerfilInversor obtenerPerfilInversorPorNombreDeUsuario(PerfilInversorDTO perfilInversorDTO) {
-		PerfilInversor perfilInversor = getPerfilInversorRepositorio()
-				.findByUsuario_NombreUsuario(perfilInversorDTO.getUsuarioDTO().getNombreUsuario());
-		return perfilInversor;
+	private PerfilInversor crearPerfilInversorObjetivo(PerfilInversor perfilInversor,
+			TipoPerfilInversor tipoPerfilInversor, TipoNivelConocimiento tipoNivelConocimiento) {
+		PerfilInversor perfilInversorObjetivo = crearPerfilInversor(perfilInversor, tipoPerfilInversor);
+		perfilInversorObjetivo.setNivelConocimiento(perfilInversor.getNivelConocimiento());
+		perfilInversorObjetivo.setTipoNivelConocimiento(tipoNivelConocimiento);
+		return guardar(perfilInversor);
 	}
 
-	private PerfilInversor crearNuevoPerfilInversor(PerfilInversorDTO perfilInversorDTO) {
+	private PerfilInversor crearPerfilInversor(PerfilInversor perfilInversor, TipoPerfilInversor tipoPerfilInversor) {
+		PerfilInversor perfilInversorObtenido = obtenerPerfilInversorPorNombreDeUsuario(perfilInversor);
+		if (perfilInversorObtenido == null) {
+			perfilInversorObtenido = crearNuevoPerfilInversor(perfilInversor);
+		}
+		perfilInversorObtenido.setPerfilInversor(tipoPerfilInversor);
+		perfilInversorObtenido.setToleranciaRiesgo(perfilInversor.getToleranciaRiesgo());
+		perfilInversorObtenido.setHorizonteTemporal(perfilInversor.getHorizonteTemporal());
+		return perfilInversorObtenido;
+	}
+
+	private PerfilInversor obtenerPerfilInversorPorNombreDeUsuario(PerfilInversor perfilInversor) {
+		return getPerfilInversorRepositorio()
+				.findByUsuario_NombreUsuario(perfilInversor.getUsuario().getNombreUsuario());
+	}
+
+	private PerfilInversor crearNuevoPerfilInversor(PerfilInversor perfilInversorDTO) {
 		PerfilInversor perfilInversor = new PerfilInversor();
 		Usuario usuario = getUsuarioServicio()
-				.obtenerUsuarioPorNombreUsuario(perfilInversorDTO.getUsuarioDTO().getNombreUsuario());
+				.obtenerUsuarioPorNombreUsuario(perfilInversorDTO.getUsuario().getNombreUsuario());
 		perfilInversor.setUsuario(usuario);
 		return perfilInversor;
-	}
-
-	@Override
-	public void guardar(PerfilInversorDTO perfilInversorDTO) {
-		PerfilInversor persistente = PerfilInversorMapper.dTOaEntidad(perfilInversorDTO);
-		getPerfilInversorRepositorio().save(persistente);
 	}
 
 	@Override
@@ -174,18 +167,17 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	}
 
 	@Override
-	public PerfilInversorDTO obtener(Long id) {
-		return PerfilInversorMapper.entidadADTO(getPerfilInversorRepositorio().getReferenceById(id));
+	public PerfilInversor obtener(Long id) {
+		return getPerfilInversorRepositorio().getReferenceById(id);
 	}
 
-	public PerfilInversorDTO obtenerPorNombreUsuario(String nombreUsuario) {
+	public PerfilInversor obtenerPorNombreUsuario(String nombreUsuario) {
 		PerfilInversor perfilInversor = getPerfilInversorRepositorio().findByUsuario_NombreUsuario(nombreUsuario);
 		if (perfilInversor == null) {
 			throw new ServiceException("Error al obtener el perfil inversor para el usuario: " + nombreUsuario);
 		}
-		PerfilInversorDTO perfilInversordto = PerfilInversorMapper.entidadADTO(perfilInversor);
-		perfilInversordto.setUsuarioDTO(UsuarioMapper.entidadADTO(perfilInversor.getUsuario()));
-		return perfilInversordto;
+		perfilInversor.setUsuario(perfilInversor.getUsuario());
+		return perfilInversor;
 	}
 
 	@Override
@@ -194,8 +186,8 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	}
 
 	@Override
-	public List<PerfilInversorDTO> listar() {
-		return PerfilInversorMapper.entidadDTOLista(getPerfilInversorRepositorio().findAll());
+	public List<PerfilInversor> listar() {
+		return getPerfilInversorRepositorio().findAll();
 	}
 
 	public PerfilInversorRepositorio getPerfilInversorRepositorio() {
@@ -213,7 +205,7 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	public void setUsuarioServicio(UsuarioServicio usuarioServicio) {
 		this.usuarioServicio = usuarioServicio;
 	}
-	
+
 	public GeneracionJasper getGeneracionJasper() {
 		return generacionJasper;
 	}
@@ -223,12 +215,12 @@ public class PerfilInversorServicioImpl implements PerfilInversorServicio {
 	}
 
 	@Override
-	public PerfilInversorDTO listarporUsuario(Long id) {
+	public PerfilInversor listarporUsuario(Long id) {
 		PerfilInversor perfilInversor = getPerfilInversorRepositorio().findByUsuario_Oid(id);
 		if (perfilInversor == null) {
 			return null;
 		}
-		return PerfilInversorMapper.entidadADTO(perfilInversor);
+		return perfilInversor;
 	}
 
 }

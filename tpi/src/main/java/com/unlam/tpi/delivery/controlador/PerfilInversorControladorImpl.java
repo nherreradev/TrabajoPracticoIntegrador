@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unlam.tpi.core.interfaces.PerfilInversorControlador;
 import com.unlam.tpi.core.interfaces.PerfilInversorServicio;
+import com.unlam.tpi.core.modelo.PerfilInversor;
 import com.unlam.tpi.delivery.dto.PerfilInversorDTO;
+import com.unlam.tpi.delivery.dto.PerfilInversorMapper;
 
 @RestController
 @RequestMapping("/api/perfil-inversor")
@@ -30,41 +32,48 @@ public class PerfilInversorControladorImpl implements PerfilInversorControlador 
 	@Override
 	@PostMapping(value = "/resultado-perfil-subjetivo")
 	public PerfilInversorDTO resultadoPerfilSubjetivo(@RequestBody PerfilInversorDTO perfilInversorDTO) {
-		return getPerfilInversorServicio().resultadoPerfilSubjetivo(perfilInversorDTO);
+		PerfilInversor PerfilInversor = getPerfilInversorServicio()
+				.resultadoPerfilSubjetivo(PerfilInversorMapper.dTOaEntidad(perfilInversorDTO));
+		return PerfilInversorMapper.entidadADTO(PerfilInversor);
 	}
 
 	@Override
 	@PostMapping(value = "/resultado-nivel-conocimiento")
 	public PerfilInversorDTO resultadoNivelConocimiento(@RequestBody PerfilInversorDTO perfilInversorDTO) {
-		return getPerfilInversorServicio().resultadoNivelConocimiento(perfilInversorDTO);
+		PerfilInversor PerfilInversor = getPerfilInversorServicio()
+				.resultadoNivelConocimiento(PerfilInversorMapper.dTOaEntidad(perfilInversorDTO));
+		return PerfilInversorMapper.entidadADTO(PerfilInversor);
 	}
 
 	@Override
 	@PostMapping(value = "/resultado-perfil-inversor")
 	public PerfilInversorDTO resultadoPerfilInversor(@RequestBody PerfilInversorDTO perfilInversorDTO) {
-		return getPerfilInversorServicio().resultadoPerfilInversor(perfilInversorDTO);
+		PerfilInversor PerfilInversor = getPerfilInversorServicio()
+				.resultadoPerfilInversor(PerfilInversorMapper.dTOaEntidad(perfilInversorDTO));
+		return PerfilInversorMapper.entidadADTO(PerfilInversor);
 	}
 
 	@Override
 	@RequestMapping(path = "/obtener-certificado", method = RequestMethod.GET)
-	public void obtenerCertificado(@RequestParam("nombreUsuario") String nombreUsuario,HttpServletRequest request, HttpServletResponse response) throws Exception {
-		byte[] certificado =  getPerfilInversorServicio().obtenerCertificado(nombreUsuario);
-		response.setContentType("application/pdf"); 
+	public void obtenerCertificado(@RequestParam("nombreUsuario") String nombreUsuario, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		byte[] certificado = getPerfilInversorServicio().obtenerCertificado(nombreUsuario);
+		response.setContentType("application/pdf");
 		response.getOutputStream().write(certificado, 0, certificado.length);
 		response.getOutputStream().flush();
 		response.getOutputStream().close();
 	}
-	
+
 	@Override
 	@PostMapping("/guardar")
 	public void guardar(PerfilInversorDTO perfilInversorDTO) {
-		getPerfilInversorServicio().guardar(perfilInversorDTO);
+		getPerfilInversorServicio().guardar(PerfilInversorMapper.dTOaEntidad(perfilInversorDTO));
 	}
 
 	@Override
 	@PostMapping("/obtener")
 	public PerfilInversorDTO obtener(Long id) {
-		return getPerfilInversorServicio().obtener(id);
+		return PerfilInversorMapper.entidadADTO(getPerfilInversorServicio().obtener(id));
 	}
 
 	@Override
@@ -76,13 +85,17 @@ public class PerfilInversorControladorImpl implements PerfilInversorControlador 
 	@Override
 	@PostMapping("/listar")
 	public ResponseEntity<List<PerfilInversorDTO>> listar() {
-		return ResponseEntity.ok(getPerfilInversorServicio().listar());
+		return ResponseEntity.ok(PerfilInversorMapper.entidadDTOLista(getPerfilInversorServicio().listar()));
 	}
-	
+
 	@Override
 	@GetMapping("/listar-por-usuario/{id}")
 	public ResponseEntity<PerfilInversorDTO> listarPorUsuario(@PathVariable Long id) {
-		return ResponseEntity.ok(getPerfilInversorServicio().listarporUsuario(id));
+		PerfilInversor perfilInversor = getPerfilInversorServicio().listarporUsuario(id);
+		if(perfilInversor!=null) {
+			return ResponseEntity.ok(PerfilInversorMapper.entidadADTO(perfilInversor));
+		}
+		return null;
 	}
 
 	public PerfilInversorServicio getPerfilInversorServicio() {

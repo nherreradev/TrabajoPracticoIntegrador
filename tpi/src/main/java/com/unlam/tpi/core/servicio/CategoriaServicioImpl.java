@@ -19,8 +19,6 @@ import com.unlam.tpi.core.interfaces.CategoriaRepositorio;
 import com.unlam.tpi.core.interfaces.CategoriaServicio;
 import com.unlam.tpi.core.modelo.Categoria;
 import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.delivery.dto.CategoriaDTO;
-import com.unlam.tpi.delivery.dto.CategoriaMapper;
 
 @Service
 public class CategoriaServicioImpl implements CategoriaServicio {
@@ -34,9 +32,8 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 	CategoriaRepositorio categoriaRepositorio;
 
 	@Override
-	public void guardar(CategoriaDTO categoria) {
-		Categoria persistente = CategoriaMapper.dTOaEntidad(categoria);
-		getCategoriaRepositorio().save(persistente);
+	public void guardar(Categoria categoria) {
+		getCategoriaRepositorio().save(categoria);
 	}
 
 	@Override
@@ -55,10 +52,10 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 			leerColumna(encabezado, categoria, fila);
 			agregarCategoriaALista(listaCategoria, categoria);
 		}
-		guardarCategoriaLista(listaCategoria);
+		guardarListaCategoria(listaCategoria);
 	}
 
-	private void guardarCategoriaLista(List<Categoria> listaCategoria) {
+	private void guardarListaCategoria(List<Categoria> listaCategoria) {
 		if (listaCategoria.isEmpty()) {
 			throw new ServiceException("No hay categorias para guardar");
 		}
@@ -87,7 +84,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 
 	private void agregarCategoriaALista(List<Categoria> listaCategoria, Categoria categoria) {
 		if (categoriaEsValida(categoria)) {
-			categoria = agregarModificarCategoria(categoria);
+			categoria = modificarCategoria(categoria);
 			listaCategoria.add(categoria);
 		}
 	}
@@ -131,7 +128,7 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 
 	}
 
-	private Categoria agregarModificarCategoria(Categoria categoria) {
+	private Categoria modificarCategoria(Categoria categoria) {
 		Categoria categoriaExistente = getCategoriaRepositorio().findByNombre(categoria.getNombre());
 		if (categoriaExistente != null) {
 			categoriaExistente.setDescripcion(categoria.getDescripcion());
@@ -141,18 +138,12 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 	}
 
 	@Override
-	public CategoriaDTO getCategoriaDTOPorID(Long id) {
+	public Categoria getCategoriaPorID(Long id) {
 		Categoria categoria = getCategoriaRepositorio().findByOid(id);
 		if (categoria == null) {
 			throw new ServiceException("Error al obtener la categoria");
 		}
-		return CategoriaMapper.entidadADTO(categoria);
-	}
-
-	@Override
-	public CategoriaDTO getCategoriaDTOPorNombre(String nombre) {
-		Categoria categoria = getCategoriaPorNombre(nombre);
-		return CategoriaMapper.entidadADTO(categoria);
+		return categoria;
 	}
 
 	@Override
@@ -170,12 +161,12 @@ public class CategoriaServicioImpl implements CategoriaServicio {
 	}
 
 	@Override
-	public List<CategoriaDTO> listar() {
+	public List<Categoria> listar() {
 		List<Categoria> categoriaList = getCategoriaRepositorio().findAll();
 		if (categoriaList == null || categoriaList.size() == 0) {
 			throw new ServiceException("Error al obtener la lista de Categorias");
 		}
-		return CategoriaMapper.entidadDTOLista(categoriaList);
+		return categoriaList;
 	}
 
 	public CategoriaRepositorio getCategoriaRepositorio() {

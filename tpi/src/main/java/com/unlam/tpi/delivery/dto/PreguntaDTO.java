@@ -2,6 +2,8 @@ package com.unlam.tpi.delivery.dto;
 
 import java.util.List;
 
+import com.unlam.tpi.core.modelo.TipoComponente;
+
 public class PreguntaDTO {
 
 	private Long oid;

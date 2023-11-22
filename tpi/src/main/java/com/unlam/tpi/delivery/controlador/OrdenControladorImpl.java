@@ -14,9 +14,9 @@ import com.unlam.tpi.core.interfaces.AutenticacionService;
 import com.unlam.tpi.core.interfaces.OrdenControlador;
 import com.unlam.tpi.core.interfaces.OrdenServicio;
 import com.unlam.tpi.core.modelo.Orden;
+import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.OrdenDTO;
 import com.unlam.tpi.delivery.dto.OrdenMapper;
-import com.unlam.tpi.delivery.dto.UsuarioDTO;
 
 @CrossOrigin
 @RestController
@@ -34,7 +34,7 @@ public class OrdenControladorImpl implements OrdenControlador {
 	public ResponseEntity<String> capturarOrden(@RequestHeader("Authorization") String headerAuthorization,
 			@RequestBody OrdenDTO orden) throws JsonProcessingException {
 		String token = headerAuthorization.replaceAll("Bearer ", "");
-		UsuarioDTO usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
+		Usuario usuario = autenticacionServicio.obtenerDatosUsuarioByToken(token);
 		orden.setUsuarioOid(usuario.getOid());
 		Orden entidad = OrdenMapper.ordenDTOAOrden(orden);
 		ordenServicio.capturarOrden(entidad);

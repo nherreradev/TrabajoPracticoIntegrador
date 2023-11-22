@@ -10,10 +10,10 @@ import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.delivery.dto.PasswordDto;
 import com.unlam.tpi.delivery.dto.UsuarioDTO;
-import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
+import com.unlam.tpi.delivery.dto.UsuarioRest;
 
 public interface UsuarioControlador {
-	public ResponseEntity<ResponseAPI> RegistrarUsuario(UsuarioRestDTO usuarioRestDTO) throws Exception;
+	public ResponseEntity<ResponseAPI> RegistrarUsuario(UsuarioRest usuarioRestDTO) throws Exception;
 
 	public ResponseEntity<ResponseAPI> ModificarUsuario(Usuario usuario);
 

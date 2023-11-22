@@ -14,7 +14,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.unlam.tpi.core.interfaces.CategoriaServicio;
 import com.unlam.tpi.core.interfaces.PreguntaRepositorio;
 import com.unlam.tpi.core.interfaces.PreguntaServicio;
@@ -23,9 +22,7 @@ import com.unlam.tpi.core.modelo.Categoria;
 import com.unlam.tpi.core.modelo.Pregunta;
 import com.unlam.tpi.core.modelo.Seccion;
 import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.delivery.dto.PreguntaDTO;
-import com.unlam.tpi.delivery.dto.PreguntaMapper;
-import com.unlam.tpi.delivery.dto.TipoComponente;
+import com.unlam.tpi.core.modelo.TipoComponente;
 
 @Service
 public class PreguntaServicioImpl implements PreguntaServicio {
@@ -43,7 +40,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	private static final String COLUMNA_ENUNCIADO = "enunciado";
 
 	private static final String HOJA_PREGUNTA = "pregunta";
-	
+
 	private static final String COLUMNA_CODIGO = "codigo";
 
 	@Autowired
@@ -56,9 +53,8 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	SeccionServicio seccionServicio;
 
 	@Override
-	public void guardar(PreguntaDTO pregunta) {
-			Pregunta persistente = PreguntaMapper.dTOaEntidad(pregunta);
-			getPreguntaRepositorio().save(persistente);
+	public void guardar(Pregunta pregunta) {
+		getPreguntaRepositorio().save(pregunta);
 	}
 
 	@Override
@@ -142,7 +138,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	}
 
 	private Boolean preguntaEsValida(Pregunta pregunta) {
-		if (pregunta.getCodigo() != null &&pregunta.getEnunciado() != null && pregunta.getCategoria() != null
+		if (pregunta.getCodigo() != null && pregunta.getEnunciado() != null && pregunta.getCategoria() != null
 				&& pregunta.getTipoComponente() != null) {
 			return Boolean.TRUE;
 		}
@@ -194,7 +190,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	}
 
 	private TipoComponente parseStringATipoComponente(String tipoComponente) {
-			return TipoComponente.valueOf(tipoComponente);
+		return TipoComponente.valueOf(tipoComponente);
 	}
 
 	private void agregarCategoria(Map<String, Categoria> categoriaMap, Pregunta pregunta, String nombreCategoria) {
@@ -227,30 +223,30 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	}
 
 	@Override
-	public PreguntaDTO getPreguntaDTOPorID(Long id) {
+	public Pregunta getPreguntaDTOPorID(Long id) {
 		Pregunta pregunta = getPreguntaRepositorio().getReferenceById(id);
 		if (pregunta == null) {
 			throw new ServiceException("Error al obtener la pregunta");
 		}
-		return PreguntaMapper.entidadADTO(pregunta);
+		return pregunta;
 	}
 
 	@Override
-	public PreguntaDTO getPreguntaDTOPorEnunciado(String nombre) {
+	public Pregunta getPreguntaDTOPorEnunciado(String nombre) {
 		Pregunta pregunta = getPreguntaPorEnunciado(nombre);
 		if (pregunta == null) {
 			throw new ServiceException("Error al obtener la pregunta: " + nombre);
 		}
-		return PreguntaMapper.entidadADTO(pregunta);
+		return pregunta;
 	}
-	
+
 	@Override
-	public PreguntaDTO getPreguntaDTOPorCodigo(String codigo) {
+	public Pregunta getPreguntaDTOPorCodigo(String codigo) {
 		Pregunta pregunta = getPreguntaPorCodigo(codigo);
 		if (pregunta == null) {
 			throw new ServiceException("Error al obtener la pregunta: " + codigo);
 		}
-		return PreguntaMapper.entidadADTO(pregunta);
+		return pregunta;
 	}
 
 	@Override
@@ -261,7 +257,7 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 		}
 		return pregunta;
 	}
-	
+
 	@Override
 	public Pregunta getPreguntaPorCodigo(String codigo) {
 		Pregunta pregunta = getPreguntaRepositorio().findByCodigo(codigo);
@@ -282,13 +278,13 @@ public class PreguntaServicioImpl implements PreguntaServicio {
 	}
 
 	@Override
-	public List<PreguntaDTO> listar() {
-		return PreguntaMapper.entidadDTOLista(getPreguntaRepositorio().findAll());
+	public List<Pregunta> listar() {
+		return getPreguntaRepositorio().findAll();
 	}
 
 	@Override
-	public List<PreguntaDTO> listarPorCategoria(String categoria) {
-		return PreguntaMapper.entidadDTOLista(getPreguntaRepositorio().findByCategoria_Nombre(categoria));
+	public List<Pregunta> listarPorCategoria(String categoria) {
+		return getPreguntaRepositorio().findByCategoria_Nombre(categoria);
 	}
 
 	public PreguntaRepositorio getPreguntaRepositorio() {

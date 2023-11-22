@@ -21,7 +21,7 @@ import com.unlam.tpi.core.interfaces.UsuarioRepositorio;
 import com.unlam.tpi.core.modelo.ResponseAPI;
 import com.unlam.tpi.core.modelo.Usuario;
 import com.unlam.tpi.core.servicio.UsuarioServicioImpl;
-import com.unlam.tpi.delivery.dto.UsuarioRestDTO;
+import com.unlam.tpi.delivery.dto.UsuarioRest;
 import com.unlam.tpi.infraestructura.api.MailServicioImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +32,7 @@ public class UsuarioServicioTest {
     //Usuario no existente
     Usuario USUARIO_EXISTENTE_NO_CONFIRMADO = new Usuario("Usuario_Prueba-2", "Mercado", "Junior","Test2@Test.com", "1234", Boolean.FALSE, Boolean.FALSE, "", Boolean.FALSE);
     
-    UsuarioRestDTO USUARIO_REST = new UsuarioRestDTO("Usuario_Prueba-2", "Mercado", "Junior","Test2@Test.com", "1234");
+    UsuarioRest USUARIO_REST = new UsuarioRest("Usuario_Prueba-2", "Mercado", "Junior","Test2@Test.com", "1234");
     
     String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c3VhcmlvIiwiYWNjaW9uIjoidG9rZW5WYWxpZGFjaW9uQ3VlbnRhIiwibWFpbCI6InRvbWFzaW5pYXJuYWxkb0BnbWFpbC5jb20ifQ.F2zZjDlJx_rygnBOWXhDvdhWm-cluaR1wxmjALRmFvc";
   
@@ -57,10 +57,10 @@ public class UsuarioServicioTest {
 
     @Test
     public void deberiaGuardarUsuarioExitosamente() throws NoSuchAlgorithmException, InvalidKeySpecException {
-        when(autenticacionService.GenerarTokenValidacionCuenta(USUARIO_REST.getEmail())).thenReturn(TOKEN);
-        usuarioServicio.guardarUsuario(USUARIO_REST);
+        when(autenticacionService.GenerarTokenValidacionCuenta(USUARIO_EXISTENTE_NO_CONFIRMADO.getEmail())).thenReturn(TOKEN);
+        usuarioServicio.guardarUsuario(USUARIO_EXISTENTE_NO_CONFIRMADO);
         verify(usuarioRepositorio, times(1)).save(USUARIO_EXISTENTE_NO_CONFIRMADO);
-        verify(mailServicio, times(1)).prepararMailYEnviar(USUARIO_REST, TOKEN);
+        verify(mailServicio, times(1)).prepararMailYEnviar(USUARIO_EXISTENTE_NO_CONFIRMADO, TOKEN);
     }
 
     @Test

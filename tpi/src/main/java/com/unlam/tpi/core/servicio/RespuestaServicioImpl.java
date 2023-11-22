@@ -21,8 +21,6 @@ import com.unlam.tpi.core.interfaces.RespuestaServicio;
 import com.unlam.tpi.core.modelo.Pregunta;
 import com.unlam.tpi.core.modelo.Respuesta;
 import com.unlam.tpi.core.modelo.ServiceException;
-import com.unlam.tpi.delivery.dto.RespuestaDTO;
-import com.unlam.tpi.delivery.dto.RespuestaMapper;
 
 @Service
 public class RespuestaServicioImpl implements RespuestaServicio {
@@ -43,9 +41,8 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	PreguntaServicio preguntaServicio;
 
 	@Override
-	public void guardar(RespuestaDTO respuesta) {
-		Respuesta persistente = RespuestaMapper.dTOaEntidad(respuesta);
-		getRespuestaRepositorio().save(persistente);
+	public void guardar(Respuesta respuesta) {
+		getRespuestaRepositorio().save(respuesta);
 	}
 
 	@Override
@@ -203,24 +200,6 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	}
 
 	@Override
-	public RespuestaDTO getRespuestaDTOPorCodigo(String codigo) {
-		Respuesta respuesta = getRespuestaPorCodigo(codigo);
-		if (respuesta == null) {
-			throw new ServiceException("Error al obtener la respuesta: " + codigo);
-		}
-		return RespuestaMapper.entidadADTO(respuesta);
-	}
-
-	@Override
-	public RespuestaDTO getRespuestaDTOPorNombre(String nombre) {
-		Respuesta respuesta = getRespuestaPorNombre(nombre);
-		if (respuesta == null) {
-			throw new ServiceException("Error al obtener la respuesta: " + nombre);
-		}
-		return RespuestaMapper.entidadADTO(respuesta);
-	}
-	
-	@Override
 	public Respuesta getRespuestaPorCodigo(String codigo) {
 		Respuesta respuesta = getRespuestaRepositorio().findByCodigo(codigo);
 		if (respuesta == null) {
@@ -239,15 +218,6 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	}
 	
 	@Override
-	public RespuestaDTO getRespuestaDTOPorID(Long id) {
-		Respuesta respuesta = getRespuestaRepositorio().findByOid(id);
-		if (respuesta == null) {
-			throw new ServiceException("Error al obtener la respuesta");
-		}
-		return RespuestaMapper.entidadADTO(respuesta);
-	}
-
-	@Override
 	public void borrar(Long id) {
 		getRespuestaRepositorio().deleteById(id);
 	}
@@ -258,10 +228,19 @@ public class RespuestaServicioImpl implements RespuestaServicio {
 	}
 
 	@Override
-	public List<RespuestaDTO> listar() {
-		return RespuestaMapper.entidadDTOLista(getRespuestaRepositorio().findAll());
+	public List<Respuesta> listar() {
+		return getRespuestaRepositorio().findAll();
 	}
-
+	
+	@Override
+	public Respuesta getRespuestaPorID(Long id) {
+		Respuesta respuesta = getRespuestaRepositorio().findByOid(id);
+		if (respuesta == null) {
+			throw new ServiceException("Error al obtener la respuesta");
+		}
+		return respuesta;
+	}
+	
 	public RespuestaRepositorio getRespuestaRepositorio() {
 		return respuestaRepositorio;
 	}

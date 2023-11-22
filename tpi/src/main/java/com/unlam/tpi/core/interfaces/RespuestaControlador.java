@@ -17,7 +17,7 @@ public interface RespuestaControlador {
 
 	public List<RespuestaDTO> listar();
 
-	public void cargaDesdeExcel(MultipartFile excelRespuesta)throws IOException;
+	public void cargaDesdeExcel(MultipartFile excelRespuesta) throws IOException;
 
 	public void borrar(String codigo);
 
